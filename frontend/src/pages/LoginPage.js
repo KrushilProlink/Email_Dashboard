@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 // @mui
 import { styled } from '@mui/material/styles';
-import {Container, Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -67,12 +67,12 @@ export default function LoginPage() {
 
         <Container maxWidth="sm">
           <StyledContent>
-          <img src="/assets/logo prolink.png" width={250} style={{marginLeft:"-7px"}}/>
+            <img src="/assets/AIA.png" width={200} style={{ marginLeft: "-7px" }} />
             <Typography variant="h4" gutterBottom mb={4}>
               Sign in to SureCRM
             </Typography>
 
-            
+
 
             {/* <Stack direction="row" spacing={2}>
               <Button fullWidth size="large" color="inherit" variant="outlined">

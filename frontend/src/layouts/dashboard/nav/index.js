@@ -31,13 +31,13 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const user = JSON.parse(localStorage.getItem('user'));
-const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const { pathname } = useLocation();
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const home =()=>{
+  const home = () => {
     navigate('/dashboard/app')
   }
 
@@ -56,7 +56,7 @@ const navigate = useNavigate()
       }}
     >
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex', cursor: "pointer" }} onClick={home}>
-        <img src="/assets/logo prolink.png" width={150}  />
+        <img src="/assets/AIA.png" width={120} style={{ marginLeft: "60px" }} />
       </Box>
 
       {/* <Box sx={{ mb: 5, mx: 2.5 }}> */}
