@@ -68,8 +68,6 @@ const Lead = () => {
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
-
-
   const columns = [
     {
       field: "firstName",
@@ -92,7 +90,7 @@ const Lead = () => {
       field: "lastName",
       headerName: "Last Name",
       flex: 1,
-      cellClassName:"name-column--cell--capitalize",
+      cellClassName: "name-column--cell--capitalize",
     },
     {
       field: "gender",
