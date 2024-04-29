@@ -38,11 +38,11 @@ const Edit = (props) => {
         insuredPersonName: yup.string().required("Person Name is required"),
         insuredPersonDateOfBirth: yup.date().required("Date of Birth is required"),
         relationshipToTheInsured: yup.string().required("Relationship To The Insured is required"),
-        phoneNumber: yup.string().matches(/^[0-9]{10}$/, 'Phone number is invalid').required('Phone number is required'),
+        phoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid').required('Phone number is required'),
         emailAddress: yup.string().email('Invalid email').required("Email is required"),
-        additionalPhoneNumber: yup.string().matches(/^[0-9]{10}$/, 'Phone number is invalid'),
+        additionalPhoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid'),
         additionalEmailAddress: yup.string().email('Invalid email'),
-        underwriterPhone: yup.string().matches(/^[0-9]{10}$/, 'Phone number is invalid'),
+        underwriterPhone: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid'),
         underwriterEmail: yup.string().email('Invalid email')
     });
 
