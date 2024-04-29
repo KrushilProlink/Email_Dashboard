@@ -3,26 +3,25 @@
 import { useEffect, useState } from 'react';
 // @mui
 import {
-    Card,
-    Stack,
-    Button,
-    Container,
-    Typography,
     Box,
+    Button,
+    Card,
+    Container,
+    Stack,
+    Typography,
 } from '@mui/material';
-// components
-import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { DeleteOutline } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
+import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
+import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
+// components
 import Iconify from '../../components/iconify';
-// sections
-// mock
-import AddContact from './Add'
+import DeleteModel from '../../components/Deletemodle';
 import TableStyle from '../../components/TableStyle';
 import { apiget, deleteManyApi } from '../../service/api';
-import DeleteModel from '../../components/Deletemodle'
-import EditContact from './Edit'
+import AddContact from './Add';
+import EditContact from './Edit';
 
 // ----------------------------------------------------------------------
 
@@ -47,6 +46,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
     return (
         <GridToolbarContainer>
             <GridToolbar />
+            {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<SmsRoundedIcon />} onClick={handleOpenDelete}>Send SMS</Button>}
             {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyContact} id={selectedRowIds} />
         </GridToolbarContainer>
@@ -101,7 +101,7 @@ const Contact = () => {
             field: "lastName",
             headerName: "Last Name",
             flex: 1,
-            cellClassName:"name-column--cell--capitalize"
+            cellClassName: "name-column--cell--capitalize"
         },
         {
             field: "gender",

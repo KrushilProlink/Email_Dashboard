@@ -3,20 +3,19 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect, useState } from 'react';
 // @mui
-import { Card, Stack, Button, Container, Typography, Box } from '@mui/material';
-// components
-import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { DeleteOutline } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
+import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
+import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
+// components
+import DeleteModel from '../../components/Deletemodle';
+import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify';
-// sections
-// mock
-import AddLead from './Add'
 import { apiget, deleteManyApi } from '../../service/api';
-import DeleteModel from '../../components/Deletemodle'
-import TableStyle from '../../components/TableStyle'
-import EditModel from './Edit'
+import AddLead from './Add';
+import EditModel from './Edit';
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchdata }) {
@@ -41,6 +40,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   return (
     <GridToolbarContainer>
       <GridToolbar />
+      {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<SmsRoundedIcon />} onClick={handleOpenDelete}>Send SMS</Button>}
       {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
       <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyLead} id={selectedRowIds} />
     </GridToolbarContainer>
@@ -175,7 +175,7 @@ const Lead = () => {
             </Card>
           </Box>
         </TableStyle>
-      </Container >
+      </Container>
     </>
   );
 }
