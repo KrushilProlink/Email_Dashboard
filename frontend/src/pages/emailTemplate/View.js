@@ -26,10 +26,9 @@ const View = () => {
 
     const saveDesign = () => {
         if (name !== "") {
-            emailEditorRef.current?.exportHtml(async (allData) => {
+            emailEditorRef.current.editor?.exportHtml(async (allData) => {
 
-                const { html } = allData
-                const { design } = allData
+                const { html, design } = allData
 
                 const data = {
                     html,
@@ -65,7 +64,6 @@ const View = () => {
 
     const fetchData = async () => {
         const result = await apiget(`emailtemplate/view/${params.id}`)
-        console.log(result)
         if (result && result.status === 200) {
             setDesign(result?.data?.emailtemplate?.design)
             setName(result?.data?.emailtemplate?.name)
