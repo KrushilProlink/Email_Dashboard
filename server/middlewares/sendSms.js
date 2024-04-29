@@ -8,16 +8,18 @@ const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
 const client = new twilio(accountSid, authToken);
 
 const sendSMS = async (req) => {
-    let msgOptions = {
-        from: twilioPhoneNumber,
-        to: req.to,
-        body: req.message || ""
-    }
-    try {
-        const message = await client.messages.create(msgOptions)
-        console.log(message)
-    } catch (error) {
-        console.log(error)
+    if (req.to) {
+        let msgOptions = {
+            from: twilioPhoneNumber,
+            to: req.to,
+            body: req.message || ""
+        }
+        try {
+            await client.messages.create(msgOptions)
+            console.log(`message send successfully to ${req?.to}`)
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
 

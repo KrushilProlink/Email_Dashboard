@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import DeleteModel from '../../components/Deletemodle';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify';
-import { apiget, deleteManyApi } from '../../service/api';
+import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddLead from './Add';
 import EditModel from './Edit';
 // ----------------------------------------------------------------------
