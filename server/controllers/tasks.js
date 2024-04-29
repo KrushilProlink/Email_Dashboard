@@ -1,11 +1,11 @@
-import Meetings from "../model/Meetings";
-import Tasks from "../model/Tasks";
+import Meetings from "../model/Meetings.js";
+import Tasks from "../model/Tasks.js";
 
 
 const index = async (req, res) => {
     const query = req.query
     query.deleted = false;
- 
+
     let allData = await Tasks.find(query).
         populate("createdBy", ["firstName", "lastName"])
         .populate("lead_id", ["firstName", "lastName"])

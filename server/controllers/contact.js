@@ -1,14 +1,14 @@
 
 import mongoose from 'mongoose'
-import Contact from '../model/Contact'
-import Policy from '../model/policy'
-import Task from '../model/Tasks'
-import Meetings from '../model/Meetings';
-import Calls from '../model/Calls';
-import Notes from '../model/Notes';
-import claim from '../model/claim';
-import Lead from '../model/Lead';
-import Emails from '../model/emails'
+import Contact from '../model/Contact.js'
+import Policy from '../model/policy.js'
+import Task from '../model/Tasks.js'
+import Meetings from '../model/Meetings.js';
+import Calls from '../model/Calls.js';
+import Notes from '../model/Notes.js';
+import claim from '../model/claim.js';
+import Lead from '../model/Lead.js';
+import Emails from '../model/emails.js'
 
 const index = async (req, res) => {
     const query = req.query

@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import Policy from "../model/policy";
-import policyDocument from "../model/policyDocument";
-import claim from "../model/claim";
-import Notes from "../model/Notes";
+import Policy from "../model/policy.js";
+import policyDocument from "../model/policyDocument.js";
+import claim from "../model/claim.js";
+import Notes from "../model/Notes.js";
 
 
 const index = async (req, res) => {

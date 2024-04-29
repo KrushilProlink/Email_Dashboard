@@ -1,4 +1,4 @@
-import User from '../model/User';
+import User from '../model/User.js';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
@@ -46,7 +46,7 @@ const deleteData = async (req, res) => {
         }
         if (user.role !== 'admin') {
             // Update the user's 'deleted' field to true
-            await User.findByIdAndUpdate({ _id: userId },{ deleted: true } );
+            await User.findByIdAndUpdate({ _id: userId }, { deleted: true });
             res.send({ message: 'User deleted successfully ', });
         } else {
             res.send({ message: 'Admin can not deleted', });

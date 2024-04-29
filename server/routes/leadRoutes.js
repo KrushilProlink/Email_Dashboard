@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import Lead from '../controllers/leads'
-import auth from '../middlewares/auth'
-import { upload } from '../utils/upload'
+import Lead from '../controllers/leads.js'
+import auth from '../middlewares/auth.js'
+import { upload } from '../utils/upload.js'
 
 const router = Router();
 

@@ -1,4 +1,4 @@
-import policyDocument from "../model/policyDocument";
+import policyDocument from "../model/policyDocument.js";
 
 
 const index = async (req, res) => {

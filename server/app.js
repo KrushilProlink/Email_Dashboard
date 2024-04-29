@@ -3,7 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
 
-import connectDB from "./db/connectdb";
+import connectDB from "./db/connectdb.js";
 
 import cors from "cors";
 
@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.use("/", serverRoutes);
 
 import bodyParser from "body-parser";
-import serverRoutes from "./routes/serverRoutes";
+import serverRoutes from "./routes/serverRoutes.js";
 
 // Get port from environment and store in Express.
 const port = process.env.PORT || "5000";

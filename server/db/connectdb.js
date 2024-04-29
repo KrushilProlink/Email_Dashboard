@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import User from '../model/User';
+import User from '../model/User.js';
 import bcrypt from 'bcrypt'
 
 const connectDB = async (DATABASE_URL, DB_NAME) => {
