@@ -1,20 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import * as React from 'react';
+import { useEffect, useState } from 'react';
+
+import ClearIcon from "@mui/icons-material/Clear";
+import { Autocomplete, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
-import ClearIcon from "@mui/icons-material/Clear";
-
+import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import * as yup from "yup";
-import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+
+import { policyTypeList } from '../../_mock/data';
 import { apiget, apiput } from '../../service/api';
 import Palette from '../../theme/palette';
 
@@ -34,10 +35,10 @@ const Edit = (props) => {
         lastName: yup.string().required("Last Name is required"),
         dateOfBirth: yup.date().required("Date of Birth is required"),
         gender: yup.string().required("Gender is required"),
-        phoneNumber: yup.string().matches(/^[0-9]{10}$/, 'Phone number is invalid').required('Phone number is required'),
+        phoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid').required('Phone number is required'),
         emailAddress: yup.string().email('Invalid email').required("Email is required"),
         address: yup.string().required("Address is required"),
-        alternatePhoneNumber: yup.string().matches(/^[0-9]{10}$/, 'Phone number is invalid'),
+        alternatePhoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid'),
         additionalEmailAddress: yup.string().email('Invalid email'),
         assigned_agent: yup.string().required("Assigned Agent is required")
     });
@@ -374,25 +375,10 @@ const Edit = (props) => {
                                             onChange={formik.handleChange}
 
                                         >
-                                            <MenuItem value="Website Referrals">
-                                                Website Referrals
-                                            </MenuItem>
-                                            <MenuItem value="Advertising">Advertising </MenuItem>
-                                            <MenuItem value="Social Media">Social Media </MenuItem>
-                                            <MenuItem value="Events and Trade Shows">
-                                                Events and Trade Shows{" "}
-                                            </MenuItem>
-                                            <MenuItem value="Call Centers or Telemarketing">
-                                                Call Centers or Telemarketing
-                                            </MenuItem>
-                                            <MenuItem value="Partnerships">Partnerships</MenuItem>
-                                            <MenuItem value="Direct Mail">Direct Mail </MenuItem>
-                                            <MenuItem value="Online Aggregators or Comparison Websites">
-                                                Online Aggregators or Comparison Websites
-                                            </MenuItem>
-                                            <MenuItem value="Content Marketing">
-                                                Content Marketing
-                                            </MenuItem>
+                                            <MenuItem value="call"> Call </MenuItem>
+                                            <MenuItem value="walk in"> Walk In </MenuItem>
+                                            <MenuItem value="branch office"> Branch Office </MenuItem>
+                                            <MenuItem value="referrals"> Referrals </MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -569,23 +555,22 @@ const Edit = (props) => {
                                 <Grid item xs={12} sm={6} md={6}>
                                     <FormControl fullWidth>
                                         <FormLabel>Type of insurance</FormLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="typeOfInsurance"
-                                            name="typeOfInsurance"
-                                            label=""
-                                            size='small'
-                                            fullWidth
-                                            value={formik.values.typeOfInsurance}
-                                            onChange={formik.handleChange}
-                                        >
-                                            <MenuItem value="Auto">Auto Insurance</MenuItem>
-                                            <MenuItem value="Home Insurance">Home Insurance</MenuItem>
-                                            <MenuItem value="Health Insurance">
-                                                Health Insurance
-                                            </MenuItem>
-                                            <MenuItem value="Life Insurance">Life Insurance</MenuItem>
-                                        </Select>
+                                        <Autocomplete
+                                            id="combo-box-demo"
+                                            options={policyTypeList}
+                                            getOptionLabel={(item) => item?.lable}
+                                            value={policyTypeList?.find((item) => item?.value === formik.values.typeOfInsurance)}
+                                            onChange={(event, newValue) => {
+                                                formik.setFieldValue("typeOfInsurance", newValue ? newValue?.value : "");
+                                            }}
+                                            renderInput={(params) =>
+                                                <TextField {...params}
+                                                    size="small"
+                                                    error={formik.touched.typeOfInsurance && Boolean(formik.errors.typeOfInsurance)}
+                                                    helperText={formik.touched.typeOfInsurance && formik.errors.typeOfInsurance}
+                                                    placeholder='Select'
+                                                />}
+                                        />
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={6}>
@@ -666,23 +651,22 @@ const Edit = (props) => {
                                 <Grid item xs={12} sm={6} md={6}>
                                     <FormControl fullWidth>
                                         <FormLabel>Policy Type</FormLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="policyType"
-                                            name="policyType"
-                                            label=""
-                                            size='small'
-                                            fullWidth
-                                            value={formik.values.policyType}
-                                            onChange={formik.handleChange}
-                                        >
-                                            <MenuItem value="Auto">Auto Insurance</MenuItem>
-                                            <MenuItem value="Home Insurance">Home Insurance</MenuItem>
-                                            <MenuItem value="Health Insurance">
-                                                Health Insurance
-                                            </MenuItem>
-                                            <MenuItem value="Life Insurance">Life Insurance</MenuItem>
-                                        </Select>
+                                        <Autocomplete
+                                            id="combo-box-demo"
+                                            options={policyTypeList}
+                                            getOptionLabel={(item) => item?.lable}
+                                            value={policyTypeList?.find((item) => item?.value === formik.values.policyType)}
+                                            onChange={(event, newValue) => {
+                                                formik.setFieldValue("policyType", newValue ? newValue?.value : "");
+                                            }}
+                                            renderInput={(params) =>
+                                                <TextField {...params}
+                                                    size="small"
+                                                    error={formik.touched.policyType && Boolean(formik.errors.policyType)}
+                                                    helperText={formik.touched.policyType && formik.errors.policyType}
+                                                    placeholder='Select'
+                                                />}
+                                        />
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={6}>

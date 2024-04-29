@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { FormControl, FormHelperText, FormLabel, Grid, MenuItem, Select, TextField } from '@mui/material';
+import { Autocomplete, FormControl, FormHelperText, FormLabel, Grid, MenuItem, Select, TextField } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
 import { apiget, apiput } from '../../service/api';
 import Palette from '../../theme/palette';
-
+import { policyTypeList } from 'src/_mock/data';
 
 const Edit = (props) => {
     const { open, handleClose, setUserAction, id, fetchPolicy } = props
@@ -38,11 +38,11 @@ const Edit = (props) => {
         insuredPersonName: yup.string().required("Person Name is required"),
         insuredPersonDateOfBirth: yup.date().required("Date of Birth is required"),
         relationshipToTheInsured: yup.string().required("Relationship To The Insured is required"),
-        phoneNumber: yup.string().matches(/^[0-9]{10}$/, 'Phone number is invalid').required('Phone number is required'),
+        phoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid').required('Phone number is required'),
         emailAddress: yup.string().email('Invalid email').required("Email is required"),
-        additionalPhoneNumber: yup.string().matches(/^[0-9]{10}$/, 'Phone number is invalid'),
+        additionalPhoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid'),
         additionalEmailAddress: yup.string().email('Invalid email'),
-        underwriterPhone: yup.string().matches(/^[0-9]{10}$/, 'Phone number is invalid'),
+        underwriterPhone: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid'),
         underwriterEmail: yup.string().email('Invalid email')
     });
 
@@ -184,28 +184,22 @@ const Edit = (props) => {
                                 <Grid item xs={12} sm={6} md={6}>
                                     <FormControl fullWidth>
                                         <FormLabel>Policy type</FormLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="policyType"
-                                            name="policyType"
-                                            size='small'
-                                            fullWidth
-                                            value={formik.values.policyType}
-                                            onChange={formik.handleChange}
-                                            error={
-                                                formik.touched.policyType &&
-                                                Boolean(formik.errors.policyType)
-                                            }
-                                            helperText={
-                                                formik.touched.policyType && formik.errors.policyType
-                                            }
-                                        >
-                                            <MenuItem value="Auto Insurance">Auto Insurance</MenuItem>
-                                            <MenuItem value="Health Insurance">Health Insurance </MenuItem>
-                                            <MenuItem value="Home Insurance">Home Insurance </MenuItem>
-                                            <MenuItem value="Life Insurance">Life Insurance </MenuItem>
-                                        </Select>
-                                        <FormHelperText style={{ color: Palette.error.main }}>{formik.touched.policyType && formik.errors.policyType}</FormHelperText>
+                                        <Autocomplete
+                                            id="combo-box-demo"
+                                            options={policyTypeList}
+                                            getOptionLabel={(item) => item?.lable}
+                                            value={policyTypeList?.find((item) => item?.value === formik.values.policyType)}
+                                            onChange={(event, newValue) => {
+                                                formik.setFieldValue("policyType", newValue ? newValue?.value : "");
+                                            }}
+                                            renderInput={(params) =>
+                                                <TextField {...params}
+                                                    size="small"
+                                                    error={formik.touched.policyType && Boolean(formik.errors.policyType)}
+                                                    helperText={formik.touched.policyType && formik.errors.policyType}
+                                                    placeholder='Select'
+                                                />}
+                                        />
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={6}>
