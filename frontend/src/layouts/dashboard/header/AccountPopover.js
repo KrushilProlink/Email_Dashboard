@@ -23,7 +23,8 @@ export default function AccountPopover() {
     {
       label: 'Profile',
       icon: 'eva:person-fill',
-      path: `/dashboard/user/view/${user._id}`
+      path: `/dashboard/user/view/${user._id}`,
+      state: { addButton: false }
     },
   ];
 
@@ -48,20 +49,20 @@ export default function AccountPopover() {
   }
 
   // const checkTokenExpiration = () => {
-    const token = localStorage.getItem('token'); // Retrieve the token from local storage (or session)
-    if (token) {
-      try {
-        const decodedToken = Jwt(token);
-        const currentTime = Date.now() / 1000; // Convert milliseconds to seconds
-        if (decodedToken.exp < currentTime) {
-          logout();
-          toast.error("Token has expired")
-        }
-      }
-      catch (error) {
-        console.error('Error decoding token:', error);
+  const token = localStorage.getItem('token'); // Retrieve the token from local storage (or session)
+  if (token) {
+    try {
+      const decodedToken = Jwt(token);
+      const currentTime = Date.now() / 1000; // Convert milliseconds to seconds
+      if (decodedToken.exp < currentTime) {
+        logout();
+        toast.error("Token has expired")
       }
     }
+    catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  }
   // };
 
   return (
@@ -117,11 +118,22 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Stack sx={{ p: 1 }}>
-          {MENU_OPTIONS.map((option, index) => (
-            <MenuItem key={index + 1}>
-              <Link to={option.path} style={{ textDecoration: "none", color: "black" }}>{option.label}</Link>
-            </MenuItem>
-          ))}
+
+          {MENU_OPTIONS.map((option, index) => {
+            const linkProps = {
+              to: option.path,
+              style: { textDecoration: "none", color: "black" },
+              ...(option.state && { state: option.state }) // Conditionally spread state if available
+            };
+
+            return (
+              <MenuItem key={index + 1}>
+                <Link {...linkProps}>
+                  {option.label}
+                </Link>
+              </MenuItem>
+            );
+          })}
         </Stack>
         <Divider sx={{ borderStyle: 'dashed' }} />
 

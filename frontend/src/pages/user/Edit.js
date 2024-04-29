@@ -22,7 +22,7 @@ import { apiget, apiput } from "../../service/api";
 
 const Edit = (props) => {
 
-    const { handleClose, open, id, fetchUser } = props
+    const { handleClose, open, id, fetchUser, emailEdit } = props
     const [userDetails, setUserDetails] = useState({});
 
     // -----------  validationSchema
@@ -149,6 +149,7 @@ const Edit = (props) => {
                                     id="emailAddress"
                                     name="emailAddress"
                                     size="small"
+                                    disabled={emailEdit}
                                     value={formik.values.emailAddress}
                                     onChange={formik.handleChange}
                                     fullWidth
@@ -161,7 +162,6 @@ const Edit = (props) => {
                                     }
                                 />
                             </Grid>
-                            
                         </Grid>
                     </form>
                 </DialogContent>

@@ -1,23 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import * as React from 'react';
+import { useEffect, useState } from 'react';
+
+import ClearIcon from "@mui/icons-material/Clear";
+import { Autocomplete, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { Autocomplete, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
-import ClearIcon from "@mui/icons-material/Clear";
-
+import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import * as yup from "yup";
-import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+
+import { policyTypeList } from '../../_mock/data';
 import { apiget, apiput } from '../../service/api';
 import Palette from '../../theme/palette';
-import { policyTypeList } from 'src/_mock/data';
 
 const Edit = (props) => {
 
@@ -88,7 +88,6 @@ const Edit = (props) => {
             fetchLead();
         }
     }
-
 
     // formik
     const formik = useFormik({

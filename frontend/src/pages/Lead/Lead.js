@@ -68,7 +68,6 @@ const Lead = () => {
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
-
   const columns = [
     {
       field: "firstName",

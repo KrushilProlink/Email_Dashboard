@@ -26,19 +26,18 @@ const Add = () => {
     };
 
     const saveDesign = () => {
-        if (name !== "") {
-            emailEditorRef.current?.exportHtml(async (allData) => {
+        if (name !== "" && emailEditorRef.current && emailEditorRef.current.editor.exportHtml) {
+            emailEditorRef.current.editor?.exportHtml(async (allData) => {
 
-                const { html } = allData
-                const { design } = allData
+                const { html, design } = allData
 
                 const data = {
                     html,
                     design,
                     name,
                     createdBy: userid
-
                 }
+
                 const result = await apipost('emailtemplate/add', data)
                 if (result && result.status === 201) {
                     toast.success(result.data.message)
