@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Card, Container, Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
-import moment from 'moment/moment'
+import { useEffect, useState } from 'react';
+
+import { Box, Container, Grid, Stack, Tab, Tabs } from '@mui/material';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+
 import Actionbutton from '../../components/Actionbutton';
+import { CustomTabPanel, a11yProps } from '../../components/CustomTabPanel';
+import DeleteModel from '../../components/Deletemodle';
 import Header from '../../components/Header';
 import { apidelete, apiget } from '../../service/api';
-import AddUser from './Add'
-import EditUser from './Edit'
-import DeleteModel from '../../components/Deletemodle'
-import Palette from '../../theme/palette'
-import { CustomTabPanel, a11yProps } from '../../components/CustomTabPanel';
-import Overview from './Overview';
+import AddUser from './Add';
+import EditUser from './Edit';
 import Other from './Other';
+import Overview from './Overview';
 
 const View = () => {
 
@@ -24,6 +24,7 @@ const View = () => {
     const navigate = useNavigate()
     const params = useParams()
 
+    const location = useLocation();
     const userdata = JSON.parse(localStorage.getItem('user'));
 
     // open add model
@@ -63,7 +64,6 @@ const View = () => {
         fetchdata();
     }, [openAdd])
 
-
     return (
         <div>
 
@@ -71,7 +71,8 @@ const View = () => {
             <AddUser open={openAdd} handleClose={handleCloseAdd} />
 
             {/* Add Edit Model */}
-            <EditUser open={openEdit} handleClose={handleCloseEdit} id={params.id} fetchUser={fetchdata} />
+            {/* <EditUser open={openEdit} emailEdit={JSON.parse(localStorage.getItem('user'))._id === params.id} handleClose={handleCloseEdit} id={params.id} fetchUser={fetchdata} /> */}
+            <EditUser open={openEdit} emailEdit={!(location.state === null || (location.state && location.state.addButton !== false))} handleClose={handleCloseEdit} id={params.id} fetchUser={fetchdata} />
 
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />
@@ -87,7 +88,7 @@ const View = () => {
                             {/* Action Butoon */}
                             {userdata.role === "admin" ?
                                 <Actionbutton
-                                    handleOpen={handleOpenAdd}
+                                    handleOpen={location.state === null || (location.state && location.state.addButton !== false) ? handleOpenAdd : null}
                                     handleOpenEdit={handleOpenEdit}
                                     handleOpenDelete={handleOpenDelete}
                                     back={back}
@@ -111,7 +112,7 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={userDetails}/>
+                        <Overview data={userDetails} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
                         <Other data={userDetails} />
