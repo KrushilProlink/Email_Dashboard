@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import Email from '../controllers/email'
-import auth from '../middlewares/auth'
+import Email from '../controllers/email.js'
+import auth from '../middlewares/auth.js'
 const router = Router();
 
 router.get('/list', Email.index)

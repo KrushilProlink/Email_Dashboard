@@ -1,4 +1,4 @@
-import Notes from '../model/Notes'
+import Notes from '../model/Notes.js'
 
 
 const index = async (req, res) => {

@@ -1,4 +1,4 @@
-import emailTemplate from "../model/emailTemplate";
+import emailTemplate from "../model/emailTemplate.js";
 
 const index = async (req, res) => {
     const query = req.query

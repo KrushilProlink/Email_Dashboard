@@ -1,4 +1,4 @@
-import Claims from '../model/claim'
+import Claims from '../model/claim.js'
 
 const index = async (req, res) => {
     const query = req.query

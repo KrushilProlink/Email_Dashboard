@@ -1,9 +1,9 @@
-import Calls from "../model/Calls";
+import Calls from "../model/Calls.js";
 
 const index = async (req, res) => {
     const query = req.query
     query.deleted = false;
- 
+
     let allData = await Calls.find(query).
         populate("createdBy", ["firstName", "lastName"])
         .populate("lead_id", ["firstName", "lastName"])

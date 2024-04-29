@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import emailTemplate from '../controllers/emailTemplate';
+import emailTemplate from '../controllers/emailTemplate.js';
 const router = Router();
 
 router.get('/list', emailTemplate.index)
