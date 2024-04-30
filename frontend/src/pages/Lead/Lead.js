@@ -9,8 +9,10 @@ import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
 import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 // components
 import DeleteModel from '../../components/Deletemodle';
+import SMSModel from '../../components/SMSModel';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify';
 import { apiget, apipost, deleteManyApi } from '../../service/api';
@@ -39,15 +41,16 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   }
 
   const sendSMS = async (payload) => {
-    // const payload = {
-    //   ids: [],
-    //   message: ""
-    // };
 
     const result = await apipost('lead/sms', payload)
-    setUserAction(result)
-    handleSmsModelClose();
-    fetchdata()
+    if (result?.status === 200) {
+      setUserAction(result)
+      handleSmsModelClose();
+      fetchdata()
+      toast.success(result?.data?.message)
+    } else {
+      toast.error("Something went wrong")
+    }
   }
 
   useEffect(() => {
@@ -60,7 +63,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
       {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<SmsRoundedIcon />} onClick={handleSmsModelOpen}>Send SMS</Button>}
       {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
       <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyLead} id={selectedRowIds} />
-      <DeleteModel opendelete={smsModelOpen} handleClosedelete={handleSmsModelClose} deletedata={sendSMS} id={selectedRowIds} />
+      <SMSModel open={smsModelOpen} onClose={handleSmsModelClose} sendSMS={sendSMS} ids={selectedRowIds} />
     </GridToolbarContainer>
   );
 }

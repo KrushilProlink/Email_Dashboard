@@ -15,11 +15,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 // components
 import Iconify from '../../components/iconify';
 import DeleteModel from '../../components/Deletemodle';
+import SMSModel from '../../components/SMSModel';
 import TableStyle from '../../components/TableStyle';
-import { apiget, deleteManyApi } from '../../service/api';
+import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddContact from './Add';
 import EditContact from './Edit';
 
@@ -27,7 +29,11 @@ import EditContact from './Edit';
 
 function CustomToolbar({ selectedRowIds, fetchdata }) {
     const [opendelete, setOpendelete] = useState(false);
+    const [smsModelOpen, setSmsModelOpen] = useState(false);
 
+    const handleSmsModelOpen = () => setSmsModelOpen(true)
+
+    const handleSmsModelClose = () => setSmsModelOpen(false)
 
     const handleCloseDelete = () => {
         setOpendelete(false)
@@ -43,12 +49,24 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
         handleCloseDelete();
     }
 
+    const sendSMS = async (payload) => {
+        const result = await apipost('contact/sms', payload)
+        if (result?.status === 200) {
+            handleSmsModelClose();
+            fetchdata()
+            toast.success(result?.data?.message)
+        } else {
+            toast.error("Something went wrong")
+        }
+    }
+
     return (
         <GridToolbarContainer>
             <GridToolbar />
-            {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<SmsRoundedIcon />} onClick={handleOpenDelete}>Send SMS</Button>}
+            {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<SmsRoundedIcon />} onClick={handleSmsModelOpen}>Send SMS</Button>}
             {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyContact} id={selectedRowIds} />
+            <SMSModel open={smsModelOpen} onClose={handleSmsModelClose} sendSMS={sendSMS} ids={selectedRowIds} />
         </GridToolbarContainer>
     );
 }
