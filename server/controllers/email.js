@@ -1,5 +1,5 @@
-import Emails from '../model/emails'
-import SendMail from '../middlewares/sendMail'
+import Emails from '../model/emails.js'
+import SendMail from '../middlewares/sendMail.js'
 
 const index = async (req, res) => {
     const query = req.query

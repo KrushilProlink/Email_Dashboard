@@ -1,12 +1,9 @@
 import express from "express";
-
-import dotenv from "dotenv";
-dotenv.config();
-
-import connectDB from "./db/connectdb";
-
+import "dotenv/config";
+import bodyParser from "body-parser";
+import serverRoutes from "./routes/serverRoutes.js";
+import connectDB from "./db/connectdb.js";
 import cors from "cors";
-
 
 //Setup Express App
 const app = express();
@@ -21,15 +18,11 @@ app.use(bodyParser.json());
 //Load Routes
 app.use("/", serverRoutes);
 
-import bodyParser from "body-parser";
-import serverRoutes from "./routes/serverRoutes";
-
 // Get port from environment and store in Express.
 const port = process.env.PORT || "5000";
 app.listen(port, () => {
   console.log(`Server listining at http://localhost:${port}`);
 });
-
 
 //Database Connection
 const DATABASE_URL = process.env.DB_URL

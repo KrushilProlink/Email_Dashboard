@@ -1,4 +1,4 @@
-import Document from "../model/document";
+import Document from "../model/document.js";
 
 const index = async (req, res) => {
     const query = req.query

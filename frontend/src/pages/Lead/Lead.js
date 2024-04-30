@@ -3,35 +3,52 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect, useState } from 'react';
 // @mui
-import { Card, Stack, Button, Container, Typography, Box } from '@mui/material';
-// components
-import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
-import { DeleteOutline } from '@mui/icons-material';
+import { DeleteOutline, Message } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
+import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
+import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+// components
+import DeleteModel from '../../components/Deletemodle';
+import SMSModel from '../../components/SMSModel';
+import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify';
-// sections
-// mock
-import AddLead from './Add'
-import { apiget, deleteManyApi } from '../../service/api';
-import DeleteModel from '../../components/Deletemodle'
-import TableStyle from '../../components/TableStyle'
-import EditModel from './Edit'
+import { apiget, apipost, deleteManyApi } from '../../service/api';
+import AddLead from './Add';
+import EditModel from './Edit';
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchdata }) {
   const [opendelete, setOpendelete] = useState(false);
+  const [smsModelOpen, setSmsModelOpen] = useState(false);
   const [userAction, setUserAction] = useState(null);
 
   const handleCloseDelete = () => setOpendelete(false)
 
   const handleOpenDelete = () => setOpendelete(true)
 
+  const handleSmsModelOpen = () => setSmsModelOpen(true)
+
+  const handleSmsModelClose = () => setSmsModelOpen(false)
+
   const deleteManyLead = async (data) => {
     const result = await deleteManyApi('lead/deletemany', data)
     fetchdata()
     setUserAction(result)
     handleCloseDelete();
+  }
+
+  const sendSMS = async (payload) => {
+    const result = await apipost('lead/sms', payload)
+    if (result?.status === 200) {
+      setUserAction(result)
+      handleSmsModelClose();
+      fetchdata()
+    } else {
+      toast.error("Something went wrong")
+    }
   }
 
   useEffect(() => {
@@ -41,8 +58,10 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   return (
     <GridToolbarContainer>
       <GridToolbar />
+      {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<SmsRoundedIcon />} onClick={handleSmsModelOpen}>Send SMS</Button>}
       {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
       <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyLead} id={selectedRowIds} />
+      <SMSModel open={smsModelOpen} onClose={handleSmsModelClose} sendSMS={sendSMS} ids={selectedRowIds} />
     </GridToolbarContainer>
   );
 }
@@ -175,7 +194,7 @@ const Lead = () => {
             </Card>
           </Box>
         </TableStyle>
-      </Container >
+      </Container>
     </>
   );
 }

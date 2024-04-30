@@ -1,14 +1,15 @@
 
 import mongoose from 'mongoose'
-import Contact from '../model/Contact'
-import Policy from '../model/policy'
-import Task from '../model/Tasks'
-import Meetings from '../model/Meetings';
-import Calls from '../model/Calls';
-import Notes from '../model/Notes';
-import claim from '../model/claim';
-import Lead from '../model/Lead';
-import Emails from '../model/emails'
+import Contact from '../model/Contact.js'
+import Policy from '../model/policy.js'
+import Task from '../model/Tasks.js'
+import Meetings from '../model/Meetings.js';
+import Calls from '../model/Calls.js';
+import Notes from '../model/Notes.js';
+import claim from '../model/claim.js';
+import Lead from '../model/Lead.js';
+import Emails from '../model/emails.js'
+import sendSMS from '../middlewares/sendSms.js';
 
 const index = async (req, res) => {
     const query = req.query
@@ -24,6 +25,25 @@ const index = async (req, res) => {
 
     let totalRecords = result.length
     res.send({ result, total_recodes: totalRecords })
+}
+
+const SMS = async (req, res) => {
+    try {
+        const { ids, message } = req.body;
+        const query = req.query
+        query._id = { $in: ids };
+        query.deleted = false;
+        let data = await Contact.find(query)
+
+        data.forEach((item) => {
+            sendSMS({ to: `+91${item.phoneNumber}`, message })
+        })
+
+        res.send({ req: data, message: "SMS send successfully" })
+    } catch (err) {
+        console.error('Failed to send SMS :', err);
+        res.status(500).json({ error: 'Failed to send SMS ' });
+    }
 }
 
 const add = async (req, res) => {
@@ -279,4 +299,4 @@ const deleteMany = async (req, res) => {
     }
 };
 
-export default { index, add, edit, view, deleteData, deleteMany }
+export default { index, add, edit, view, deleteData, deleteMany, SMS }

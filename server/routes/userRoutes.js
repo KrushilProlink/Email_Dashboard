@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import Users from '../controllers/users';
+import Users from '../controllers/users.js';
 const router = Router();
 
 router.get('/list', Users.index)
