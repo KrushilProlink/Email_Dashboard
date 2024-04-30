@@ -41,13 +41,11 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   }
 
   const sendSMS = async (payload) => {
-
     const result = await apipost('lead/sms', payload)
     if (result?.status === 200) {
       setUserAction(result)
       handleSmsModelClose();
       fetchdata()
-      toast.success(result?.data?.message)
     } else {
       toast.error("Something went wrong")
     }

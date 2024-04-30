@@ -54,7 +54,6 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
         if (result?.status === 200) {
             handleSmsModelClose();
             fetchdata()
-            toast.success(result?.data?.message)
         } else {
             toast.error("Something went wrong")
         }

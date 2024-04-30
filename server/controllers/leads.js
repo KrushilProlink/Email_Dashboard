@@ -5,6 +5,7 @@ import Calls from "../model/Calls.js";
 import Meetings from "../model/Meetings.js";
 import Tasks from "../model/Tasks.js";
 import Emails from "../model/emails.js";
+import sendSMS from "../middlewares/sendSms.js";
 
 const index = async (req, res) => {
   const query = req.query
@@ -19,6 +20,25 @@ const index = async (req, res) => {
   let totalRecords = result.length
 
   res.send({ result, total_recodes: totalRecords })
+}
+
+const SMS = async (req, res) => {
+  try {
+    const { ids, message } = req.body;
+    const query = req.query
+    query.deleted = false;
+    query._id = { $in: ids };
+    let data = await Lead.find(query)
+
+    data.forEach((item) => {
+      sendSMS({ to: `+91${item.phoneNumber}`, message })
+    })
+
+    res.send({ req: data, message: "SMS send successfully" })
+  } catch (err) {
+    console.error('Failed to send SMS :', err);
+    res.status(500).json({ error: 'Failed to send SMS ' });
+  }
 }
 
 const add = async (req, res) => {
@@ -216,4 +236,4 @@ const deleteMany = async (req, res) => {
   }
 };
 
-export default { index, add, edit, view, deleteData, deleteMany }
+export default { index, add, edit, view, deleteData, deleteMany, SMS }
