@@ -25,20 +25,29 @@ import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddContact from './Add';
 import EditContact from './Edit';
 import ImportModel from '../Import/ImportModel';
-
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchdata }) {
     const [opendelete, setOpendelete] = useState(false);
     const [smsModelOpen, setSmsModelOpen] = useState(false);
     const [openImpt, setOpenImpt] = useState(false);
+    const userid = localStorage.getItem('user_id');
+
+    const fieldsInCrm = [
+        { Header: "First Name", accessor: 'firstName', type: 'string', required: true },
+        { Header: "Last Name", accessor: 'lastName', type: 'string', required: true },
+        { Header: "Gender", accessor: 'gender', type: 'string', required: true },
+        { Header: "Phone Number", accessor: 'phoneNumber', type: 'string' },
+        { Header: "Email Address", accessor: 'emailAddress', type: 'string', required: true },
+        { Header: "Date Of Birth", accessor: 'dateOfBirth', type: 'date', required: true },
+        { Header: "Created On", accessor: 'createdOn', type: 'date', isDisplay: false, defVal: new Date() },
+        { Header: "Create By", accessor: 'createdBy', type: 'string', isDisplay: false, defVal: userid, required: true },
+        { Header: "Deleted", accessor: 'deleted', type: 'boolean', isDisplay: false, defVal: false },
+    ];
 
     const handleSmsModelOpen = () => setSmsModelOpen(true)
 
     const handleSmsModelClose = () => setSmsModelOpen(false)
-
-    const handleOpenImpt = () => setOpenImpt(true);
-    const handleCloseImpt = () => setOpenImpt(false);
 
     const handleCloseDelete = () => {
         setOpendelete(false)
@@ -64,6 +73,9 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
         }
     }
 
+    const handleOpenImpt = () => setOpenImpt(true);
+    const handleCloseImpt = () => setOpenImpt(false);
+
     return (
         <GridToolbarContainer>
             <GridToolbar />
@@ -72,7 +84,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
             {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyContact} id={selectedRowIds} />
             <SMSModel open={smsModelOpen} onClose={handleSmsModelClose} sendSMS={sendSMS} ids={selectedRowIds} />
-            <ImportModel open={openImpt} handleClose={handleCloseImpt} moduleName="Contacts" />
+            <ImportModel open={openImpt} handleClose={handleCloseImpt} moduleName="Contacts" fieldsInCrm={fieldsInCrm} />
         </GridToolbarContainer>
     );
 }

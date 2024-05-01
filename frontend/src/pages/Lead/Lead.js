@@ -26,6 +26,22 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   const [smsModelOpen, setSmsModelOpen] = useState(false);
   const [userAction, setUserAction] = useState(null);
   const [openImpt, setOpenImpt] = useState(false);
+  const userid = localStorage.getItem('user_id');
+
+  const fieldsInCrm = [
+    { Header: "First Name", accessor: 'firstName', type: 'string', required: true },
+    { Header: "Last Name", accessor: 'lastName', type: 'string', required: true },
+    { Header: "Gender", accessor: 'gender', type: 'string', required: true },
+    { Header: "Phone Number", accessor: 'phoneNumber', type: 'string' },
+    { Header: "Email Address", accessor: 'emailAddress', type: 'string', required: true },
+    { Header: "Title", accessor: 'title', type: 'string', required: true },
+    { Header: "Address", accessor: 'address', type: 'string', required: true },
+    { Header: "Date Of Birth", accessor: 'dateOfBirth', type: 'string', required: true },     // string in backend
+    { Header: "Create Date", accessor: 'createdOn', type: 'date', isDisplay: false, defVal: new Date() },
+    { Header: "Create By", accessor: 'createdBy', type: 'string', isDisplay: false, defVal: userid, required: true },
+    { Header: "Deleted", accessor: 'deleted', type: 'boolean', isDisplay: false, defVal: false },
+    // { Header: "Average", accessor: 'average', type: 'number', isFloat: true },
+  ];
 
   const handleCloseDelete = () => setOpendelete(false)
 
@@ -56,10 +72,6 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   const handleOpenImpt = () => setOpenImpt(true);
   const handleCloseImpt = () => setOpenImpt(false);
 
-  const handleImport = () => {
-    handleOpenImpt();
-  }
-
   useEffect(() => {
     setUserAction(userAction)
   }, [userAction])
@@ -67,12 +79,12 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   return (
     <GridToolbarContainer>
       <GridToolbar />
-      <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<FileUploadOutlined />} onClick={handleImport}>Import</Button>
+      <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<FileUploadOutlined />} onClick={handleOpenImpt}>Import</Button>
       {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<SmsRoundedIcon />} onClick={handleSmsModelOpen}>Send SMS</Button>}
       {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
       <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyLead} id={selectedRowIds} />
       <SMSModel open={smsModelOpen} onClose={handleSmsModelClose} sendSMS={sendSMS} ids={selectedRowIds} />
-      <ImportModel open={openImpt} handleClose={handleCloseImpt} moduleName="Leads" />
+      <ImportModel open={openImpt} handleClose={handleCloseImpt} moduleName="Leads" fieldsInCrm={fieldsInCrm} />
     </GridToolbarContainer>
   );
 }

@@ -14,7 +14,7 @@ import * as yup from "yup";
 import { FormLabel } from "@mui/material";
 
 const ImportModel = (props) => {
-    const { open, handleClose, moduleName } = props
+    const { open, handleClose, moduleName, fieldsInCrm } = props
     const navigate = useNavigate();
 
     const validationSchema = yup.object({
@@ -30,8 +30,12 @@ const ImportModel = (props) => {
         validationSchema,
         validateOnChange: true,
         onSubmit: async (values) => {
-            // formik.resetForm();
-            navigate("/dashboard/import/lead");
+            if (values?.file) {
+                handleClose();
+                const module = moduleName === "Leads" ? 'lead' : 'contact';
+                navigate(`/dashboard/${module}/import`, { state: { fileData: values.file, moduleName, fieldsInCrm } });
+            }
+            formik.resetForm();
         },
     });
 
@@ -103,7 +107,7 @@ const ImportModel = (props) => {
                         onClick={formik.handleSubmit}
                         style={{ textTransform: "capitalize" }}
                     >
-                        Import
+                        Save
                     </Button>
                     <Button
                         type="reset"

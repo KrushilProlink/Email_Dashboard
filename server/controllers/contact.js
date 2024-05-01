@@ -71,9 +71,9 @@ const addMany = async (req, res) => {
     try {
         const contactsData = req.body;
         const contacts = await Contact.insertMany(contactsData);
-        res.status(201).json({ contacts, message: 'Contacts saved successfully' });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to create contacts' });
+        res.status(201).json({ success: true, contacts, message: 'Contacts imported successfully' });
+    } catch (err) {
+        res.status(400).json({ success: false, message: 'Failed to create contacts', error: err.toString() });
     }
 }
 
