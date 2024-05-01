@@ -10,7 +10,7 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { DeleteOutline } from '@mui/icons-material';
+import { DeleteOutline, FileUploadOutlined } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
@@ -24,16 +24,21 @@ import TableStyle from '../../components/TableStyle';
 import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddContact from './Add';
 import EditContact from './Edit';
+import ImportModel from '../Import/ImportModel';
 
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchdata }) {
     const [opendelete, setOpendelete] = useState(false);
     const [smsModelOpen, setSmsModelOpen] = useState(false);
+    const [openImpt, setOpenImpt] = useState(false);
 
     const handleSmsModelOpen = () => setSmsModelOpen(true)
 
     const handleSmsModelClose = () => setSmsModelOpen(false)
+
+    const handleOpenImpt = () => setOpenImpt(true);
+    const handleCloseImpt = () => setOpenImpt(false);
 
     const handleCloseDelete = () => {
         setOpendelete(false)
@@ -62,10 +67,12 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
     return (
         <GridToolbarContainer>
             <GridToolbar />
+            <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<FileUploadOutlined />} onClick={handleOpenImpt}>Import</Button>
             {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<SmsRoundedIcon />} onClick={handleSmsModelOpen}>Send SMS</Button>}
             {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyContact} id={selectedRowIds} />
             <SMSModel open={smsModelOpen} onClose={handleSmsModelClose} sendSMS={sendSMS} ids={selectedRowIds} />
+            <ImportModel open={openImpt} handleClose={handleCloseImpt} moduleName="Contacts" />
         </GridToolbarContainer>
     );
 }
