@@ -36,7 +36,8 @@ const SMS = async (req, res) => {
         let data = await Contact.find(query)
 
         data.forEach((item) => {
-            sendSMS({ to: `+91${item.phoneNumber}`, message })
+            // sendSMS({ to: `+91${item.phoneNumber}`, message })
+            sendSMS({ to: `+254${item.phoneNumber}`, message })
         })
 
         res.send({ req: data, message: "SMS send successfully" })
