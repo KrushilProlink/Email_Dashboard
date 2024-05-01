@@ -7,6 +7,7 @@ const router = Router();
 
 router.get('/list', auth, Lead.index)
 router.post('/add', auth, Lead.add)
+router.post('/addMany', auth, Lead.addMany)
 router.post('/sms', auth, Lead.SMS)
 router.put('/edit/:id', auth, Lead.edit)
 router.get('/view/:id', auth, Lead.view)

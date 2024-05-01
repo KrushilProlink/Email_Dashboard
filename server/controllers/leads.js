@@ -52,6 +52,17 @@ const add = async (req, res) => {
   }
 }
 
+const addMany = async (req, res) => {
+  try {
+    const data = req.body;
+    const insertedLead = await Lead.insertMany(data);
+    res.status(200).json({ leads: insertedLead, message: 'Leads saved successfully' });
+  } catch (err) {
+    console.error('Failed to create Leads :', err);
+    res.status(400).json({ error: 'Failed to create Leads' });
+  }
+};
+
 const edit = async (req, res) => {
   try {
 
@@ -236,4 +247,4 @@ const deleteMany = async (req, res) => {
   }
 };
 
-export default { index, add, edit, view, deleteData, deleteMany, SMS }
+export default { index, add, edit, view, deleteData, deleteMany, SMS, addMany }

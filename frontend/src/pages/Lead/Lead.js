@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect, useState } from 'react';
 // @mui
-import { DeleteOutline, Message } from '@mui/icons-material';
+import { DeleteOutline, Message, FileUploadOutlined } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
@@ -18,12 +18,14 @@ import Iconify from '../../components/iconify';
 import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddLead from './Add';
 import EditModel from './Edit';
+import ImportModel from '../Import/ImportModel';
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchdata }) {
   const [opendelete, setOpendelete] = useState(false);
   const [smsModelOpen, setSmsModelOpen] = useState(false);
   const [userAction, setUserAction] = useState(null);
+  const [openImpt, setOpenImpt] = useState(false);
 
   const handleCloseDelete = () => setOpendelete(false)
 
@@ -51,6 +53,13 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
     }
   }
 
+  const handleOpenImpt = () => setOpenImpt(true);
+  const handleCloseImpt = () => setOpenImpt(false);
+
+  const handleImport = () => {
+    handleOpenImpt();
+  }
+
   useEffect(() => {
     setUserAction(userAction)
   }, [userAction])
@@ -58,10 +67,12 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   return (
     <GridToolbarContainer>
       <GridToolbar />
+      <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<FileUploadOutlined />} onClick={handleImport}>Import</Button>
       {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<SmsRoundedIcon />} onClick={handleSmsModelOpen}>Send SMS</Button>}
       {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
       <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyLead} id={selectedRowIds} />
       <SMSModel open={smsModelOpen} onClose={handleSmsModelClose} sendSMS={sendSMS} ids={selectedRowIds} />
+      <ImportModel open={openImpt} handleClose={handleCloseImpt} moduleName="Leads" />
     </GridToolbarContainer>
   );
 }
@@ -75,7 +86,7 @@ const Lead = () => {
   const [id, setId] = useState('')
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const userid = localStorage.getItem('user_id');
   const userRole = localStorage.getItem("userRole");
@@ -166,7 +177,6 @@ const Lead = () => {
     <>
       {/* Add Lead Model */}
       <AddLead open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
-
 
       <Container>
         <Stack direction="row" alignItems="center" mb={5} justifyContent={"space-between"}>

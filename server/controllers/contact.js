@@ -67,6 +67,16 @@ const add = async (req, res) => {
     }
 }
 
+const addMany = async (req, res) => {
+    try {
+        const contactsData = req.body;
+        const contacts = await Contact.insertMany(contactsData);
+        res.status(201).json({ contacts, message: 'Contacts saved successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to create contacts' });
+    }
+}
+
 const edit = async (req, res) => {
     try {
 
@@ -299,4 +309,4 @@ const deleteMany = async (req, res) => {
     }
 };
 
-export default { index, add, edit, view, deleteData, deleteMany, SMS }
+export default { index, add, edit, view, deleteData, deleteMany, SMS, addMany }
