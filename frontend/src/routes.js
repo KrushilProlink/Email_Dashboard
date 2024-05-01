@@ -25,6 +25,7 @@ import TaskView from './pages/task/View'
 import EmailTemplate from './pages/emailTemplate/EmailTemplate';
 import AddEmailTemplate from './pages/emailTemplate/Add'
 import ViewEmailTemplate from './pages/emailTemplate/View'
+import ImportView from './pages/Import/ImportView';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -57,6 +58,7 @@ export default function Router() {
         { path: 'emailtemplate', element: <EmailTemplate /> },
         { path: 'emailtemplate/add', element: <AddEmailTemplate /> },
         { path: 'emailtemplate/view/:id', element: <ViewEmailTemplate /> },
+        { path: 'import/:view', element: <ImportView /> },
         // { path: 'history', element: <History /> },
         
         // { path: '*', element: <Navigate to="/dashboard/app" /> },
