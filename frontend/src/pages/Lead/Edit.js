@@ -35,10 +35,10 @@ const Edit = (props) => {
         lastName: yup.string().required("Last Name is required"),
         dateOfBirth: yup.date().required("Date of Birth is required"),
         gender: yup.string().required("Gender is required"),
-        phoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid').required('Phone number is required'),
+        phoneNumber: yup.string().matches(/^(0)?[0-9]{9,14}$/, 'Phone number is invalid').required('Phone number is required'),
         emailAddress: yup.string().email('Invalid email').required("Email is required"),
         address: yup.string().required("Address is required"),
-        alternatePhoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid'),
+        alternatePhoneNumber: yup.string().matches(/^(0)?[0-9]{9,14}$/, 'Phone number is invalid'),
         additionalEmailAddress: yup.string().email('Invalid email'),
         assigned_agent: yup.string().required("Assigned Agent is required")
     });
@@ -284,7 +284,6 @@ const Edit = (props) => {
                                         id="phoneNumber"
                                         name="phoneNumber"
                                         label=""
-                                        type='number'
                                         size='small'
                                         fullWidth
                                         value={formik.values.phoneNumber}
