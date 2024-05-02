@@ -18,6 +18,7 @@ const ImportView = () => {
     const [importedFileFields, setImportedFileFields] = useState([]);
     const [importedFileData, setImportedFileData] = useState([]);
     const [filterData, setFilterData] = useState([]);
+    const [rejectedData, setRejectedData] = useState([]);
 
     const columns = [
         { Header: 'Fields In Crm', accessor: 'crmFields' },
@@ -53,42 +54,6 @@ const ImportView = () => {
             return errors;
         },
         onSubmit: (values, { resetForm }) => {
-            /* For fututre use */
-            // const payload = importedFileData?.map((item, ind) => {
-            //     const record = {};
-            //     fieldsInCrm?.forEach(field => {
-            //         const selectedField = values[field?.accessor];
-
-            //         // const fieldValue = ![undefined, null].includes(item[selectedField])
-            //         const fieldValue = item[selectedField] !== undefined
-            //             ? item[selectedField]
-            //             : field.defVal !== undefined
-            //                 ? field.type === "boolean"
-            //                     ? Boolean(field.defVal)
-            //                     : field.defVal
-            //                 : '';
-
-            //         record.index = ind;
-            //         if (field?.type?.toLowerCase() === "date") {
-            //             record[field?.accessor] = moment(fieldValue).isValid() ? fieldValue : '';
-            //         } else if (field?.type?.toLowerCase() === "number" && field?.isFloat) {
-            //             record[field?.accessor] = parseFloat(fieldValue) || '';
-            //         } else if (field?.type?.toLowerCase() === "number") {
-            //             record[field?.accessor] = parseInt(fieldValue, 10) || '';
-            //         } else {
-            //             record[field?.accessor] = fieldValue;
-            //         }
-            //     });
-
-            //     return record;
-            // });
-
-            // const rejectedData = payload.filter((item) => {
-            //     return fieldsInCrm.some(field => {
-            //         return field.required === true && (item?.[field.accessor] === "" || item?.[field.accessor] === null);
-            //     });
-            // });
-            // const filteredPayload = payload.filter((item, index) => !rejectedData.map(item => item.index).includes(index));
 
             const payload = importedFileData?.map((item, index) => {
                 const record = {};
@@ -104,10 +69,10 @@ const ImportView = () => {
             });
 
             const requiredFields = fieldsInCrm.filter(field => field.required);
-            const rejectedData = payload.filter(item => requiredFields.some(field => !item?.[field.accessor]));
-
+            const rejectedData = payload.filter(item => requiredFields.some(field => (item?.[field.accessor] === "" || item?.[field.accessor] === null)));
             const filteredPayload = payload.filter(({ index }) => !rejectedData.some(rejected => rejected.index === index));
 
+            setRejectedData(rejectedData)
             addData(filteredPayload);
         }
     })
