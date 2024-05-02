@@ -84,7 +84,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
       {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
       <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyLead} id={selectedRowIds} />
       <SMSModel open={smsModelOpen} onClose={handleSmsModelClose} sendSMS={sendSMS} ids={selectedRowIds} />
-      <ImportModel open={openImpt} handleClose={handleCloseImpt} moduleName="Leads" fieldsInCrm={fieldsInCrm} />
+      <ImportModel open={openImpt} handleClose={handleCloseImpt} moduleName="Leads" api="lead/addMany" back="/dashboard/lead" fieldsInCrm={fieldsInCrm} />
     </GridToolbarContainer>
   );
 }

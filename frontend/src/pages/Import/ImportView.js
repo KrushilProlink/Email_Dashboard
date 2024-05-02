@@ -13,7 +13,7 @@ const ImportView = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
-    const { fileData, fieldsInCrm, moduleName } = location.state || {};
+    const { fileData, fieldsInCrm, moduleName, api, back } = location.state || {};
 
     const [importedFileFields, setImportedFileFields] = useState([]);
     const [importedFileData, setImportedFileData] = useState([]);
@@ -32,21 +32,10 @@ const ImportView = () => {
         ...initialFieldValues
     };
 
-    const getModuleData = {
-        'Leads': {
-            url: 'lead/addMany',
-            back: '/dashboard/lead'
-        },
-        'Contacts': {
-            url: 'contact/addMany',
-            back: '/dashboard/contact'
-        }
-    };
-
     const addData = async (records) => {
-        const result = await apipost(getModuleData?.[moduleName]?.url, records);
+        const result = await apipost(api, records);
         if (result?.status === 200 || result?.status === 201) {
-            navigate(`${getModuleData?.[moduleName]?.back}`);
+            navigate(`${back}`);
         } else {
             toast.error("Something went wrong");
         }
@@ -64,39 +53,64 @@ const ImportView = () => {
             return errors;
         },
         onSubmit: (values, { resetForm }) => {
-            const records = importedFileData?.map((item, ind) => {
+            /* For fututre use */
+            // const payload = importedFileData?.map((item, ind) => {
+            //     const record = {};
+            //     fieldsInCrm?.forEach(field => {
+            //         const selectedField = values[field?.accessor];
+
+            //         // const fieldValue = ![undefined, null].includes(item[selectedField])
+            //         const fieldValue = item[selectedField] !== undefined
+            //             ? item[selectedField]
+            //             : field.defVal !== undefined
+            //                 ? field.type === "boolean"
+            //                     ? Boolean(field.defVal)
+            //                     : field.defVal
+            //                 : '';
+
+            //         record.index = ind;
+            //         if (field?.type?.toLowerCase() === "date") {
+            //             record[field?.accessor] = moment(fieldValue).isValid() ? fieldValue : '';
+            //         } else if (field?.type?.toLowerCase() === "number" && field?.isFloat) {
+            //             record[field?.accessor] = parseFloat(fieldValue) || '';
+            //         } else if (field?.type?.toLowerCase() === "number") {
+            //             record[field?.accessor] = parseInt(fieldValue, 10) || '';
+            //         } else {
+            //             record[field?.accessor] = fieldValue;
+            //         }
+            //     });
+
+            //     return record;
+            // });
+
+            // const rejectedData = payload.filter((item) => {
+            //     return fieldsInCrm.some(field => {
+            //         return field.required === true && (item?.[field.accessor] === "" || item?.[field.accessor] === null);
+            //     });
+            // });
+            // const filteredPayload = payload.filter((item, index) => !rejectedData.map(item => item.index).includes(index));
+
+            const payload = importedFileData?.map((item, index) => {
                 const record = {};
-
                 fieldsInCrm?.forEach(field => {
-                    const selectedField = values[field?.accessor];
-
-                    const fieldValue = item[selectedField] !== undefined
-                        ? item[selectedField]
-                        : field.defVal !== undefined
-                            ? field.type === "boolean"
-                                ? Boolean(field.defVal)
-                                : field.defVal
-                            : '';
-
-                    if (field?.type?.toLowerCase() === "date") {
-                        record[field?.accessor] = moment(fieldValue).isValid() ? fieldValue : '';
-                    } else if (field?.type?.toLowerCase() === "number" && field?.isFloat) {
-                        record[field?.accessor] = parseFloat(fieldValue) || '';
-                    } else if (field?.type?.toLowerCase() === "number") {
-                        record[field?.accessor] = parseInt(fieldValue, 10) || '';
-                    } else {
-                        record[field?.accessor] = fieldValue;
-                    }
+                    let fieldValue = item[values[field?.accessor]] ?? field.defVal ?? '';
+                    if (field?.type?.toLowerCase() === "date")
+                        fieldValue = moment(fieldValue).isValid() ? fieldValue : '';
+                    else if (field?.type?.toLowerCase() === "number")
+                        fieldValue = field?.isFloat ? parseFloat(fieldValue) : parseInt(fieldValue, 10) || '';
+                    record[field?.accessor] = fieldValue;
                 });
-
-                return record;
+                return { index, ...record };
             });
 
-            addData(records);
+            const requiredFields = fieldsInCrm.filter(field => field.required);
+            const rejectedData = payload.filter(item => requiredFields.some(field => !item?.[field.accessor]));
+
+            const filteredPayload = payload.filter(({ index }) => !rejectedData.some(rejected => rejected.index === index));
+
+            addData(filteredPayload);
         }
     })
-
-    const { errors, touched, values, handleBlur, handleChange, handleSubmit, setFieldValue, resetForm } = formik;
 
     const parseFileData = async (file) => {
         const reader = new FileReader();
@@ -117,7 +131,7 @@ const ImportView = () => {
                 } else {
                     toast.error("Empty or invalid CSV file");
                     formik.resetForm();
-                    navigate(`${getModuleData?.[moduleName]?.back}`);
+                    navigate(`${back}`);
                 }
 
             } else if (extension === 'xlsx') {
@@ -146,7 +160,7 @@ const ImportView = () => {
                 } else {
                     toast.error("Empty or invalid XLSX file");
                     formik.resetForm();
-                    navigate(`${getModuleData?.[moduleName]?.back}`);
+                    navigate(`${back}`);
                 }
             }
         };
@@ -169,7 +183,7 @@ const ImportView = () => {
         const filterLeadData = importedFileFields?.filter(field => {
             const result = fieldsInCrm?.find(data => field === data?.accessor || field === data?.Header);
             if (result) {
-                setFieldValue(result?.accessor, field);
+                formik.setFieldValue(result?.accessor, field);
                 return true;
             }
             return false;
@@ -208,8 +222,8 @@ const ImportView = () => {
                                                     labelId={`${item.accessor}-label`}
                                                     name={item?.accessor}
                                                     id={item?.accessor}
-                                                    value={values?.[item.accessor]}
-                                                    onChange={handleChange}
+                                                    value={formik.values?.[item.accessor]}
+                                                    onChange={formik.handleChange}
                                                     isSearchable
                                                     error={
                                                         formik.touched?.[item.accessor] &&
@@ -250,7 +264,7 @@ const ImportView = () => {
                                     color="error"
                                     onClick={() => {
                                         formik.resetForm()
-                                        navigate(`${getModuleData?.[moduleName]?.back}`);
+                                        navigate(`${back}`);
                                     }}
                                 >
                                     Cancle

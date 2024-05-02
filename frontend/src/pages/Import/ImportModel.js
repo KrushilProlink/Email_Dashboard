@@ -14,7 +14,7 @@ import * as yup from "yup";
 import { FormLabel } from "@mui/material";
 
 const ImportModel = (props) => {
-    const { open, handleClose, moduleName, fieldsInCrm } = props
+    const { open, handleClose, moduleName, fieldsInCrm, api, back } = props
     const navigate = useNavigate();
 
     const validationSchema = yup.object({
@@ -33,7 +33,7 @@ const ImportModel = (props) => {
             if (values?.file) {
                 handleClose();
                 const module = moduleName === "Leads" ? 'lead' : 'contact';
-                navigate(`/dashboard/${module}/import`, { state: { fileData: values.file, moduleName, fieldsInCrm } });
+                navigate(`/dashboard/${module}/import`, { state: { fileData: values.file, moduleName, fieldsInCrm, api, back } });
             }
             formik.resetForm();
         },
