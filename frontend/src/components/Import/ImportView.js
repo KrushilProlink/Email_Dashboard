@@ -7,7 +7,7 @@ import Papa from 'papaparse';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TableStyle from '../TableStyle';
-import { commonUtils } from "../utils";
+import { commonUtils } from "../../utils/utils";
 import { apipost } from '../../service/api';
 
 const ImportView = () => {
