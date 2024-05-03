@@ -24,7 +24,7 @@ import TableStyle from '../../components/TableStyle';
 import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddContact from './Add';
 import EditContact from './Edit';
-import ImportModel from '../Import/ImportModel';
+import ImportModel from '../../components/Import/ImportModel';
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchdata }) {

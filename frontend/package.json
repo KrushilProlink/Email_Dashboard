@@ -83,6 +83,7 @@
     "react-scripts": "^5.0.1",
     "react-toastify": "^9.1.3",
     "redux": "^4.2.1",
+    "xlsx": "^0.18.5",
     "simplebar-react": "^3.2.1",
     "utils": "^0.3.1",
     "web-vitals": "^3.1.1",

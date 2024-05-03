@@ -12,7 +12,7 @@ import Contact from './pages/contact/Contact';
 import ContactView from './pages/contact/View'
 import Policy from './pages/policy/Policy'
 import PolicyView from './pages/policy/View'
-import  Calendar  from './pages/Calendar/Calendar';
+import Calendar from './pages/Calendar/Calendar';
 import Document from './pages/documents/Documents';
 import Calls from './pages/calls/Call';
 import CallsView from './pages/calls/View'
@@ -25,7 +25,7 @@ import TaskView from './pages/task/View'
 import EmailTemplate from './pages/emailTemplate/EmailTemplate';
 import AddEmailTemplate from './pages/emailTemplate/Add'
 import ViewEmailTemplate from './pages/emailTemplate/View'
-import ImportView from './pages/Import/ImportView';
+import ImportView from './components/Import/ImportView';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -60,7 +60,7 @@ export default function Router() {
         { path: 'emailtemplate/view/:id', element: <ViewEmailTemplate /> },
         { path: ':view/import', element: <ImportView /> },
         // { path: 'history', element: <History /> },
-        
+
         // { path: '*', element: <Navigate to="/dashboard/app" /> },
       ],
     },

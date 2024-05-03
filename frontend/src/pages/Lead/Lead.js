@@ -18,7 +18,7 @@ import Iconify from '../../components/iconify';
 import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddLead from './Add';
 import EditModel from './Edit';
-import ImportModel from '../Import/ImportModel';
+import ImportModel from '../../components/Import/ImportModel';
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchdata }) {
