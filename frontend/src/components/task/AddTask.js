@@ -238,7 +238,6 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={4}>
                                     <FormLabel id="demo-row-radio-buttons-group-label">Assign To</FormLabel>
-                                    {console.log(user)}
                                     <FormControl fullWidth>
                                         <Select
                                             labelId="demo-simple-select-label"
