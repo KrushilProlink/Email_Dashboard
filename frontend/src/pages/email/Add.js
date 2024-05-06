@@ -81,7 +81,6 @@ const Add = (props) => {
             return errors;
         },
         onSubmit: async (values) => {
-            console.log("onSubmit values ", values)
             addEmail(values);
             formik.resetForm();
             handleClose();
@@ -315,7 +314,7 @@ const Add = (props) => {
                                             name="message"
                                             value={formik.values.message}
                                             onChange={(value) => formik.setFieldValue('message', value)}
-                                            disabled={messageType === 'template'} 
+                                            disabled={messageType === 'template'}
                                         />
                                         <FormHelperText error={formik.touched.message && Boolean(formik.errors.message)}>
                                             {formik.touched.message && formik.errors.message}
