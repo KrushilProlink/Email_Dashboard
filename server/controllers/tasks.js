@@ -16,6 +16,7 @@ const index = async (req, res) => {
         populate("createdBy", ["firstName", "lastName"])
         .populate("lead_id", ["firstName", "lastName"])
         .populate("contact_id", ["firstName", "lastName"])
+        .populate("assignTo", ["firstName", "lastName"])
 
     let totalRecords = allData.length
     res.send({ result: allData, total_recodes: totalRecords })
