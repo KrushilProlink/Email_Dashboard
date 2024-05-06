@@ -6,6 +6,10 @@ const Contact = new mongoose.Schema({
     dateOfBirth: { type: Date },
     gender: { type: String },
     phoneNumber: { type: String },
+    assignTo: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User"
+    },
     emailAddress: { type: String },
     address: { type: String },
     alternatePhoneNumber: { type: String },

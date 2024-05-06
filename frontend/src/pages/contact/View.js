@@ -77,7 +77,7 @@ const View = () => {
     const fetchdata = async () => {
         const result = await apiget(`contact/view/${params.id}`)
         if (result && result.status === 200) {
-            setContactData(result?.data[0])
+            setContactData(result?.data)
         }
     }
     // delete api
@@ -85,8 +85,6 @@ const View = () => {
         await apidelete(`contact/delete/${params.id}`)
         navigate('/dashboard/contact')
     }
-
-
 
     useEffect(() => {
         fetchdata();
