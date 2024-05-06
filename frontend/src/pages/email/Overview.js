@@ -15,7 +15,7 @@ const Overview = ({ data }) => {
           <Grid item xs={12} sm={6}>
             <Grid style={{ borderBottom: "1.5px dashed", borderBottomColor: Palette.grey[400] }} pb={2}>
               <Typography variant="body1">Sender :</Typography>
-              <Typography variant="body2" color={Palette.grey[600]}>{data?.sender ? data?.sender : "--"}</Typography>
+              <Typography variant="body2" color={Palette.grey[600]}>{data?.sender?.emailAddress ?? "--"}</Typography>
             </Grid>
 
             <Grid style={{ borderBottom: "1.5px dashed", borderBottomColor: Palette.grey[400] }} py={2}>
@@ -23,10 +23,11 @@ const Overview = ({ data }) => {
               <Typography variant="body2" color={Palette.grey[600]}>{data?.subject ? data?.subject : "--"}</Typography>
             </Grid>
 
-            <Grid style={{ borderBottom: "1.5px dashed", borderBottomColor: Palette.grey[400] }} py={2}>
+            {/* <Grid style={{ borderBottom: "1.5px dashed", borderBottomColor: Palette.grey[400] }} py={2}>
               <Typography variant="body1">Message :</Typography>
               <Typography variant="body2" color={Palette.grey[600]}>{data?.message ? data?.message : "--"}</Typography>
-            </Grid>
+            </Grid> */}
+
             <Grid style={{ borderBottom: "1.5px dashed", borderBottomColor: Palette.grey[400] }} py={2}>
               <Typography variant="body1">CreateOn :</Typography>
               <Typography variant="body2" color={Palette.grey[600]}>
@@ -43,7 +44,7 @@ const Overview = ({ data }) => {
             <Grid style={{ borderBottom: "1.5px dashed", borderBottomColor: Palette.grey[400] }} py={2}>
               <Typography variant="body1">Created by :</Typography>
               {
-                <Link to={`/dashboard/user/view/${data?.createdBy?._id}`} style={{textDecoration:"none"}}>
+                <Link to={`/dashboard/user/view/${data?.createdBy?._id}`} style={{ textDecoration: "none" }}>
                   <Typography variant="body2" color={Palette.primary.main} textTransform={"capitalize"}>
                     {`${data?.createdBy?.firstName} ${data?.createdBy?.lastName}`}
                   </Typography>
@@ -66,6 +67,16 @@ const Overview = ({ data }) => {
               </Grid>
             }
           </Grid>
+
+          <Grid item xs={12} style={{ paddingBottom: "16px", paddingTop: "16px" }}>
+            <Grid style={{ borderBottom: "1.5px dashed", borderBottomColor: Palette.grey[400] }}>
+              <Typography variant="body1">Message :</Typography>
+              <Typography variant="body2" color={Palette.grey[600]} style={{ paddingBottom: "16px" }}>
+                <span dangerouslySetInnerHTML={{ __html: data?.message ? data?.message : data?.html ? data.html : "--" }} />
+              </Typography>
+            </Grid>
+          </Grid>
+
         </Grid>
       </Box>
     </div>
