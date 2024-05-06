@@ -59,7 +59,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   }
 
   const sendSMS = async (payload) => {
-    const result = await apipost('lead/sms', payload)
+    const result = await apipost('sms/lead', payload)
     if (result?.status === 200) {
       setUserAction(result)
       handleSmsModelClose();
