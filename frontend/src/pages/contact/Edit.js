@@ -209,7 +209,6 @@ const Edit = (props) => {
                   id="phoneNumber"
                   name="phoneNumber"
                   size="small"
-                  type="number"
                   fullWidth
                   value={formik.values.phoneNumber}
                   onChange={formik.handleChange}
@@ -281,7 +280,6 @@ const Edit = (props) => {
                 <TextField
                   id="alternatePhoneNumber"
                   name="alternatePhoneNumber"
-                  type="number"
                   size="small"
                   fullWidth
                   value={formik.values.alternatePhoneNumber}

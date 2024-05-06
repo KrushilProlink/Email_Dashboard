@@ -372,12 +372,20 @@ const Edit = (props) => {
                                             fullWidth
                                             value={formik.values.leadSource}
                                             onChange={formik.handleChange}
-
                                         >
                                             <MenuItem value="call"> Call </MenuItem>
                                             <MenuItem value="walk in"> Walk In </MenuItem>
                                             <MenuItem value="branch office"> Branch Office </MenuItem>
                                             <MenuItem value="referrals"> Referrals </MenuItem>
+                                            {/* Social Media */}
+                                            <MenuItem value="twitter"> Twitter </MenuItem>
+                                            <MenuItem value="facebook"> Facebook </MenuItem>
+                                            <MenuItem value="instagram"> Instagram </MenuItem>
+                                            <MenuItem value="tikTok"> Tik Tok </MenuItem>
+                                            <MenuItem value="linkedIn"> Linked In </MenuItem>
+                                            <MenuItem value="youTube"> You Tube </MenuItem>
+                                            <MenuItem value="telegram"> Telegram </MenuItem>
+                                            <MenuItem value="whatsApp"> Whats App </MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>

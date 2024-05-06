@@ -20,6 +20,13 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
+  // "& .MuiDialog-paper": {
+  //   width: "100%", // Adjust the width as needed
+  //   maxWidth: "lg", // Ensure it respects the max-width for large screens
+  //   [theme.breakpoints.down("sm")]: {
+  //     width: "100%" // Adjust for smaller screens if necessary
+  //   }
+  // }
 }));
 
 function BootstrapSMSModel(props) {

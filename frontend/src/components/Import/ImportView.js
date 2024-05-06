@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Box, Button, Card, Container, FormControl, FormHelperText, Grid, MenuItem, Select, Stack, Typography } from '@mui/material';
+import ExcelJS from 'exceljs';
+import { useFormik } from "formik";
 import moment from "moment";
 import Papa from 'papaparse';
-import ExcelJS from 'exceljs';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useFormik } from "formik";
-import { Box, Container, Grid, Stack, Card, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel, Button } from '@mui/material';
-import TableStyle from '../../components/TableStyle';
+import TableStyle from '../TableStyle';
+import { commonUtils } from "../../utils/utils";
 import { apipost } from '../../service/api';
 
 const ImportView = () => {
@@ -42,6 +43,26 @@ const ImportView = () => {
         }
     };
 
+    const downloadCsvOrExcel = async (data) => {
+        try {
+            const AllRecordsWithSpecificFileds = data?.map((rec) => {
+                const selectedFieldsData = {};
+                fieldsInCrm?.forEach((field) => {
+                    selectedFieldsData[field?.accessor] = rec[field?.accessor];
+                });
+                return selectedFieldsData;
+            });
+            commonUtils.convertJsonToCsvOrExcel({
+                jsonArray: AllRecordsWithSpecificFileds,
+                csvColumns: fieldsInCrm,
+                fileName: 'Rejected-data',
+                extension: "xlsx",
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     const formik = useFormik({
         initialValues,
         validate: (values) => {
@@ -72,6 +93,7 @@ const ImportView = () => {
             const rejectedData = payload.filter(item => requiredFields.some(field => (item?.[field.accessor] === "" || item?.[field.accessor] === null)));
             const filteredPayload = payload.filter(({ index }) => !rejectedData.some(rejected => rejected.index === index));
 
+            downloadCsvOrExcel(rejectedData)
             setRejectedData(rejectedData)
             addData(filteredPayload);
         }
