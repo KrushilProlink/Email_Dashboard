@@ -87,7 +87,7 @@ const Edit = (props) => {
       setContactData(result?.data)
     }
   }
-  console.log(contactData);
+
   const fetchUserData = async () => {
     const result = await apiget('user/list')
     if (result && result.status === 200) {
