@@ -84,9 +84,10 @@ const Edit = (props) => {
   const fetchdata = async () => {
     const result = await apiget(`contact/view/${id}`)
     if (result && result.status === 200) {
-      setContactData(result?.data[0])
+      setContactData(result?.data)
     }
   }
+  console.log(contactData);
   const fetchUserData = async () => {
     const result = await apiget('user/list')
     if (result && result.status === 200) {
