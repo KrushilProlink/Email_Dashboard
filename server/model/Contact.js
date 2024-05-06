@@ -6,7 +6,7 @@ const Contact = new mongoose.Schema({
     dateOfBirth: { type: Date },
     gender: { type: String },
     phoneNumber: { type: String },
-    assignTo: {
+    assigned_agent: {
         type: mongoose.Schema.ObjectId,
         ref: "User"
     },
