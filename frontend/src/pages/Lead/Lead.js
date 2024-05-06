@@ -190,7 +190,7 @@ const Lead = () => {
       {/* Add Lead Model */}
       <AddLead open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
 
-      <Container>
+      <Container maxWidth>
         <Stack direction="row" alignItems="center" mb={5} justifyContent={"space-between"}>
           <Typography variant="h4" >
             Lead

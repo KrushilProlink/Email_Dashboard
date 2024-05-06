@@ -40,7 +40,7 @@ const Edit = (props) => {
         address: yup.string().required("Address is required"),
         alternatePhoneNumber: yup.string().matches(/^(0)?[0-9]{9,14}$/, 'Phone number is invalid'),
         additionalEmailAddress: yup.string().email('Invalid email'),
-        assigned_agent: yup.string().required("Assigned Agent is required")
+        // assigned_agent: yup.string().required("Assigned Agent is required")
     });
 
     // -----------   initialValues

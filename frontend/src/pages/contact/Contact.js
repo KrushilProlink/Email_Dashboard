@@ -192,7 +192,7 @@ const Contact = () => {
             {/* Add Contact Model */}
             <AddContact open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
 
-            <Container>
+            <Container maxWidth>
                 <TableStyle>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                         <Typography variant="h4">

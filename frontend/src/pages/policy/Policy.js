@@ -130,31 +130,31 @@ const Policy = () => {
       {/* Add Lead Model */}
       <AddPolicy open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
 
-      <Container>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-            <Typography variant="h4" >
-              Policy
-            </Typography>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              New Policy
-            </Button>
-          </Stack>
-          <TableStyle>
-            <Box width="100%">
-              <Card style={{ height: "600px", paddingTop: "15px" }}>
-                <DataGrid
-                  rows={policyList}
-                  columns={columns}
-                  components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
-                  checkboxSelection
-                  onRowSelectionModelChange={handleSelectionChange}
-                  rowSelectionModel={selectedRowIds}
-                  getRowId={row => row._id}
+      <Container maxWidth>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" >
+            Policy
+          </Typography>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
+            New Policy
+          </Button>
+        </Stack>
+        <TableStyle>
+          <Box width="100%">
+            <Card style={{ height: "600px", paddingTop: "15px" }}>
+              <DataGrid
+                rows={policyList}
+                columns={columns}
+                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
+                checkboxSelection
+                onRowSelectionModelChange={handleSelectionChange}
+                rowSelectionModel={selectedRowIds}
+                getRowId={row => row._id}
 
-                />
-              </Card>
-            </Box>
-          </TableStyle>
+              />
+            </Card>
+          </Box>
+        </TableStyle>
       </Container>
     </>
   );

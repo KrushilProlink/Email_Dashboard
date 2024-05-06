@@ -118,7 +118,7 @@ const EmailTemplate = () => {
 
     return (
         <div>
-            <Container>
+            <Container maxWidth>
                 <TableStyle>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                         <Typography variant="h4">

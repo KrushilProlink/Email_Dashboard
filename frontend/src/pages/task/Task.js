@@ -183,7 +183,7 @@ const Task = () => {
       {/* Add Tasks */}
       <AddTask open={openTask} handleClose={handleCloseTask} setUserAction={setUserAction} />
 
-      <Container>
+      <Container maxWidth>
         <TableStyle>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4">
