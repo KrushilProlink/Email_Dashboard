@@ -136,7 +136,7 @@ const Call = () => {
       {/* Add Calls */}
       <AddCall open={openCall} handleClose={handleCloseCall} setUserAction={setUserAction} />
 
-      <Container>
+      <Container maxWidth>
         <TableStyle>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4">

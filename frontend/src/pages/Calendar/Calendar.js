@@ -79,7 +79,7 @@ const Calendar = () => {
             title: item.subject,
             start: item.startDate,
             end: item.endDate,
-            textColor:item.textColor,
+            textColor: item.textColor,
             backgroundColor: item.backgroundColor
         }));
     };
@@ -127,7 +127,7 @@ const Calendar = () => {
             {/* Add Call Model */}
             <AddCall open={openCall} handleClose={handleCloseCall} setUserAction={setUserAction} />
 
-            <Container>
+            <Container maxWidth>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                     <Typography variant="h4">
                         Calendar

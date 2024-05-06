@@ -10,12 +10,20 @@ import claim from '../model/claim.js';
 import Lead from '../model/Lead.js';
 import Emails from '../model/emails.js'
 import sendSMS from '../middlewares/sendSms.js';
+import User from '../model/User.js';
 
 const index = async (req, res) => {
     const query = req.query
     query.deleted = false;
     // let result = await Contact.find(query)
     // let totalRecords = await Contact.find(query).countDocuments()
+
+    const user = await User.findById(req.user.userId)
+    if (user?.role !== "admin") {
+        delete query.createdBy
+        query.$or = [{ createdBy: req.user.userId }, { assigned_agent: req.user.userId }];
+    }
+
     let allData = await Contact.find(query).populate({
         path: 'createdBy',
         match: { deleted: false } // Populate only if createBy.deleted is false
@@ -222,9 +230,15 @@ const view = async (req, res) => {
         }
     ]);
 
-    let contact = await Contact.findByIdAndUpdate({ _id: req.params.id })
-    if (!contact) return res.status(404).json({ message: "no Data Found." })
-    res.status(200).json(Contacts)
+    if (Contacts.length === 0) {
+        return res.status(404).json({ message: "No data found." });
+    }
+    // let contact = await Contact.findByIdAndUpdate({ _id: req.params.id })
+    let contact = Contacts[0];
+    let populatedContact = await Contact.populate(contact, { path: "assigned_agent", select: ["firstName", "lastName"] });
+
+    if (!populatedContact) return res.status(404).json({ message: "no Data Found." })
+    res.status(200).json(populatedContact)
 }
 
 const deleteData = async (req, res) => {

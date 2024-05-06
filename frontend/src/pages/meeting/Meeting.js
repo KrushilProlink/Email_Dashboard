@@ -41,7 +41,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
 
 const Meeting = () => {
   const [openMeeting, setOpenMeeting] = useState(false);
-  const [userAction,setUserAction ] = useState(null);
+  const [userAction, setUserAction] = useState(null);
   const [allMeeting, setAllMeeting] = useState([]);
   const [selectedRowIds, setSelectedRowIds] = useState([]);
   const navigate = useNavigate()
@@ -140,7 +140,7 @@ const Meeting = () => {
 
   const fetchdata = async () => {
     const result = await apiget(userRole === "admin" ? `meeting/list` : `meeting/list/?createdBy=${userid}`)
-    
+
     console.log(result)
 
     if (result && result.status === 200) {
@@ -154,9 +154,9 @@ const Meeting = () => {
   return (
     <>
       {/* Add Meeting */}
-      <AddMeeting open={openMeeting} handleClose={handleCloseMeeting} setUserAction={setUserAction}/>
+      <AddMeeting open={openMeeting} handleClose={handleCloseMeeting} setUserAction={setUserAction} />
 
-      <Container>
+      <Container maxWidth>
         <TableStyle>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4">

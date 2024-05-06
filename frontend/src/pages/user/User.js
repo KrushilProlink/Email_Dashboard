@@ -41,7 +41,7 @@ const User = () => {
         {
             field: "lastName",
             headerName: "Last Name",
-            cellClassName:"name-column--cell--capitalize",
+            cellClassName: "name-column--cell--capitalize",
             flex: 2,
 
         },
@@ -53,7 +53,7 @@ const User = () => {
         {
             field: "role",
             headerName: "Role",
-            cellClassName:"name-column--cell--capitalize",
+            cellClassName: "name-column--cell--capitalize",
             flex: 2
         }
     ];
@@ -72,7 +72,7 @@ const User = () => {
         <>
             <AddUser open={openAdd} handleClose={handleCloseAdd} />
 
-            <Container>
+            <Container maxWidth>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                     <Typography variant="h4">
                         User

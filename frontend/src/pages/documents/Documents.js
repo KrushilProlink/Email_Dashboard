@@ -138,7 +138,7 @@ const Documents = () => {
             {/* Add Document Model */}
             <AddDocument open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
 
-            <Container>
+            <Container maxWidth>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                     <Typography variant="h4">
                         Documents

@@ -39,7 +39,7 @@ const Add = (props) => {
     coverageAmount: yup.number(),
     alternatePhoneNumber: yup.string().matches(/^(0)?[0-9]{9,14}$/, 'Phone number is invalid'),
     additionalEmailAddress: yup.string().email('Invalid email'),
-    assigned_agent: yup.string().required("Assigned Agent is required")
+    // assigned_agent: yup.string().required("Assigned Agent is required")
   });
 
   // -----------   initialValues
@@ -390,22 +390,18 @@ const Add = (props) => {
                         formik.touched.assigned_agent && formik.errors.assigned_agent
                       }
                     >
-                      {
-                        user.role === 'admin' ?
-                          user.map((user) => {
-                            if (user.role === 'admin') {
-                              return (
-                                <MenuItem key={user._id} value={user._id}>
-                                  {`${user.firstName} ${user.lastName}`}
-                                </MenuItem>
-                              );
-                            }
-                            return null;
-                          })
-                          :
-                          <MenuItem key={userdata._id} value={userdata._id}>
-                            {`${userdata.firstName} ${userdata.lastName}`}
-                          </MenuItem>
+                      {userdata?.role === 'admin' ?
+                        user.map((item) => {
+                          return (
+                            <MenuItem key={item._id} value={item._id}>
+                              {`${item.firstName} ${item.lastName}`}
+                            </MenuItem>
+                          );
+                        })
+                        :
+                        <MenuItem key={userdata._id} value={userdata._id}>
+                          {`${userdata.firstName} ${userdata.lastName}`}
+                        </MenuItem>
                       }
                     </Select>
                     <FormHelperText style={{ color: Palette.error.main }}>{formik.touched.assigned_agent && formik.errors.assigned_agent}</FormHelperText>

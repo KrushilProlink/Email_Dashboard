@@ -13,9 +13,9 @@ const Overview = ({ data, setUserAction }) => {
   return (
     <div>
       {/* Add Email Model */}
-      <Addemail open={open} handleClose={handleClose} _id={data?._id} receiver={data} setUserAction={setUserAction} />
+      <Addemail open={open} handleClose={handleClose} _id={data?._id} receiver={data} setUserAction={setUserAction} module="Lead" />
 
-      <Card style={{borderTopLeftRadius:"0px",borderTopRightRadius:"0px"}}>
+      <Card style={{ borderTopLeftRadius: "0px", borderTopRightRadius: "0px" }}>
         <Box p={3}>
           <Grid container display="flex" spacing={4}>
             <Grid item xs={12} sm={6}>
