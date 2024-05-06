@@ -1,5 +1,5 @@
 import Emails from '../model/emails.js'
-import SendMail from '../middlewares/sendMail.js'
+import sendMail from '../middlewares/sendMail.js'
 
 const index = async (req, res) => {
     const query = req.query
@@ -20,15 +20,24 @@ const index = async (req, res) => {
 
 const add = async (req, res) => {
     try {
+        if (!req.body.message && !req.body.html) {
+            return res.status(400).json({ success: false, message: "message or html is required." });
+        }
 
-        const emails = new Emails(req.body);
-        // SendMail(emails.receiver, emails.subject, emails.message)
+        if (!req.body.sender || !req.body.receiver) {
+            return res.status(400).json({ success: false, message: "sender or receiver is missing." });
+        }
 
+        const { receiver, subject, message, html, contact_id, lead_id, sender, createdBy } = req.body;
+        const emails = new Emails({ receiver, sender, subject, message, html, createdBy, contact_id: contact_id || null, lead_id: lead_id || null });
         await emails.save();
-        res.status(201).json({ emails, message: 'Email saved successfully' });
+
+        await sendMail(receiver, subject, message || html);
+
+        res.status(201).json({ success: true, email: emails, message: 'Email saved successfully' });
     } catch (err) {
         console.error('Failed to create Email:', err);
-        res.status(500).json({ error: 'Failed to create Email' });
+        res.status(500).json({ success: false, error: 'Failed to create Email', message: err.message });
     }
 }
 
@@ -37,6 +46,7 @@ const view = async (req, res) => {
         .populate("createdBy", ["firstName", "lastName"])
         .populate("lead_id", ["firstName", "lastName"])
         .populate("contact_id", ["firstName", "lastName"])
+        .populate("sender", ["emailAddress"])
 
     if (!emails) return res.status(404).json({ message: "no Data Found." })
     res.status(200).json({ emails })
