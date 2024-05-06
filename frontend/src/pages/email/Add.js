@@ -262,6 +262,7 @@ const Add = (props) => {
                                         name='receiver'
                                         size='small'
                                         fullWidth
+                                        disabled
                                         value={formik.values.receiver}
                                         onChange={formik.handleChange}
                                         error={formik.touched.receiver && Boolean(formik.errors.receiver)}
