@@ -6,10 +6,18 @@ import Meetings from "../model/Meetings.js";
 import Tasks from "../model/Tasks.js";
 import Emails from "../model/emails.js";
 import sendSMS from "../middlewares/sendSms.js";
+import User from "../model/User.js";
 
 const index = async (req, res) => {
   const query = req.query
   query.deleted = false;
+
+  const user = await User.findById(req.user.userId)
+  if (user?.role !== "admin") {
+    delete query.createdBy
+    query.$or = [{ createdBy: req.user.userId }, { assigned_agent: req.user.userId }];
+  }
+
   let allData = await Lead.find(query).populate({
     path: 'createdBy',
     match: { deleted: false } // Populate only if createBy.deleted is false
