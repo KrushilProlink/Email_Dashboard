@@ -17,10 +17,11 @@ const index = async (req, res) => {
     query.deleted = false;
     // let result = await Contact.find(query)
     // let totalRecords = await Contact.find(query).countDocuments()
+
     const user = await User.findById(req.user.userId)
     if (user?.role !== "admin") {
         delete query.createdBy
-        query.$or = [{ createdBy: req.user.userId }, { assignTo: req.user.userId }];
+        query.$or = [{ createdBy: req.user.userId }, { assigned_agent: req.user.userId }];
     }
 
     let allData = await Contact.find(query).populate({
