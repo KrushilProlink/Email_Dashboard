@@ -1,3 +1,6 @@
+import sendSMS from "../middlewares/sendSms.js";
+import Contact from "../model/Contact.js";
+import Lead from "../model/Lead.js";
 import SMS from "../model/SMS.js";
 
 
@@ -103,4 +106,44 @@ const index = async (req, res) => {
     res.send({ result: allData, total_recodes: totalRecords })
 }
 
-export default { index }
+const contactSMS = async (req, res) => {
+    try {
+        const { ids, message } = req.body;
+        const query = req.query
+        query._id = { $in: ids };
+        query.deleted = false;
+        let data = await Contact.find(query)
+
+        data.forEach((item) => {
+            // sendSMS({ to: `+91${item.phoneNumber}`, message })
+            sendSMS({ to: `+254${item.phoneNumber}`, message })
+        })
+
+        res.send({ req: data, message: "SMS send successfully" })
+    } catch (err) {
+        console.error('Failed to send SMS :', err);
+        res.status(500).json({ error: 'Failed to send SMS ' });
+    }
+}
+
+const leadSMS = async (req, res) => {
+    try {
+        const { ids, message } = req.body;
+        const query = req.query
+        query.deleted = false;
+        query._id = { $in: ids };
+        let data = await Lead.find(query)
+
+        data.forEach(async (item) => {
+            // sendSMS({ to: `+91${item.phoneNumber}`, message })
+            const smsSend = await sendSMS({ to: `+254${item.phoneNumber}`, message })
+        })
+
+        res.send({ req: data, message: "SMS send successfully" })
+    } catch (err) {
+        console.error('Failed to send SMS :', err);
+        res.status(500).json({ error: 'Failed to send SMS ' });
+    }
+}
+
+export default { index, contactSMS, leadSMS }
