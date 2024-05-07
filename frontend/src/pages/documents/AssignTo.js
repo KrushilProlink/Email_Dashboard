@@ -72,6 +72,7 @@ const AssignTo = (props) => {
     return (
         <div>
             <Dialog
+                fullWidth
                 open={open}
                 aria-labelledby="scroll-dialog-title"
                 aria-describedby="scroll-dialog-description"
@@ -103,7 +104,7 @@ const AssignTo = (props) => {
                             columnSpacing={{ xs: 0, sm: 5, md: 4 }}
                         >
                             <Grid item xs={12} sm={12} md={12}>
-                                <FormControl fullWidth>
+                                <FormControl>
                                     <FormLabel>Assign To</FormLabel>
                                     <Select
                                         labelId="demo-simple-select-label"
