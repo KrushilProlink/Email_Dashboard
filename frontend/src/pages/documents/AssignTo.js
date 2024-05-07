@@ -7,74 +7,67 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useFormik } from "formik";
-import * as yup from "yup";
 import { FormLabel, Select, FormControl, MenuItem, FormHelperText, Checkbox, ListItemText } from "@mui/material";
-import { apipost, apiget } from "../../service/api";
+import { apiget, apiput } from "../../service/api";
 
-const Add = (props) => {
-    const { open, handleClose, setUserAction } = props;
+const AssignTo = (props) => {
+    const { open, handleClose, documentId } = props;
     const userid = localStorage.getItem('user_id');
 
     const [users, setUsers] = useState([]);
 
-    // -----------  validationSchema
-    const validationSchema = yup.object({
-        file: yup.string().required("File is required"),
-        fileName: yup.string().required("File Name is required"),
-    });
-
     // -----------   initialValues
     const initialValues = {
-        file: "",
-        fileName: "",
         assignTo: [],
         createdBy: userid
     };
 
-    // add contact api
-    const fileUpload = async (values) => {
-        const data = new FormData()
-        data.append("name", values.file.name)
-        data.append("file", values.file)
-        data.append("fileName", values.fileName)
-        data.append("createdBy", values.createdBy)
-        values.assignTo.forEach((userId) => {
-            data.append("assignTo[]", userId);
-        });
+    const assignDocumentsToUsers = async (values) => {
+        const data = {
+            assignTo: values?.assignTo,
+            documentId
+        };
 
-        const result = await apipost('document/upload', data)
-        setUserAction(result)
+        const result = await apiput('document/assign', data);
 
         if (result && result.status === 200) {
             formik.resetForm();
             handleClose();
-            // toast.success(result.data.message)
         }
     }
 
     // formik
     const formik = useFormik({
         initialValues,
-        validationSchema,
+        enableReinitialize: true,
         onSubmit: async (values) => {
-            fileUpload(values)
+            assignDocumentsToUsers(values)
         },
     });
 
     // user api
-    const fetchUserdata = async () => {
+    const fetchUsersdata = async () => {
         const result = await apiget('user/list')
         if (result && result.status === 200) {
             setUsers(result?.data?.result)
         }
-    };
+    }
+
+    const fetchDocumentdata = async () => {
+        const result = await apiget(`document/list/?_id=${documentId}`);
+        if (result && result.status === 200) {
+            formik.setFieldValue("assignTo", result?.data?.result[0]?.assignTo);
+        }
+    }
 
     useEffect(() => {
-        fetchUserdata();
-    }, [open])
+        if (documentId) {
+            fetchUsersdata();
+            fetchDocumentdata();
+        }
+    }, [open, documentId]);
 
     return (
         <div>
@@ -90,7 +83,7 @@ const Add = (props) => {
                         justifyContent: "space-between",
                     }}
                 >
-                    <Typography variant="h6">Add New</Typography>
+                    <Typography variant="h6">Assign To User </Typography>
                     <Typography>
                         <ClearIcon
                             style={{ cursor: "pointer" }}
@@ -109,46 +102,6 @@ const Add = (props) => {
                             rowSpacing={3}
                             columnSpacing={{ xs: 0, sm: 5, md: 4 }}
                         >
-                            <Grid item xs={12} sm={12} md={12}>
-                                <FormLabel>Upload File</FormLabel>
-                                <TextField
-                                    id="file"
-                                    name="file"
-                                    size="small"
-                                    maxRows={10}
-                                    fullWidth
-                                    type="file"
-                                    multiple
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    onChange={(event) => {
-                                        formik.setFieldValue("file", event.currentTarget.files[0]);
-                                    }}
-                                    error={
-                                        formik.touched.file &&
-                                        Boolean(formik.errors.file)
-                                    }
-                                    helperText={
-                                        formik.touched.file && formik.errors.file
-                                    }
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={12}>
-                                <FormLabel>FileName</FormLabel>
-                                <TextField
-                                    id="fileName"
-                                    name="fileName"
-                                    size="small"
-                                    fullWidth
-                                    value={formik.values.fileName}
-                                    onChange={formik.handleChange}
-                                    error={
-                                        formik.touched.fileName && Boolean(formik.errors.fileName)
-                                    }
-                                    helperText={formik.touched.fileName && formik.errors.fileName}
-                                />
-                            </Grid>
                             <Grid item xs={12} sm={12} md={12}>
                                 <FormControl fullWidth>
                                     <FormLabel>Assign To</FormLabel>
@@ -174,8 +127,7 @@ const Add = (props) => {
                                                     })
                                                 }
                                             </div>
-                                        )
-                                        }
+                                        )}
                                     >
                                         {
                                             users?.map((user) => (
@@ -226,4 +178,4 @@ const Add = (props) => {
     );
 }
 
-export default Add
+export default AssignTo;

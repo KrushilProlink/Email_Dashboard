@@ -17,18 +17,16 @@ const index = async (req, res) => {
 }
 
 const fileUpload = async (req, res) => {
-
-    const fileName = req.body.fileName
+    const { fileName, assignTo, createdBy } = req.body;
 
     try {
-        const file = await Document.create({ path: req.file.path, file: req.file.originalname, fileName: fileName, createdBy: req.body.createdBy });
+        const file = await Document.create({ path: req.file.path, file: req.file.originalname, fileName: fileName, createdBy: createdBy, assignTo: assignTo });
         res.status(200).json({ file, message: "File uploaded successfully" });
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ error: error.message });
     }
 }
-
 
 const downloadFile = async (req, res) => {
     try {
@@ -70,4 +68,17 @@ const deleteMany = async (req, res) => {
     }
 };
 
-export default { index, fileUpload, downloadFile, deleteData, deleteMany }
+const assignToUpdates = async (req, res) => {
+    try {
+        const { documentId, assignTo } = req.body;
+
+        const result = await Document.updateOne({ _id: documentId }, { $set: { assignTo: assignTo } }, { new: true });
+        console.log("update reult ", result);
+
+        res.status(200).json({ success: true, message: "Successfully assigned" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Error during assigning documents.", error: err.message });
+    }
+}
+
+export default { index, fileUpload, downloadFile, deleteData, deleteMany, assignToUpdates }
