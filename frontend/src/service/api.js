@@ -46,7 +46,8 @@ export const apipost = async (path, data) => {
         }
 
         if (response && response.status === 200 || response.status === 201) {
-            toast.success(response.data.message);
+            toast.success(response.data.message || "Action success");
+            // toast.success(<div dangerouslySetInnerHTML={{ __html: response.data.message }} />);
         }
         return response;
     } catch (error) {
@@ -54,6 +55,9 @@ export const apipost = async (path, data) => {
             if (error && error.response.data && error.response.status === 401) {
                 if (error.response.data.message) {
                     toast.error(error.response.data.message)
+                    // toast.error(<div dangerouslySetInnerHTML={{ __html: error.response.data.message }} />)
+                } else {
+                    toast.error("Something went wrong")
                 }
             }
         }
