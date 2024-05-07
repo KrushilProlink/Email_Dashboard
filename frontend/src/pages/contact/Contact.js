@@ -166,7 +166,6 @@ const Contact = () => {
                 };
                 return (
                     <Box>
-                        <EditContact open={openEdit} handleClose={handleCloseEdit} id={id} fetchContact={fetchdata} />
                         <Stack direction={"row"} spacing={2}>
                             <Button variant='text' size='small' color='primary' onClick={() => handleFirstNameClick(params.row._id)}><EditIcon /></Button>
                         </Stack>
@@ -191,6 +190,8 @@ const Contact = () => {
         <>
             {/* Add Contact Model */}
             <AddContact open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
+            {/* Edit Contact Model */}
+            <EditContact open={openEdit} handleClose={handleCloseEdit} id={id} fetchContact={fetchdata} />
 
             <Container maxWidth>
                 <TableStyle>

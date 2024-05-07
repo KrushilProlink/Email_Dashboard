@@ -25,13 +25,13 @@ const View = () => {
     const [opendelete, setOpendelete] = useState(false);
     const navigate = useNavigate()
     const params = useParams()
-    
+
 
     // open delete model
     const handleOpenDelete = () => setOpendelete(true);
     const handleCloseDelete = () => setOpendelete(false);
 
-    
+
     const back = () => {
         navigate('/dashboard/email')
     }
@@ -62,9 +62,9 @@ const View = () => {
 
 
             {/* open Delete Model */}
-            <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete}  id={params.id} deletedata={deletedata}/>
+            <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} id={params.id} deletedata={deletedata} />
 
-            <Container>
+            <Container maxWidth>
                 <Grid container display="flex" alignItems="center">
                     <Grid container display="flex" alignItems="center">
                         <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>
@@ -89,7 +89,7 @@ const View = () => {
                             <Typography variant="h5">OVERVIEW</Typography>
                         </Stack>
                     </Box>
-                 <Overview data={emailData} />
+                    <Overview data={emailData} />
                 </Card>
 
             </Container>

@@ -1,8 +1,8 @@
 import nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransport({
-    // host: 'smtp.office365.com',
-    host: 'sandbox.smtp.mailtrap.io',
+    host: 'smtp.office365.com',
+    // host: 'sandbox.smtp.mailtrap.io',
     port: 587,
     auth: {
         user: process.env.user,

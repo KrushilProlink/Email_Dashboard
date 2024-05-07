@@ -10,6 +10,13 @@ const Document = new mongoose.Schema({
         default: 0
     },
     downloadLink: { type: String },
+    assignTo: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        }],
+        default: []
+    },
     createdBy: {
         type: mongoose.Schema.ObjectId,
         ref: "User",
@@ -20,7 +27,6 @@ const Document = new mongoose.Schema({
     },
     createdOn: { type: Date, default: Date.now },
     modifiedOn: { type: Date, default: Date.now }
-
 });
 
 
