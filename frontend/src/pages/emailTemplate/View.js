@@ -115,7 +115,7 @@ const View = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
-                <Box height={"680px"} bgcolor={"gray"} className="editerHeight" mt={1}>
+                <Box height={"680px"} bgcolor={"#edeff1"} className="editerHeight" mt={1}>
                     <EmailEditor ref={emailEditorRef} />
                 </Box>
             </Container>
