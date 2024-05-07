@@ -12,6 +12,7 @@ const transporter = nodemailer.createTransport({
 
 const sendMail = async (to, subject, text) => {
     try {
+        console.log(process.env.user, process.env.pass)
         const mailOptions = {
             from: process.env.user, // Replace with your email address
             to: to, // Replace with the recipient's email address
