@@ -14,6 +14,7 @@ import {
   TableContainer,
   TablePagination,
   Box,
+  tableBodyClasses,
 } from '@mui/material';
 // components
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +33,7 @@ import { apiget, deleteManyApi } from '../../service/api';
 import DeleteModel from '../../components/Deletemodle'
 import TableStyle from '../../components/TableStyle';
 import AddTask from '../../components/task/AddTask'
+import AddTable from './AddTable';
 // ----------------------------------------------------------------------
 function CustomToolbar({ selectedRowIds, fetchdata }) {
   const [opendelete, setOpendelete] = useState(false);
@@ -60,6 +62,7 @@ const Sms = () => {
   const [selectedRowIds, setSelectedRowIds] = useState([]);
   const [openTask, setOpenTask] = useState(false);
   const [userAction, setUserAction] = useState(null)
+  const [table, setTable] = useState(false)
   const navigate = useNavigate()
 
   const userid = localStorage.getItem('user_id');
@@ -134,10 +137,6 @@ const Sms = () => {
       },
     },
 
-
-
-
-
   ];
 
   const fetchdata = async () => {
@@ -156,6 +155,7 @@ const Sms = () => {
 
       {/* Add Tasks */}
       <AddTask open={openTask} handleClose={handleCloseTask} setUserAction={setUserAction} />
+      <AddTable open={table} handleClose={() => setTable(false)} />
 
       <Container maxWidth>
         <TableStyle>
@@ -166,6 +166,8 @@ const Sms = () => {
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenTask}>
               New Sms
             </Button>
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={() => setTable(true)}>
+              table            </Button>
           </Stack>
           <Box width="100%" >
             <Card style={{ height: "600px", paddingTop: "15px" }}>
