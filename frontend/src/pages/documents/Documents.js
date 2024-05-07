@@ -56,7 +56,7 @@ const Documents = () => {
     const [documentId, setDocumentId] = useState('');
 
     const userid = localStorage.getItem('user_id');
-    const userRole = localStorage.getItem("userRole")
+    const userRole = localStorage.getItem("userRole");
 
     const handleOpenAdd = () => {
         setOpenAdd(true)
@@ -125,7 +125,7 @@ const Documents = () => {
                         <Stack direction={"row"} spacing={2}>
                             <a href={downloadUrl}><Button variant='contained' size='small'>Download</Button></a>
                             <Button variant='outlined' size='small' color='error' onClick={() => deleteFile(params.row._id)}>Delete</Button>
-                            <Button variant='outlined' size='small' onClick={() => handleOpenAssignTo(params.row._id)}>Assign To User</Button>
+                            {userRole !== "user" && <Button variant='outlined' size='small' onClick={() => handleOpenAssignTo(params.row._id)}>Assign To User</Button>}
                         </Stack>
                     </Box>
                 );
@@ -149,7 +149,7 @@ const Documents = () => {
         <>
             {/* Add Document Model */}
             <AddDocument open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
-            
+
             <AssignToUserModel open={openAssignTo} handleClose={handleCloseAssignTo} documentId={documentId} />
 
             <Container maxWidth>

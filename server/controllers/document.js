@@ -1,14 +1,20 @@
 import Document from "../model/document.js";
+import User from "../model/User.js";
 
 const index = async (req, res) => {
-    const query = req.query
+    const query = req.query;
     query.deleted = false;
-    // let result = await Document.find(query)
-    // let totalRecords = await Document.find(query).countDocuments()
+
+    const user = await User.findById(req.user.userId);
+    if (user?.role !== "admin") {
+        delete query.createdBy;
+        query.$or = [{ createdBy: req.user.userId }, { assignTo: { $in: [req.user.userId] } }];
+    }
+
     let allData = await Document.find(query).populate({
         path: 'createdBy',
         match: { deleted: false } // Populate only if createBy.deleted is false
-    }).exec()
+    }).exec();
 
     const result = allData.filter(item => item.createdBy !== null);
 
@@ -73,9 +79,8 @@ const assignToUpdates = async (req, res) => {
         const { documentId, assignTo } = req.body;
 
         const result = await Document.updateOne({ _id: documentId }, { $set: { assignTo: assignTo } }, { new: true });
-        console.log("update reult ", result);
 
-        res.status(200).json({ success: true, message: "Successfully assigned" });
+        res.status(200).json({ success: true, message: "Successfully assigned", result });
     } catch (err) {
         res.status(500).json({ success: false, message: "Error during assigning documents.", error: err.message });
     }

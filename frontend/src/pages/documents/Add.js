@@ -17,6 +17,7 @@ import { apipost, apiget } from "../../service/api";
 const Add = (props) => {
     const { open, handleClose, setUserAction } = props;
     const userid = localStorage.getItem('user_id');
+    const userRole = localStorage.getItem("userRole");
 
     const [users, setUsers] = useState([]);
 
@@ -149,7 +150,7 @@ const Add = (props) => {
                                     helperText={formik.touched.fileName && formik.errors.fileName}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12}>
+                            {userRole !== "user" && <Grid item xs={12} sm={12} md={12}>
                                 <FormControl fullWidth>
                                     <FormLabel>Assign To</FormLabel>
                                     <Select
@@ -194,7 +195,7 @@ const Add = (props) => {
                                         {formik.touched.assignTo && formik.errors.assignTo}
                                     </FormHelperText>
                                 </FormControl>
-                            </Grid>
+                            </Grid>}
                         </Grid>
                     </form>
                 </DialogContent>
