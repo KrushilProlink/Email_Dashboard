@@ -57,7 +57,7 @@ const Add = () => {
 
     return (
         <div>
-            <Container>
+            <Container maxWidth>
                 <Grid container display="flex" alignItems="center">
                     <Grid container display="flex" alignItems="center">
                         <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>

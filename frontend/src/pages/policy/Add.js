@@ -87,7 +87,6 @@ const Add = (props) => {
         setUserAction(result)
 
         if (result && result.status === 201) {
-            toast.success(result.data.message)
             formik.resetForm();
             handleClose();
         }

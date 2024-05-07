@@ -60,7 +60,6 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
         if (result && result.status === 201) {
             handleClose()
             formik.resetForm();
-            toast.success(result?.data?.message)
         }
     }
 

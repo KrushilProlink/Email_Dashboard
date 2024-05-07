@@ -94,7 +94,7 @@ const View = () => {
                         <Other data={taskData} />
                     </CustomTabPanel>
                 </Box>
-               
+
             </Container>
 
 
