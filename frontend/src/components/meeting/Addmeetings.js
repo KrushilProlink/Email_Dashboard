@@ -63,7 +63,6 @@ const Addmeetings = (props) => {
         if (result && result.status === 201) {
             formik.resetForm();
             handleClose();
-            toast.success(result.data.message)
         }
     }
 
@@ -76,7 +75,7 @@ const Addmeetings = (props) => {
             resetForm();
         },
     });
-    
+
     // lead api
     const fetchLeadData = async () => {
         const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)

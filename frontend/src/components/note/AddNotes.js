@@ -43,7 +43,6 @@ const Addnotes = (props) => {
         if (result && result.status === 201) {
             formik.resetForm();
             handleClose();
-            toast.success(result.data.message)
         }
     }
 
