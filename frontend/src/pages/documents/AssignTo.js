@@ -104,7 +104,7 @@ const AssignTo = (props) => {
                             columnSpacing={{ xs: 0, sm: 5, md: 4 }}
                         >
                             <Grid item xs={12} sm={12} md={12}>
-                                <FormControl>
+                                <FormControl fullWidth>
                                     <FormLabel>Assign To</FormLabel>
                                     <Select
                                         labelId="demo-simple-select-label"
