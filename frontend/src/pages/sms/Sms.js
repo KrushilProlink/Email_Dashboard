@@ -161,9 +161,9 @@ const Sms = () => {
             <Typography variant="h4">
               Sms List
             </Typography>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenTask}>
+            {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenTask}>
               New Sms
-            </Button>
+            </Button> */}
 
           </Stack>
           <Box width="100%" >
