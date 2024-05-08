@@ -83,6 +83,13 @@ const Email = () => {
             field: "sender",
             headerName: "Sender",
             flex: 1,
+            renderCell: (params) => {
+                return (
+                    <Box >
+                        {params?.value?.emailAddress}
+                    </Box>
+                );
+            }
         },
         {
             field: "receiver",

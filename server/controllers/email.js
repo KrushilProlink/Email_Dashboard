@@ -6,11 +6,17 @@ const index = async (req, res) => {
     query.deleted = false;
     // let result = await Emails.find(query).populate("createdBy", ["firstName", "lastName"])
     // let totalRecords = await Emails.find(query).countDocuments()
-    let allData = await Emails.find(query).populate({
-        path: 'createdBy',
-        match: { deleted: false }, // Populate only if createBy.deleted is false
-        select: 'firstName lastName'
-    }).exec()
+
+
+    let allData = await Emails.find(query)
+        .populate({
+            path: 'createdBy',
+            match: { deleted: false }, // Populate only if createBy.deleted is false
+            select: 'firstName lastName'
+        })
+        .populate("sender", ["emailAddress"])
+        .exec();
+
 
     const result = allData.filter(item => item.createdBy !== null);
 
