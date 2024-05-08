@@ -65,6 +65,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
       handleSmsModelClose();
       fetchdata()
     } else {
+      handleSmsModelClose();
       // toast.error("Something went wrong")
     }
   }
