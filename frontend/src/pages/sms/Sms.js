@@ -78,12 +78,11 @@ const Sms = () => {
     {
       field: "senderName",
       headerName: "Sender Name",
-      // cellClassName: "name-column--cell name-column--cell--capitalize",
-      cellClassName: "name-column--cell--capitalize",
+      cellClassName: "name-column--cell name-column--cell--capitalize",
       flex: 1,
       renderCell: (params) => {
         const handleFirstNameClick = () => {
-          // navigate(`/dashboard/sms/view/${params.row._id}`)
+          navigate(`/dashboard/sms/view/${params.row._id}`)
         };
         return (
           <Box onClick={handleFirstNameClick}>
@@ -97,7 +96,6 @@ const Sms = () => {
       headerName: "Reciver Name",
       flex: 1,
       // cellClassName: "name-column--cell name-column--cell--capitalize",
-
     },
 
     {
