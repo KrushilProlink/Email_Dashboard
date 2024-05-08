@@ -50,7 +50,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
   return (
     <GridToolbarContainer>
       <GridToolbar />
-      {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
+      {/* {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>} */}
       <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyTasks} id={selectedRowIds} />
     </GridToolbarContainer>
   );
@@ -78,11 +78,12 @@ const Sms = () => {
     {
       field: "senderName",
       headerName: "Sender Name",
-      cellClassName: "name-column--cell name-column--cell--capitalize",
+      // cellClassName: "name-column--cell name-column--cell--capitalize",
+      cellClassName: "name-column--cell--capitalize",
       flex: 1,
       renderCell: (params) => {
         const handleFirstNameClick = () => {
-          navigate(`/dashboard/sms/view/${params.row._id}`)
+          // navigate(`/dashboard/sms/view/${params.row._id}`)
         };
         return (
           <Box onClick={handleFirstNameClick}>
@@ -95,7 +96,7 @@ const Sms = () => {
       field: "reciverName",
       headerName: "Reciver Name",
       flex: 1,
-      cellClassName: "name-column--cell name-column--cell--capitalize",
+      // cellClassName: "name-column--cell name-column--cell--capitalize",
 
     },
 
@@ -171,7 +172,7 @@ const Sms = () => {
                 rows={allSms}
                 columns={columns}
                 components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
-                checkboxSelection
+                checkboxSelection={false}
                 onRowSelectionModelChange={handleSelectionChange}
                 rowSelectionModel={selectedRowIds}
                 getRowId={row => row._id}

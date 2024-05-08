@@ -49,7 +49,7 @@ const rows = [
 ];
 
 
-const AddTable = (props) => {
+const RejectedDataModal = (props) => {
     const { open, handleClose } = props
     const theme = useTheme();
 
@@ -134,4 +134,4 @@ const AddTable = (props) => {
     )
 }
 
-export default AddTable
+export default RejectedDataModal

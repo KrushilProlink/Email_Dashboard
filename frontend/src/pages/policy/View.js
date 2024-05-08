@@ -146,7 +146,7 @@ const View = () => {
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />
 
-            <Container>
+            <Container maxWidth>
                 <Grid container display="flex" alignItems="center">
                     <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>
                         {
@@ -191,7 +191,7 @@ const View = () => {
                         <Other data={policyData} />
                     </CustomTabPanel>
                 </Box>
-           
+
 
                 {/* Notes Table */}
                 <Card sx={{ marginTop: "50px" }}>

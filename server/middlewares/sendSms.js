@@ -11,12 +11,12 @@ const sendSMS = async (req) => {
         let msgOptions = {
             from: twilioPhoneNumber,
             to: req.to,
-            body: req.message || ""
+            body: req.message || " "
         }
         try {
-            await client.messages.create(msgOptions)
-            // console.log(`message send successfully to ${req?.to}`)
-            return `message send successfully to ${req?.to}`
+            const sms = await client.messages.create(msgOptions)
+            console.log(`message send successfully to ${req?.to}`)
+            return { message: `message send successfully to ${req?.to}`, status: 200 }
         } catch (error) {
             console.log(error)
             return error

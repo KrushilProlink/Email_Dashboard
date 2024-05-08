@@ -13,14 +13,14 @@ import Iconify from '../../components/iconify';
 import AddDocument from './Add'
 import { apidelete, apiget, deleteManyApi } from '../../service/api';
 import TableStyle from '../../components/TableStyle';
-import DeleteModel from '../../components/Deletemodle'
+import DeleteModel from '../../components/Deletemodle';
+import AssignToUserModel from './AssignTo';
 import { constant } from '../../constant';
 
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchdata }) {
     const [opendelete, setOpendelete] = useState(false);
-
 
     const handleCloseDelete = () => {
         setOpendelete(false)
@@ -42,6 +42,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
             <GridToolbar />
             {selectedRowIds && selectedRowIds.length > 0 && <Button variant="text" sx={{ textTransform: 'capitalize' }} startIcon={<DeleteOutline />} onClick={handleOpenDelete}>Delete</Button>}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deleteManyContact} id={selectedRowIds} />
+
         </GridToolbarContainer>
     );
 }
@@ -51,15 +52,26 @@ const Documents = () => {
     const [documentList, setDocumentList] = useState([])
     const [openAdd, setOpenAdd] = useState(false);
     const [selectedRowIds, setSelectedRowIds] = useState([]);
+    const [openAssignTo, setOpenAssignTo] = useState(false);
+    const [documentId, setDocumentId] = useState('');
 
     const userid = localStorage.getItem('user_id');
-    const userRole = localStorage.getItem("userRole")
+    const userRole = localStorage.getItem("userRole");
 
     const handleOpenAdd = () => {
         setOpenAdd(true)
     }
     const handleCloseAdd = () => {
         setOpenAdd(false)
+    }
+
+    const handleOpenAssignTo = (id) => {
+        setDocumentId(id);
+        setOpenAssignTo(true)
+    }
+
+    const handleCloseAssignTo = () => {
+        setOpenAssignTo(false)
     }
 
     const handleSelectionChange = (selectionModel) => {
@@ -89,7 +101,6 @@ const Documents = () => {
             field: "fileName",
             headerName: "File Name",
             flex: 1,
-            
         },
         {
             field: "createdOn",
@@ -114,6 +125,7 @@ const Documents = () => {
                         <Stack direction={"row"} spacing={2}>
                             <a href={downloadUrl}><Button variant='contained' size='small'>Download</Button></a>
                             <Button variant='outlined' size='small' color='error' onClick={() => deleteFile(params.row._id)}>Delete</Button>
+                            {userRole !== "user" && <Button variant='outlined' size='small' onClick={() => handleOpenAssignTo(params.row._id)}>Assign To User</Button>}
                         </Stack>
                     </Box>
                 );
@@ -137,6 +149,8 @@ const Documents = () => {
         <>
             {/* Add Document Model */}
             <AddDocument open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
+
+            <AssignToUserModel open={openAssignTo} handleClose={handleCloseAssignTo} documentId={documentId} />
 
             <Container maxWidth>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
