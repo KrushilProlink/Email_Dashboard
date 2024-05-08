@@ -1,17 +1,28 @@
 import nodemailer from 'nodemailer'
 
+// const transporter = nodemailer.createTransport({
+//     host: 'smtp.office365.com',
+//     // host: 'sandbox.smtp.mailtrap.io',
+//     port: 587,
+//     auth: {
+//         user: process.env.user,
+//         pass: process.env.pass
+//     },
+//     secure: false,
+//     tls: { rejectUnauthorized: false }
+// });
 const transporter = nodemailer.createTransport({
     host: 'smtp.office365.com',
-    // host: 'sandbox.smtp.mailtrap.io',
     port: 587,
+    secure: false, // Office 365 requires STARTTLS, so set secure to false
     auth: {
-        user: process.env.user,
+        user: process.env.user, // Assuming your environment variables are named EMAIL_USER and EMAIL_PASS
         pass: process.env.pass
     },
-    secure: false,
-    tls: { rejectUnauthorized: false }
+    tls: {
+        ciphers: 'SSLv3'
+    }
 });
-
 const sendMail = async (to, subject, text) => {
     try {
         console.log(process.env.user, process.env.pass)
