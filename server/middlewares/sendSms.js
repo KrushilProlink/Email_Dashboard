@@ -15,7 +15,7 @@ const sendSMS = async (req) => {
         }
         try {
             const sms = await client.messages.create(msgOptions)
-            // console.log(`message send successfully to ${req?.to}`)
+            console.log(`message send successfully to ${req?.to}`)
             return { message: `message send successfully to ${req?.to}`, status: 200 }
         } catch (error) {
             console.log(error)
