@@ -33,6 +33,11 @@ const UserConfig = [
     icon: icon('ic_task'),
   },
   {
+    title: 'SMS',
+    path: '/dashboard/sms',
+    icon: icon('sms'),
+  },
+  {
     title: 'Meetings',
     path: '/dashboard/meeting',
     icon: icon('ic_meeting'),

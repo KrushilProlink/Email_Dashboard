@@ -10,10 +10,10 @@ const index = async (req, res) => {
     query.deleted = false;
 
     const user = await User.findById(req.user.userId);
-
     if (user?.role !== "admin") {
-        query.sender = req.user.userId;
+        query.sender = mongoose.Types.ObjectId(req.user.userId);
     }
+    console.log(query)
 
     const newSMS = new SMS({
         sender: req.user.userId,
