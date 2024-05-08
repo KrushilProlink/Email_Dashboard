@@ -33,6 +33,11 @@ const navConfig = [
     icon: icon('ic_task'),
   },
   {
+    title: 'SMS',
+    path: '/dashboard/sms',
+    icon: icon('sms'),
+  },
+  {
     title: 'Meetings',
     path: '/dashboard/meeting',
     icon: icon('ic_meeting'),
@@ -67,6 +72,7 @@ const navConfig = [
     path: '/dashboard/user',
     icon: icon('ic_user'),
   },
+
 
   // {
   //   title: 'History',
