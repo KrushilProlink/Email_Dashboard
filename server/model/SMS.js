@@ -10,6 +10,7 @@ const SMS = new mongoose.Schema({
     // receiver: { type: String, required: true },
     relatedTo: { type: String, required: true },
     message: { type: String, required: true },
+    errorMessage: { type: String },
     task_id: {
         type: mongoose.Schema.ObjectId,
         ref: "Tasks"
