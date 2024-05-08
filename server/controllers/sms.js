@@ -2,6 +2,7 @@ import sendSMS from "../middlewares/sendSms.js";
 import Contact from "../model/Contact.js";
 import Lead from "../model/Lead.js";
 import SMS from "../model/SMS.js";
+import mongoose from "mongoose";
 
 
 const index = async (req, res) => {
@@ -219,5 +220,86 @@ const leadSMS = async (req, res) => {
     }
 };
 
+const view = async (req, res) => {
+    let sms = await SMS.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(req.params.id) } },
+        {
+            $lookup: {
+                from: "users",
+                foreignField: "_id",
+                localField: "sender",
+                as: "userData"
+            }
+        },
+        {
+            $lookup: {
+                from: "leads",
+                foreignField: "_id",
+                localField: "lead_id",
+                as: "leadData"
+            }
+        },
+        {
+            $lookup: {
+                from: "contacts",
+                foreignField: "_id",
+                localField: "contact_id",
+                as: "contactData"
+            }
+        },
+        {
+            $lookup: {
+                from: "tasks",
+                foreignField: "_id",
+                localField: "task_id",
+                as: "tasksData"
+            }
+        },
+        { $unwind: { path: '$userData', preserveNullAndEmptyArrays: true } },
+        { $unwind: { path: '$leadData', preserveNullAndEmptyArrays: true } },
+        { $unwind: { path: '$contactData', preserveNullAndEmptyArrays: true } },
+        { $unwind: { path: '$tasksData', preserveNullAndEmptyArrays: true } },
+        {
+            $addFields: {
+                senderName: { $concat: ["$userData.firstName", " ", "$userData.lastName"] },
+                reciverName: {
+                    $cond: {
+                        if: { $eq: ["$relatedTo", "Lead"] },
+                        then: { $concat: ["$leadData.firstName", " ", "$leadData.lastName"] },
+                        else: {
+                            $cond: {
+                                if: { $eq: ["$relatedTo", "Contact"] },
+                                then: { $concat: ["$contactData.firstName", " ", "$contactData.lastName"] },
+                                else: ""
+                            }
+                        }
+                    }
+                },
+                reciverNumber: {
+                    $cond: {
+                        if: { $eq: ["$relatedTo", "Lead"] },
+                        then: "$leadData.phoneNumber",
+                        else: {
+                            $cond: {
+                                if: { $eq: ["$relatedTo", "Contact"] },
+                                then: "$contactData.phoneNumber",
+                                else: ""
+                            }
+                        }
+                    }
+                },
+            }
+        },
+        {
+            $project: {
+                userData: 0,
+                tasksData: 0,
+                leadData: 0,
+                contactData: 0
+            }
+        }
+    ]);
+    res.status(200).json({ sms })
+}
 
-export default { index, contactSMS, leadSMS }
+export default { index, contactSMS, leadSMS, view }

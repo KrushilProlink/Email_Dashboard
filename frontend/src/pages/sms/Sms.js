@@ -143,7 +143,7 @@ const Sms = () => {
       setAllSms(result?.data?.result)
     }
   }
-  console.log(allSms.relatedTo);
+
   useEffect(() => {
     fetchdata();
   }, [userAction])

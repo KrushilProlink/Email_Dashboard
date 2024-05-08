@@ -7,7 +7,7 @@ router.get('/list', auth, SMS.index)
 router.post('/contact', auth, SMS.contactSMS)
 router.post('/lead', auth, SMS.leadSMS)
 // router.post('/add', auth, SMS.add)
-// router.get('/view/:id', auth, SMS.view)
+router.get('/view/:id', auth, SMS.view)
 // router.delete('/delete/:id', auth, SMS.deleteData)
 
 
