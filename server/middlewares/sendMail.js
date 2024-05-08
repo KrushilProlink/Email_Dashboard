@@ -4,12 +4,12 @@ const transporter = nodemailer.createTransport({
     host: 'smtp.office365.com',
     // host: 'sandbox.smtp.mailtrap.io',
     port: 587,
+    secure: false,
     auth: {
         user: process.env.user,
         pass: process.env.pass
     },
-    secure: false,
-    // tls: { rejectUnauthorized: false }
+    tls: { rejectUnauthorized: false }
 });
 
 const sendMail = async (to, subject, text) => {
