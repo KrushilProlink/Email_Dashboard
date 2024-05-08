@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import * as React from "react";
+import { useEffect } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -16,14 +17,17 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from "@mui/material";
 import { toast } from "react-toastify";
-import { apipost } from "../../service/api";
 // import { FiSave } from "react-icons/fi";
 // import { GiCancel } from "react-icons/gi";
 import Palette from "../../theme/palette";
+import { apiget, apipost } from "../../service/api";
 
 const Add = (props) => {
   const { open, handleClose, setUserAction } = props
   const userid = localStorage.getItem('user_id');
+  const userdata = JSON.parse(localStorage.getItem('user'));
+
+  const [user, setUser] = React.useState([])
 
 
   // -----------  validationSchema
@@ -32,11 +36,13 @@ const Add = (props) => {
     lastName: yup.string().required("Last Name is required"),
     dateOfBirth: yup.date().required("Date of Birth is required"),
     gender: yup.string().required("Gender is required"),
-    phoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid').required('Phone number is required'),
+    phoneNumber: yup.string().matches(/^(0)?[0-9]{9,14}$/, 'Phone number is invalid').required('Phone number is required'),
     emailAddress: yup.string().email('Invalid email').required("Email is required"),
     address: yup.string().required(),
-    alternatePhoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid'),
-    additionalEmailAddress: yup.string().email('Invalid email')
+    alternatePhoneNumber: yup.string().matches(/^(0)?[0-9]{9,14}$/, 'Phone number is invalid'),
+    additionalEmailAddress: yup.string().email('Invalid email'),
+    // assigned_agent: yup.string().required("Assigned Agent is required")
+
   });
 
   // -----------   initialValues
@@ -56,6 +62,7 @@ const Add = (props) => {
     referralSource: "",
     referralContactName: "",
     relationshipToReferrer: "",
+    assigned_agent: "",
     preferencesForMarketingCommunications: "",
     preferredLanguage: "",
     createdBy: userid
@@ -70,10 +77,15 @@ const Add = (props) => {
     if (result && result.status === 201) {
       formik.resetForm();
       handleClose();
-      toast.success(result.data.message)
     }
   }
 
+  const fetchUserData = async () => {
+    const result = await apiget('user/list')
+    if (result && result.status === 200) {
+      setUser(result?.data?.result)
+    }
+  }
   // formik
   const formik = useFormik({
     initialValues,
@@ -83,6 +95,9 @@ const Add = (props) => {
     },
   });
 
+  useEffect(() => {
+    fetchUserData();
+  }, [])
   return (
     <div>
       <Dialog
@@ -171,7 +186,6 @@ const Add = (props) => {
                   id="phoneNumber"
                   name="phoneNumber"
                   size="small"
-                  type="number"
                   fullWidth
                   value={formik.values.phoneNumber}
                   onChange={formik.handleChange}
@@ -244,7 +258,6 @@ const Add = (props) => {
                 <TextField
                   id="alternatePhoneNumber"
                   name="alternatePhoneNumber"
-                  type="number"
                   size="small"
                   fullWidth
                   value={formik.values.alternatePhoneNumber}
@@ -291,7 +304,7 @@ const Add = (props) => {
                 />
                 {formik.values.twitterProfile && <a href={`https://twitter.com/${formik.values.twitterProfile}`} target="_blank" rel="noreferrer">Link</a>}
               </Grid>
-              <Grid item xs={12} sm={12}>
+              <Grid item xs={12} md={6}>
                 <FormLabel>Preferred Contact Method</FormLabel>
                 <TextField
                   id="preferredContactMethod"
@@ -302,6 +315,43 @@ const Add = (props) => {
                   value={formik.values.preferredContactMethod}
                   onChange={formik.handleChange}
                 />
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <FormControl fullWidth>
+                  <FormLabel>Assigned Agent</FormLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="assigned_agent"
+                    name="assigned_agent"
+                    label=""
+                    size='small'
+                    fullWidth
+                    value={formik.values.assigned_agent}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.assigned_agent &&
+                      Boolean(formik.errors.assigned_agent)
+                    }
+                    helperText={
+                      formik.touched.assigned_agent && formik.errors.assigned_agent
+                    }
+                  >
+                    {userdata?.role === 'admin' ?
+                      user.map((item) => {
+                        return (
+                          <MenuItem key={item._id} value={item._id}>
+                            {`${item.firstName} ${item.lastName}`}
+                          </MenuItem>
+                        );
+                      })
+                      :
+                      <MenuItem key={userdata._id} value={userdata._id}>
+                        {`${userdata.firstName} ${userdata.lastName}`}
+                      </MenuItem>
+                    }
+                  </Select>
+                  <FormHelperText style={{ color: Palette.error.main }}>{formik.touched.assigned_agent && formik.errors.assigned_agent}</FormHelperText>
+                </FormControl>
               </Grid>
             </Grid>
             <Typography style={{ marginBottom: "15px" }} variant="h6" mt={2}>

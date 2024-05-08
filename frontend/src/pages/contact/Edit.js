@@ -26,6 +26,8 @@ const Edit = (props) => {
 
   const { open, handleClose, id, fetchContact } = props
   const [contactData, setContactData] = useState({});
+  const userdata = JSON.parse(localStorage.getItem('user'));
+  const [user, setUser] = useState([])
 
 
 
@@ -35,11 +37,13 @@ const Edit = (props) => {
     lastName: yup.string().required("Last Name is required"),
     dateOfBirth: yup.date().required("Date of Birth is required"),
     gender: yup.string().required("Gender is required"),
-    phoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid').required('Phone number is required'),
+    phoneNumber: yup.string().matches(/^(0)?[0-9]{9,14}$/, 'Phone number is invalid').required('Phone number is required'),
     emailAddress: yup.string().email('Invalid email').required("Email is required"),
     address: yup.string().required(),
-    alternatePhoneNumber: yup.string().matches(/^[0-9]{10,15}$/, 'Phone number is invalid'),
-    additionalEmailAddress: yup.string().email('Invalid email')
+    alternatePhoneNumber: yup.string().matches(/^(0)?[0-9]{9,14}$/, 'Phone number is invalid'),
+    additionalEmailAddress: yup.string().email('Invalid email'),
+    // assigned_agent: yup.string().required("Assigned Agent is required")
+
   });
 
   // -----------   initialValues
@@ -61,6 +65,7 @@ const Edit = (props) => {
     relationshipToReferrer: contactData?.relationshipToReferrer,
     preferencesForMarketingCommunications: contactData?.preferencesForMarketingCommunications,
     preferredLanguage: contactData?.preferredLanguage,
+    assigned_agent: contactData?.assigned_agent?._id,
     modifiedOn: ""
   };
 
@@ -79,15 +84,23 @@ const Edit = (props) => {
   const fetchdata = async () => {
     const result = await apiget(`contact/view/${id}`)
     if (result && result.status === 200) {
-      setContactData(result?.data[0])
+      setContactData(result?.data)
     }
   }
 
+  const fetchUserData = async () => {
+    const result = await apiget('user/list')
+    if (result && result.status === 200) {
+      setUser(result?.data?.result)
+    }
+  }
   useEffect(() => {
     fetchdata();
   }, [open])
 
-
+  useEffect(() => {
+    fetchUserData();
+  }, [])
   // formik
   const formik = useFormik({
     initialValues,
@@ -112,6 +125,7 @@ const Edit = (props) => {
         relationshipToReferrer: values.relationshipToReferrer,
         preferencesForMarketingCommunications: values.preferencesForMarketingCommunications,
         preferredLanguage: values.preferredLanguage,
+        assigned_agent: values.assigned_agent,
         modifiedOn: new Date()
       }
       editContact(ContactData)
@@ -209,7 +223,6 @@ const Edit = (props) => {
                   id="phoneNumber"
                   name="phoneNumber"
                   size="small"
-                  type="number"
                   fullWidth
                   value={formik.values.phoneNumber}
                   onChange={formik.handleChange}
@@ -281,7 +294,6 @@ const Edit = (props) => {
                 <TextField
                   id="alternatePhoneNumber"
                   name="alternatePhoneNumber"
-                  type="number"
                   size="small"
                   fullWidth
                   value={formik.values.alternatePhoneNumber}
@@ -334,7 +346,7 @@ const Edit = (props) => {
                 />
                 {formik.values.twitterProfile && <a href={`https://twitter.com/${formik.values.twitterProfile}`} target="_blank" rel="noreferrer">Link</a>}
               </Grid>
-              <Grid item xs={12} sm={12}>
+              <Grid item xs={12} md={6}>
                 <FormLabel>Preferred Contact Method</FormLabel>
                 <TextField
                   id="preferredContactMethod"
@@ -345,6 +357,36 @@ const Edit = (props) => {
                   value={formik.values.preferredContactMethod}
                   onChange={formik.handleChange}
                 />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <FormLabel>Assigned Agent</FormLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="assigned_agent"
+                    name="assigned_agent"
+                    label=""
+                    size='small'
+                    fullWidth
+                    value={formik.values.assigned_agent}
+                    onChange={formik.handleChange}
+
+                  >
+                    {userdata?.role === 'admin' ?
+                      user.map((item) => {
+                        return (
+                          <MenuItem key={item._id} value={item._id}>
+                            {`${item.firstName} ${item.lastName}`}
+                          </MenuItem>
+                        );
+                      })
+                      :
+                      <MenuItem key={userdata._id} value={userdata._id}>
+                        {`${userdata.firstName} ${userdata.lastName}`}
+                      </MenuItem>
+                    }
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
             <Typography style={{ marginBottom: "15px" }} variant="h6" mt={2}>

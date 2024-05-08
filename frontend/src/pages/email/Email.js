@@ -13,6 +13,7 @@ import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 // mock
 import { DeleteOutline } from '@mui/icons-material';
 import DeleteModel from '../../components/Deletemodle'
+import AddEmail from './Add';
 import { apiget, deleteManyApi } from '../../service/api';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify/Iconify';
@@ -45,11 +46,16 @@ const Email = () => {
     const [userAction, setUserAction] = useState(null);
     const [emailList, setEmailList] = useState([]);
     const [selectedRowIds, setSelectedRowIds] = useState([]);
+    const [openAdd, setOpenAdd] = useState(false);
 
     const navigate = useNavigate()
 
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole")
+
+    // open add model
+    const handleOpenAdd = () => setOpenAdd(true);
+    const handleCloseAdd = () => setOpenAdd(false);
 
     const handleSelectionChange = (selectionModel) => {
         setSelectedRowIds(selectionModel);
@@ -106,20 +112,23 @@ const Email = () => {
         if (result && result.status === 200) {
             setEmailList(result?.data?.result)
         }
-    }
+    };
 
     useEffect(() => {
         fetchdata();
     }, [userAction])
+
     return (
         <>
-            <Container>
+            <AddEmail open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
+
+            <Container maxWidth>
                 <TableStyle>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                         <Typography variant="h4">
                             Emails List
                         </Typography>
-                        <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} >
+                        <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd} >
                             New Email
                         </Button>
                     </Stack>

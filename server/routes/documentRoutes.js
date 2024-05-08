@@ -9,8 +9,7 @@ router.get('/list', auth, Document.index);
 router.post('/upload', auth, upload.single('file'), Document.fileUpload);
 router.get('/file/:fileId', Document.downloadFile);
 router.delete('/delete/:id', auth, Document.deleteData);
-router.post('/deletemany', auth, Document.deleteMany)
-
-
+router.post('/deletemany', auth, Document.deleteMany);
+router.put('/assign', auth, Document.assignToUpdates);
 
 export default router

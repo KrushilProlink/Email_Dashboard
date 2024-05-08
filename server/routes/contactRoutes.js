@@ -5,6 +5,7 @@ const router = Router();
 
 router.get('/list', auth, Contact.index)
 router.post('/add', auth, Contact.add)
+router.post('/addMany', auth, Contact.addMany)
 router.post('/sms', auth, Contact.SMS)
 router.put('/edit/:id', auth, Contact.edit)
 router.get('/view/:id', auth, Contact.view)

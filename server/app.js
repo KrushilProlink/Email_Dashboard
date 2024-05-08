@@ -25,6 +25,6 @@ app.listen(port, () => {
 });
 
 //Database Connection
-const DATABASE_URL = process.env.DB_URL
+const DATABASE_URL = process.env.DB_URL || 'mongodb://127.0.0.1:27017'
 const DB_NAME = process.env.DB_NAME
 connectDB(DATABASE_URL, DB_NAME);

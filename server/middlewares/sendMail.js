@@ -2,28 +2,33 @@ import nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.office365.com',
+    // host: 'sandbox.smtp.mailtrap.io',
     port: 587,
     auth: {
-        user: '',
-        pass: ''
-    }
+        user: process.env.user,
+        pass: process.env.pass
+    },
+    secure: false,
+    tls: { rejectUnauthorized: false }
 });
 
-const sendMail = async (to, subject, message, html) => {
+const sendMail = async (to, subject, text) => {
     try {
+        console.log(process.env.user, process.env.pass)
         const mailOptions = {
-            from: 'm', // Replace with your email address
+            from: process.env.user, // Replace with your email address
             to: to, // Replace with the recipient's email address
             subject: subject,
-            text: message,
+            // text: text,
+            html: text
         };
 
         const info = await transporter.sendMail(mailOptions);
-
-        console.log('Email sent:', info.response);
-        // res.send('Email sent successfully');
+        console.log('Email sent: ' + info.response);
+        return info.response;
     } catch (error) {
-        console.log('Error sending email:', error);
+        console.error('Failed to send email:', error);
+        throw error;
         // res.status(500).send('Error sending email');
     }
 }

@@ -15,7 +15,7 @@ import * as yup from "yup";
 import { Autocomplete, FormControl, FormHelperText, FormLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { toast } from "react-toastify";
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import { apiget, apipost } from "../../service/api";
 
 const Addcalls = (props) => {
@@ -59,7 +59,6 @@ const Addcalls = (props) => {
         if (result && result.status === 201) {
             formik.resetForm();
             handleClose();
-            toast.success(result.data.message)
         }
     }
 

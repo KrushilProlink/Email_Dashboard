@@ -1,15 +1,22 @@
 import Meetings from "../model/Meetings.js";
 import Tasks from "../model/Tasks.js";
-
+import User from "../model/User.js";
 
 const index = async (req, res) => {
     const query = req.query
     query.deleted = false;
 
+    const user = await User.findById(req.user.userId)
+    if (user?.role !== "admin") {
+        delete query.createdBy
+        query.$or = [{ createdBy: req.user.userId }, { assignTo: req.user.userId }];
+    }
+
     let allData = await Tasks.find(query).
         populate("createdBy", ["firstName", "lastName"])
         .populate("lead_id", ["firstName", "lastName"])
         .populate("contact_id", ["firstName", "lastName"])
+        .populate("assignTo", ["firstName", "lastName"])
 
     let totalRecords = allData.length
     res.send({ result: allData, total_recodes: totalRecords })

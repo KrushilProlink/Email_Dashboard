@@ -45,7 +45,7 @@ export const apipost = async (path, data) => {
             localStorage.setItem('token', response?.data?.token);
         }
 
-        if (response && response.status === 200) {
+        if (response && response.status === 200 || response.status === 201) {
             toast.success(response.data.message);
         }
         return response;

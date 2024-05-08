@@ -57,7 +57,7 @@ const Add = () => {
 
     return (
         <div>
-            <Container>
+            <Container maxWidth>
                 <Grid container display="flex" alignItems="center">
                     <Grid container display="flex" alignItems="center">
                         <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>
@@ -82,7 +82,7 @@ const Add = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
-                <Box height={"680px"} bgcolor={"gray"} className="editerHeight" mt={1}>
+                <Box height={"680px"} bgcolor={"#edeff1"} className="editerHeight" mt={1}>
                     <EmailEditor ref={emailEditorRef} />
                 </Box>
             </Container>

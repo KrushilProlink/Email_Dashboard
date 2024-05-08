@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
-import * as React from "react";
+import { useState, useEffect } from "react";
+import ReactQuill from 'react-quill';
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,12 +14,15 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { useFormik } from "formik";
 import * as yup from "yup";
 // eslint-disable-next-line import/no-unresolved
-import { apipost } from "src/service/api";
+import { apipost, apiget } from "src/service/api";
 import { toast } from "react-toastify";
-import { FormLabel } from "@mui/material";
+import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, FormControl, Select, MenuItem, } from "@mui/material";
 
 const Addemail = (props) => {
-    const { open, handleClose, _id, setUserAction, receiver } = props
+    const { open, handleClose, _id, setUserAction, receiver, module } = props
+
+    const [messageType, setMessageType] = useState("template");
+    const [emailTemplateData, setEmailTemplateData] = useState([]);
 
     const user = JSON.parse(localStorage.getItem('user'))
 
@@ -26,24 +30,22 @@ const Addemail = (props) => {
     const validationSchema = yup.object({
         subject: yup.string().required("Subject is required"),
         receiver: yup.string().email().required("Receiver is required"),
-        message: yup.string().required("Message is required"),
     });
 
     // -----------   initialValues
     const initialValues = {
-        sender: user?.emailAddress,
+        sender: user?._id,
         subject: "",
         receiver: receiver?.emailAddress,
         message: "",
-        lead_id: _id,
-        contact_id: _id,
+        lead_id: module === "Lead" ? _id : "",
+        contact_id: module === "Contact" ? _id : "",
         createdBy: user?._id,
-        policy_id: _id
-
+        html: "",
     };
 
-    // add claim api
-    const addClaim = async (values) => {
+    // add email api
+    const addEmail = async (values) => {
         const data = values;
         const result = await apipost('email/add', data)
         setUserAction(result)
@@ -51,19 +53,46 @@ const Addemail = (props) => {
         if (result && result.status === 201) {
             handleClose();
             formik.resetForm();
-            toast.success(result.data.message)
+            // toast.success(result.data.message)
         }
     }
     // formik
     const formik = useFormik({
         initialValues,
         validationSchema,
+        validate: (values) => {
+            const errors = {};
+            if (messageType === 'own' && !values.message) {
+                errors.message = 'Message is required';
+            } else if (messageType === 'template' && !values.html) {
+                errors.html = 'Template is required';
+            }
+            return errors;
+        },
         enableReinitialize: true,
         onSubmit: async (values, { resetForm }) => {
-            addClaim(values)
+            addEmail(values);
             resetForm();
         },
     });
+
+    const handleMessageTypeChange = (e) => {
+        setMessageType(e.target.value);
+        formik.setFieldValue('message', '');
+        formik.setFieldValue('html', '');
+    };
+
+    // emailtemplate api
+    const fetchEmailTemplatesData = async () => {
+        const result = await apiget('emailtemplate/list')
+        if (result && result.status === 200) {
+            setEmailTemplateData(result?.data?.result)
+        }
+    }
+
+    useEffect(() => {
+        fetchEmailTemplatesData();
+    }, [open]);
 
     return (
         <div>
@@ -84,7 +113,10 @@ const Addemail = (props) => {
                     <Typography variant="h6">Email </Typography>
                     <Typography>
                         <ClearIcon
-                            onClick={handleClose}
+                            onClick={() => {
+                                formik.resetForm();
+                                handleClose();
+                            }}
                             style={{ cursor: "pointer" }}
                         />
                     </Typography>
@@ -108,6 +140,7 @@ const Addemail = (props) => {
                                         name="receiver"
                                         size="small"
                                         fullWidth
+                                        disabled
                                         value={formik.values.receiver}
                                         onChange={formik.handleChange}
                                         error={
@@ -137,28 +170,59 @@ const Addemail = (props) => {
                                         }
                                     />
                                 </Grid>
-
-
-                                <Grid item xs={12} sm={12}>
+                                <Grid item xs={12} sm={12} md={12}>
                                     <FormLabel>Message</FormLabel>
-                                    <TextField
-                                        id="message"
-                                        name="message"
-                                        size="small"
-                                        fullWidth
-                                        rows={4}
-                                        multiline
-                                        value={formik.values.message}
-                                        onChange={formik.handleChange}
-                                        error={
-                                            formik.touched.message &&
-                                            Boolean(formik.errors.message)
-                                        }
-                                        helperText={
-                                            formik.touched.message && formik.errors.message
-                                        }
-                                    />
+                                    <RadioGroup
+                                        row
+                                        name="messageType"
+                                        value={messageType}
+                                        onChange={handleMessageTypeChange}
+                                    >
+                                        <FormControlLabel value="template" control={<Radio />} label="Template" />
+                                        <FormControlLabel value="own" control={<Radio />} label="Own" />
+                                    </RadioGroup>
                                 </Grid>
+                                {messageType === 'template' && (
+                                    <Grid item xs={12} sm={12} md={12}>
+                                        <FormControl fullWidth>
+                                            {/* <FormLabel>Template Message</FormLabel> */}
+                                            <Select
+                                                fullWidth
+                                                size="small"
+                                                id="html"
+                                                name="html"
+                                                value={formik.values.html}
+                                                onChange={(e) => formik.setFieldValue('html', e.target.value)}
+                                                error={formik.touched.html && Boolean(formik.errors.html)}
+                                            >
+                                                {emailTemplateData?.map(template => (
+                                                    <MenuItem key={template._id} value={template.html}>{template.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                            <FormHelperText
+                                                error={
+                                                    formik.touched.html && Boolean(formik.errors.html)
+                                                }
+                                            >
+                                                {formik.touched.html && formik.errors.html}
+                                            </FormHelperText>
+                                        </FormControl>
+                                    </Grid>
+                                )}
+                                {messageType === 'own' && (
+                                    <Grid item xs={12} sm={12} md={12}>
+                                        {/* <FormLabel>Message</FormLabel> */}
+                                        <ReactQuill
+                                            name="message"
+                                            value={formik.values.message}
+                                            onChange={(value) => formik.setFieldValue('message', value)}
+                                            disabled={messageType === 'template'}
+                                        />
+                                        <FormHelperText error={formik.touched.message && Boolean(formik.errors.message)}>
+                                            {formik.touched.message && formik.errors.message}
+                                        </FormHelperText>
+                                    </Grid>
+                                )}
                             </Grid>
                         </DialogContentText>
                     </form>

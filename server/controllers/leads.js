@@ -6,10 +6,18 @@ import Meetings from "../model/Meetings.js";
 import Tasks from "../model/Tasks.js";
 import Emails from "../model/emails.js";
 import sendSMS from "../middlewares/sendSms.js";
+import User from "../model/User.js";
 
 const index = async (req, res) => {
   const query = req.query
   query.deleted = false;
+
+  const user = await User.findById(req.user.userId)
+  if (user?.role !== "admin") {
+    delete query.createdBy
+    query.$or = [{ createdBy: req.user.userId }, { assigned_agent: req.user.userId }];
+  }
+
   let allData = await Lead.find(query).populate({
     path: 'createdBy',
     match: { deleted: false } // Populate only if createBy.deleted is false
@@ -31,7 +39,8 @@ const SMS = async (req, res) => {
     let data = await Lead.find(query)
 
     data.forEach((item) => {
-      sendSMS({ to: `+91${item.phoneNumber}`, message })
+      // sendSMS({ to: `+91${item.phoneNumber}`, message })
+      sendSMS({ to: `+254${item.phoneNumber}`, message })
     })
 
     res.send({ req: data, message: "SMS send successfully" })
@@ -51,6 +60,17 @@ const add = async (req, res) => {
     res.status(500).json({ error: 'Failed to create Lead' });
   }
 }
+
+const addMany = async (req, res) => {
+  try {
+    const data = req.body;
+    const insertedLead = await Lead.insertMany(data);
+    res.status(200).json({ success: true, leads: insertedLead, message: 'Leads imported successfully' });
+  } catch (err) {
+    console.error('Failed to create Leads :', err);
+    res.status(400).json({ success: false, message: 'Failed to create Leads', error: err.toString() });
+  }
+};
 
 const edit = async (req, res) => {
   try {
@@ -236,4 +256,4 @@ const deleteMany = async (req, res) => {
   }
 };
 
-export default { index, add, edit, view, deleteData, deleteMany, SMS }
+export default { index, add, edit, view, deleteData, deleteMany, SMS, addMany }

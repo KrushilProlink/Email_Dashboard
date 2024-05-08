@@ -15,7 +15,7 @@ const Overview = ({ data, setUserAction }) => {
   return (
     <div>
       {/* Add Email Model */}
-      <Addemail open={open} handleClose={handleClose} _id={data?._id} receiver={data} setUserAction={setUserAction} />
+      <Addemail open={open} handleClose={handleClose} _id={data?._id} receiver={data} setUserAction={setUserAction} module="Contact" />
 
       <Card style={{borderTopLeftRadius:"0px",borderTopRightRadius:"0px"}}>
         <Box p={3}>

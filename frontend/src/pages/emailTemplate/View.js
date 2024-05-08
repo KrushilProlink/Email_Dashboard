@@ -23,11 +23,9 @@ const View = () => {
     const handleOpenDelete = () => setOpendelete(true);
     const handleCloseDelete = () => setOpendelete(false);
 
-
     const saveDesign = () => {
         if (name !== "") {
             emailEditorRef.current.editor?.exportHtml(async (allData) => {
-
                 const { html, design } = allData
 
                 const data = {
@@ -58,17 +56,22 @@ const View = () => {
         }
     };
 
-    const onLoad = () => {
-        emailEditorRef.current?.editor?.loadDesign(design);
-    };
-
     const fetchData = async () => {
         const result = await apiget(`emailtemplate/view/${params.id}`)
         if (result && result.status === 200) {
             setDesign(result?.data?.emailtemplate?.design)
             setName(result?.data?.emailtemplate?.name)
+
+            emailEditorRef?.current?.editor?.loadDesign(result?.data?.emailtemplate?.design);
         }
     };
+
+    // const onLoad = () => {
+    //     if (design) {
+    //         emailEditorRef?.current?.editor?.loadDesign(design);
+    //         console.log(design, "design")
+    //     }
+    // };
 
     const remove = async () => {
         await apidelete(`emailtemplate/delete/${params.id}`)
@@ -86,7 +89,7 @@ const View = () => {
         <div>
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={remove} id={params.id} />
 
-            <Container>
+            <Container maxWidth>
                 <Grid container display="flex" alignItems="center">
                     <Grid container display="flex" alignItems="center">
                         <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>
@@ -112,8 +115,8 @@ const View = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
-                <Box height={"680px"} bgcolor={"gray"} className="editerHeight" mt={1}>
-                    <EmailEditor ref={emailEditorRef} onLoad={onLoad} />
+                <Box height={"680px"} bgcolor={"#edeff1"} className="editerHeight" mt={1}>
+                    <EmailEditor ref={emailEditorRef} />
                 </Box>
             </Container>
         </div>

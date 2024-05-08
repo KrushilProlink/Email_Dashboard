@@ -60,7 +60,6 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
         if (result && result.status === 201) {
             handleClose()
             formik.resetForm();
-            toast.success(result?.data?.message)
         }
     }
 
@@ -77,6 +76,7 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
     const fetchdata = async () => {
         const result = await apiget('user/list')
         if (result && result.status === 200) {
+            // const data = result?.data?.result?.filter(item => item._id !== userdata._id)
             setUser(result?.data?.result)
         }
     }
@@ -248,22 +248,18 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
                                             onChange={formik.handleChange}
                                             error={formik.touched.assignTo && Boolean(formik.errors.assignTo)}
                                         >
-                                            {
-                                                user.role === 'admin' ?
-                                                    user.map((user) => {
-                                                        if (user.role === 'admin') {
-                                                            return (
-                                                                <MenuItem key={user._id} value={user._id}>
-                                                                    {`${user.firstName} ${user.lastName}`}
-                                                                </MenuItem>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    })
-                                                    :
-                                                    <MenuItem key={userdata._id} value={userdata._id}>
-                                                        {`${userdata.firstName} ${userdata.lastName}`}
-                                                    </MenuItem>
+                                            {userdata?.role === 'admin' ?
+                                                user.map((item) => {
+                                                    return (
+                                                        <MenuItem key={item._id} value={item._id}>
+                                                            {`${item.firstName} ${item.lastName}`}
+                                                        </MenuItem>
+                                                    );
+                                                })
+                                                :
+                                                <MenuItem key={userdata._id} value={userdata._id}>
+                                                    {`${userdata.firstName} ${userdata.lastName}`}
+                                                </MenuItem>
                                             }
                                         </Select>
                                         <FormHelperText
