@@ -26,6 +26,9 @@ import EmailTemplate from './pages/emailTemplate/EmailTemplate';
 import AddEmailTemplate from './pages/emailTemplate/Add'
 import ViewEmailTemplate from './pages/emailTemplate/View'
 import ImportView from './components/Import/ImportView';
+import Sms from './pages/sms/Sms';
+import SmsView from './pages/sms/View';
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -34,7 +37,7 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        {  element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user/view/:id', element: <UserView /> },
         { path: 'lead', element: <Lead /> },
@@ -54,6 +57,8 @@ export default function Router() {
         { path: 'email/view/:id', element: <EmailView /> },
         { path: 'task', element: <Task /> },
         { path: 'task/view/:id', element: <TaskView /> },
+        { path: 'sms', element: <Sms /> },
+        { path: 'sms/view/:id', element: <SmsView /> },
         { path: 'emailtemplate', element: <EmailTemplate /> },
         { path: 'emailtemplate/add', element: <AddEmailTemplate /> },
         { path: 'emailtemplate/view/:id', element: <ViewEmailTemplate /> },
