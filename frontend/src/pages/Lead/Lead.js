@@ -162,7 +162,6 @@ const Lead = () => {
         };
         return (
           <>
-            <EditModel open={openEdit} handleClose={handleCloseEdit} id={id} fetchLead={fetchdata} />
             <Button variant='text' size='small' color='primary' onClick={() => handleFirstNameClick(params?.row?._id)}><EditIcon /></Button>
           </>
         );
@@ -190,6 +189,8 @@ const Lead = () => {
     <>
       {/* Add Lead Model */}
       <AddLead open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
+      {/* Edit Lead Model */}
+      <EditModel open={openEdit} handleClose={handleCloseEdit} id={id} fetchLead={fetchdata} />
 
       <Container maxWidth>
         <Stack direction="row" alignItems="center" mb={5} justifyContent={"space-between"}>

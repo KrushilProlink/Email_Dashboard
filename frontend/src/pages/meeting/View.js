@@ -39,8 +39,8 @@ const View = () => {
 
 
 
-   // tab
-   const handleChange = (event, newValue) => setValue(newValue);
+    // tab
+    const handleChange = (event, newValue) => setValue(newValue);
 
     const back = () => {
         navigate('/dashboard/meeting')
@@ -72,11 +72,11 @@ const View = () => {
             {/* open Delete mode */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />
 
-            <Container>
+            <Container maxWidth>
                 <Grid container display="flex" alignItems="center">
                     <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>
                         <Header
-                            title="Call Details"
+                            title="Meeting Details"
                         />
                         <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
                             {/* Action Butoon */}
@@ -96,7 +96,7 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={meetingData}/>
+                        <Overview data={meetingData} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
                         <Other data={meetingData} />

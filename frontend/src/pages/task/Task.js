@@ -141,7 +141,7 @@ const Task = () => {
         };
         return (
           <Box onClick={handleFirstNameClick}>
-            {params?.row?.relatedTo === "Lead" ? `${params?.row?.lead_id?.firstName} ${params?.row?.lead_id?.lastName}` : `${params?.row?.contact_id?.firstName} ${params?.row?.contact_id?.lastName}`
+            {params?.row?.relatedTo === "Lead" ? `${params?.row?.lead_id?.firstName} ${params?.row?.lead_id?.lastName}` : params?.row?.relatedTo === "Contact" ? `${params?.row?.contact_id?.firstName} ${params?.row?.contact_id?.lastName}` : "-"
             }
           </Box>
         );
