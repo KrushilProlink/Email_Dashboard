@@ -34,3 +34,13 @@ const sendMail = async (to, subject, text) => {
 
 export default sendMail
 
+
+//  user = hello@anzianoinsuranceagency.com
+//  pass = Hello@Anziano
+
+//  Username:	hello@anzianoinsuranceagency.com
+//  Password:	Hello@Anziano
+//  Incoming Server:	mail.anzianoinsuranceagency.com
+//  IMAP Port: 993 POP3 Port: 995
+//  Outgoing Server:	mail.anzianoinsuranceagency.com
+//  SMTP Port: 465
