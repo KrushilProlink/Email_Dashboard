@@ -37,10 +37,11 @@ const initiateSTKPush = async (req, res) => {
 
         const timestamp = getTimestamp();
         const password = new Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString('base64');
+        console.log("req.body---:: ", req.body);
 
+        console.log("PORT---:: ", process.env.PORT);
         const callback_url = await ngrok.connect(process.env.PORT);
         console.log("### ${callback_url}/lipanampesa/stkPushCallback/${Order_ID} ", `${callback_url}/lipanampesa/stkPushCallback/${Order_ID}`); //  https://0907-2405-201-200c-b265-69d6-d04a-9efb-1606.ngrok-free.app/lipanampesa/stkPushCallback/1236
-        console.log("Order_ID ", Order_ID);
 
         const api = ngrok.getApi();
         const tunnels = await api.listTunnels();
@@ -68,20 +69,25 @@ const initiateSTKPush = async (req, res) => {
             }
         ).then((response) => {
             res.send({ success: true, data: response.data });
-            /*
-                {
-                    "MerchantRequestID": "c0d2-4b9a-a71a-12bae346ef6e1774159",
-                    "CheckoutRequestID": "ws_CO_29042024142925427708374149",
-                    "ResponseCode": "0",
-                    "ResponseDescription": "Success. Request accepted for processing",
-                    "CustomerMessage": "Success. Request accepted for processing"
-                }
-            */
+
+            //      {
+            //             "success": true,
+            //             "data": {
+            //                 "MerchantRequestID": "6e86-45dd-91ac-fd5d4178ab522299708",
+            //                 "CheckoutRequestID": "ws_CO_08052024084521434708374149",
+            //                 "ResponseCode": "0",
+            //                 "ResponseDescription": "Success. Request accepted for processing",
+            //                 "CustomerMessage": "Success. Request accepted for processing"
+            //              }
+            //          }
+
         }).catch((error) => {
+            console.log("error1---:: ", error);
             res.status(503).send({ success: false, message: "Error with the stk push", error: error });
         });
 
     } catch (error) {
+        console.log("error2---:: ", error);
         res.status(503).send({ success: false, message: "Something went wrong while trying to create LipaNaMpesa details. Contact admin", error: error });
     }
 };
