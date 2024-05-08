@@ -6,8 +6,8 @@ const transporter = nodemailer.createTransport({
     port: 587,
     secure: false,
     auth: {
-        user: "denish.prolink@gmail.com",
-        pass: "prolink@D17"
+        user: process.env.user,
+        pass: process.env.pass
     },
     tls: { rejectUnauthorized: false }
 });
@@ -16,7 +16,7 @@ const sendMail = async (to, subject, text) => {
     try {
         console.log(process.env.user, process.env.pass)
         const mailOptions = {
-            from: "denish.prolink@gmail.com", // Replace with your email address
+            from: process.env.user, // Replace with your email address
             to: to, // Replace with the recipient's email address
             subject: subject,
             // text: text,
