@@ -9,6 +9,7 @@ node_modules
 .pnp.js
 
 server/.env
+server/uploads
 
 */build/
 ./client/build/
