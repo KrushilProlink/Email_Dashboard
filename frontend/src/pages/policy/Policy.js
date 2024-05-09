@@ -1,21 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
-// @mui
-import { Card, Stack, Button, Container, Typography, Box } from '@mui/material';
-// components
-import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { DeleteOutline } from '@mui/icons-material';
-import Iconify from '../../components/iconify';
-// sections
-// mock
-import AddPolicy from './Add'
-import DeleteModel from '../../components/Deletemodle'
-import { apiget, deleteManyApi } from '../../service/api';
-import TableStyle from '../../components/TableStyle';
-import { fetchPolicyData } from '../../redux/slice/policySlice';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
+import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import DeleteModel from '../../components/Deletemodle';
+import TableStyle from '../../components/TableStyle';
+import Iconify from '../../components/iconify';
+import { fetchPolicyData } from '../../redux/slice/policySlice';
+import { deleteManyApi } from '../../service/api';
+import AddPolicy from './Add';
 
 // ----------------------------------------------------------------------
 
@@ -140,7 +136,7 @@ const Policy = () => {
           <Box width="100%">
             {isLoading ? (
               <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
-                <span class="loader"></span>
+                <span className="loader" />
               </Card>
             ) : (
               <Card style={{ height: "600px", paddingTop: "15px" }}>

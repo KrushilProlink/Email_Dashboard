@@ -1,14 +1,14 @@
 import ReactDOM from 'react-dom/client';
 
 //
-import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-import reportWebVitals from './reportWebVitals';
-import { persistor, store } from './redux/store';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
+import App from './App';
+import { persistor, store } from './redux/store';
+import reportWebVitals from './reportWebVitals';
+import * as serviceWorker from './serviceWorker';
 
 // ----------------------------------------------------------------------
 

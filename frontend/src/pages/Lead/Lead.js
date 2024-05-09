@@ -213,7 +213,7 @@ const Lead = () => {
           <Box width="100%">
             {isLoading ? (
               <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
-                <span class="loader"></span>
+                <span className="loader" />
               </Card>
             ) : (
               <Card style={{ height: "600px", paddingTop: "15px" }}>

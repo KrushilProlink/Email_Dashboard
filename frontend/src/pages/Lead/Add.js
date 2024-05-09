@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
 import ClearIcon from "@mui/icons-material/Clear";
 import { Autocomplete, CircularProgress, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -9,15 +8,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
-import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
-import { toast } from 'react-toastify';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import * as yup from "yup";
 
-import { apiget, apipost } from '../../service/api';
-import { policyTypeList } from '../../_mock/data';
-import Palette from '../../theme/palette';
 import { LoadingButton } from '@mui/lab';
+import { policyTypeList } from '../../_mock/data';
+import { apipost } from '../../service/api';
+import Palette from '../../theme/palette';
 
 const Add = (props) => {
 

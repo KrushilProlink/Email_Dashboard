@@ -2,6 +2,9 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 // @mui
+import { DeleteOutline, FileUploadOutlined } from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
+import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import {
     Box,
     Button,
@@ -10,23 +13,18 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { DeleteOutline, FileUploadOutlined } from '@mui/icons-material';
-import EditIcon from '@mui/icons-material/Edit';
-import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-// components
-import Iconify from '../../components/iconify';
+import { fetchContactData } from '../../redux/slice/contactSlice';
 import DeleteModel from '../../components/Deletemodle';
+import ImportModel from '../../components/Import/ImportModel';
 import SMSModel from '../../components/SMSModel';
 import TableStyle from '../../components/TableStyle';
-import { apiget, apipost, deleteManyApi } from '../../service/api';
+import Iconify from '../../components/iconify';
+import { apipost, deleteManyApi } from '../../service/api';
 import AddContact from './Add';
 import EditContact from './Edit';
-import ImportModel from '../../components/Import/ImportModel';
-import { fetchContactData } from 'src/redux/slice/contactSlice';
-import { useDispatch, useSelector } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -213,7 +211,7 @@ const Contact = () => {
                     <Box width="100%">
                         {isLoading ? (
                             <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
-                                <span class="loader"></span>
+                                <span className="loader" />
                             </Card>
                         ) : (
                             <Card style={{ height: "600px", paddingTop: "15px" }}>

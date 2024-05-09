@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import ClearIcon from "@mui/icons-material/Clear";
 import { Autocomplete, CircularProgress, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
@@ -15,11 +15,11 @@ import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import * as yup from "yup";
 
-import { policyTypeList } from '../../_mock/data';
-import { apiget, apiput } from '../../service/api';
-import Palette from '../../theme/palette';
-import { useSelector } from 'react-redux';
 import { LoadingButton } from '@mui/lab';
+import { useSelector } from 'react-redux';
+import { policyTypeList } from '../../_mock/data';
+import { apiput } from '../../service/api';
+import Palette from '../../theme/palette';
 
 const Edit = (props) => {
 

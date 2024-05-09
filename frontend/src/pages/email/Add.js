@@ -1,28 +1,27 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ClearIcon from "@mui/icons-material/Clear";
+import { Autocomplete, DialogContentText, FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
-import ClearIcon from "@mui/icons-material/Clear";
+import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
-import * as yup from "yup";
-import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, Autocomplete, DialogContentText } from "@mui/material";
-import { apipost, apiget } from "../../service/api";
-import Palette from "../../theme/palette";
+import { useEffect, useState } from "react";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLeadData } from "../../redux/slice/leadSlice";
+import * as yup from "yup";
 import { fetchContactData } from "../../redux/slice/contactSlice";
 import { fetchTemplateData } from "../../redux/slice/emailTemplateSlice";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { apipost } from "../../service/api";
 
 const Add = (props) => {
     const { open, handleClose, setUserAction } = props;

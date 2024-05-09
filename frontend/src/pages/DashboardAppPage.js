@@ -1,27 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
-// @mui
+import { Container, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
-// components
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useDispatch } from 'react-redux';
 import Iconify from '../components/iconify';
-// sections
+import { fetchUserData } from '../redux/slice/userSlice';
 import {
-  AppTasks,
+  AppConversionRates,
+  AppCurrentSubject,
+  AppCurrentVisits,
   AppNewsUpdate,
   AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
+  AppTasks,
   AppTrafficBySite,
+  AppWebsiteVisits,
   AppWidgetSummary,
-  AppCurrentSubject,
-  AppConversionRates,
 } from '../sections/@dashboard/app';
 import { apiget } from '../service/api';
-import { fetchUserData } from 'src/redux/slice/userSlice';
-import { useDispatch, useSelector } from 'react-redux';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
