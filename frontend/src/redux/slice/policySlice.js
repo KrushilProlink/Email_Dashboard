@@ -1,19 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { apiget } from '../../service/api';
 
-export const fetchContactData = createAsyncThunk('fetchContactData', async () => {
+export const fetchPolicyData = createAsyncThunk('fetchPolicyData', async () => {
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole");
     try {
-        const response = await apiget(userRole === "admin" ? `contact/list` : `contact/list/?createdBy=${userid}`);
+        const response = await apiget(userRole === "admin" ? `policy/list` : `policy/list/?createdBy=${userid}`);
         return response?.data?.result;
     } catch (error) {
         throw error;
     }
 });
 
-const contactSlice = createSlice({
-    name: 'contactDetails',
+const policySlice = createSlice({
+    name: 'policyDetails',
     initialState: {
         data: [],
         isLoading: false,
@@ -21,15 +21,15 @@ const contactSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchContactData.pending, (state) => {
+            .addCase(fetchPolicyData.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(fetchContactData.fulfilled, (state, action) => {
+            .addCase(fetchPolicyData.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.data = action.payload;
                 state.error = "";
             })
-            .addCase(fetchContactData.rejected, (state, action) => {
+            .addCase(fetchPolicyData.rejected, (state, action) => {
                 state.isLoading = false;
                 state.data = [];
                 state.error = action.error.message;
@@ -37,4 +37,4 @@ const contactSlice = createSlice({
     },
 });
 
-export default contactSlice.reducer;
+export default policySlice.reducer;

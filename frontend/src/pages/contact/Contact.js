@@ -108,7 +108,7 @@ const Contact = () => {
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole")
 
-    const allData = useSelector((state) => state?.contactDetails?.data)
+    const { data, isLoading } = useSelector((state) => state?.contactDetails)
 
     // open add model
     const handleOpenAdd = () => setOpenAdd(true);
@@ -211,17 +211,23 @@ const Contact = () => {
                         </Button>
                     </Stack>
                     <Box width="100%">
-                        <Card style={{ height: "600px", paddingTop: "15px" }}>
-                            <DataGrid
-                                rows={allData}
-                                columns={columns}
-                                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchContactData }) }}
-                                checkboxSelection
-                                onRowSelectionModelChange={handleSelectionChange}
-                                rowSelectionModel={selectedRowIds}
-                                getRowId={row => row._id}
-                            />
-                        </Card>
+                        {isLoading ? (
+                            <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                                <span class="loader"></span>
+                            </Card>
+                        ) : (
+                            <Card style={{ height: "600px", paddingTop: "15px" }}>
+                                <DataGrid
+                                    rows={data}
+                                    columns={columns}
+                                    components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchContactData }) }}
+                                    checkboxSelection
+                                    onRowSelectionModelChange={handleSelectionChange}
+                                    rowSelectionModel={selectedRowIds}
+                                    getRowId={row => row._id}
+                                />
+                            </Card>
+                        )}
                     </Box>
                 </TableStyle>
             </Container>

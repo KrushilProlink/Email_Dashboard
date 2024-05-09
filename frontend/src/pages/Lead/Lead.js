@@ -107,7 +107,7 @@ const Lead = () => {
   const userid = localStorage.getItem('user_id');
   const userRole = localStorage.getItem("userRole");
 
-  const allData = useSelector((state) => state?.leadDetails?.data)
+  const { data, isLoading } = useSelector((state) => state?.leadDetails)
 
   // open edit model
   const handleOpenEdit = () => setOpenEdit(true);;
@@ -211,20 +211,27 @@ const Lead = () => {
         </Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ height: "600px", paddingTop: "15px" }}>
-              <DataGrid
-                rows={allData}
-                columns={columns}
-                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchLeadData }) }}
-                checkboxSelection
-                onRowSelectionModelChange={handleSelectionChange}
-                rowSelectionModel={selectedRowIds}
-                getRowId={row => row._id}
-              />
-            </Card>
+            {isLoading ? (
+              <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                <span class="loader"></span>
+              </Card>
+            ) : (
+              <Card style={{ height: "600px", paddingTop: "15px" }}>
+                <DataGrid
+                  rows={data}
+                  columns={columns}
+                  components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchLeadData }) }}
+                  checkboxSelection
+                  onRowSelectionModelChange={handleSelectionChange}
+                  rowSelectionModel={selectedRowIds}
+                  getRowId={row => row._id}
+                />
+              </Card>
+            )}
+
           </Box>
         </TableStyle>
-      </Container>
+      </Container >
     </>
   );
 }

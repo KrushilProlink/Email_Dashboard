@@ -5,6 +5,7 @@ import userSlice from '../slice/userSlice';
 import leadSlice from '../slice/leadSlice';
 import contactSlice from '../slice/contactSlice';
 import emailTemplateSlice from '../slice/emailTemplateSlice';
+import policySlice from '../slice/policySlice';
 
 const middleware = (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -36,6 +37,7 @@ export const store = configureStore({
         leadDetails: persistReducer(leadPersistConfig, leadSlice),
         contactDetails: persistReducer(contactPersistConfig, contactSlice),
         tempDetails: persistReducer(emailTemPersistConfig, emailTemplateSlice),
+        policyDetails: policySlice,
     },
     middleware,
 });
