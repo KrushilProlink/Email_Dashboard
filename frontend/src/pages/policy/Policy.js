@@ -14,13 +14,16 @@ import AddPolicy from './Add'
 import DeleteModel from '../../components/Deletemodle'
 import { apiget, deleteManyApi } from '../../service/api';
 import TableStyle from '../../components/TableStyle';
-// ----------------------------------------------------------------------
+import { fetchPolicyData } from '../../redux/slice/policySlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
-function CustomToolbar({ selectedRowIds, fetchdata }) {
+// ----------------------------------------------------------------------
+
+function CustomToolbar({ selectedRowIds, fetchPolicyData }) {
   const [opendelete, setOpendelete] = useState(false);
-
+  const dispatch = useDispatch()
 
   const handleCloseDelete = () => {
     setOpendelete(false)
@@ -32,7 +35,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
 
   const deleteManyContact = async (data) => {
     await deleteManyApi('policy/deletemany', data)
-    fetchdata()
+    dispatch(fetchPolicyData())
     handleCloseDelete();
   }
 
@@ -53,10 +56,10 @@ const Policy = () => {
   const [selectedRowIds, setSelectedRowIds] = useState([]);
   const [openAdd, setOpenAdd] = useState(false);
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
   const userid = localStorage.getItem('user_id')
   const userRole = localStorage.getItem("userRole")
-
+  const { data, isLoading } = useSelector((state) => state?.policyDetails)
   // open add model
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
@@ -114,15 +117,9 @@ const Policy = () => {
     }
   ];
 
-  const fetchdata = async () => {
-    const result = await apiget(userRole === "admin" ? `policy/list` : `policy/list/?createdBy=${userid}`)
-    if (result && result.status === 200) {
-      setPolicyList(result?.data?.result)
-    }
-  }
 
   useEffect(() => {
-    fetchdata();
+    dispatch(fetchPolicyData());
   }, [userAction])
 
   return (
@@ -141,21 +138,28 @@ const Policy = () => {
         </Stack>
         <TableStyle>
           <Box width="100%">
-            <Card style={{ height: "600px", paddingTop: "15px" }}>
-              <DataGrid
-                rows={policyList}
-                columns={columns}
-                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
-                checkboxSelection
-                onRowSelectionModelChange={handleSelectionChange}
-                rowSelectionModel={selectedRowIds}
-                getRowId={row => row._id}
+            {isLoading ? (
+              <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                <span class="loader"></span>
+              </Card>
+            ) : (
+              <Card style={{ height: "600px", paddingTop: "15px" }}>
+                <DataGrid
+                  rows={data}
+                  columns={columns}
+                  components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchPolicyData }) }}
+                  checkboxSelection
+                  onRowSelectionModelChange={handleSelectionChange}
+                  rowSelectionModel={selectedRowIds}
+                  getRowId={row => row._id}
+                />
+              </Card>
+            )}
 
-              />
-            </Card>
+
           </Box>
         </TableStyle>
-      </Container>
+      </Container >
     </>
   );
 }
