@@ -13,13 +13,14 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { FormLabel, Select, FormControl, MenuItem, FormHelperText, Checkbox, ListItemText } from "@mui/material";
 import { apipost, apiget } from "../../service/api";
+import { useSelector } from "react-redux";
 
 const Add = (props) => {
     const { open, handleClose, setUserAction } = props;
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole");
+    const userDetails = useSelector((state) => state?.userDetails?.data)
 
-    const [users, setUsers] = useState([]);
 
     // -----------  validationSchema
     const validationSchema = yup.object({
@@ -65,17 +66,6 @@ const Add = (props) => {
         },
     });
 
-    // user api
-    const fetchUserdata = async () => {
-        const result = await apiget('user/list')
-        if (result && result.status === 200) {
-            setUsers(result?.data?.result)
-        }
-    };
-
-    useEffect(() => {
-        fetchUserdata();
-    }, [open])
 
     return (
         <div>
@@ -166,7 +156,7 @@ const Add = (props) => {
                                             <div>
                                                 {
                                                     selected.map((value) => {
-                                                        const userData = users.find((user) => user._id === value)
+                                                        const userData = userDetails?.find((user) => user._id === value)
                                                         return (
                                                             <div key={value}>
                                                                 {`${userData?.firstName} ${userData?.lastName}`}
@@ -179,7 +169,7 @@ const Add = (props) => {
                                         }
                                     >
                                         {
-                                            users?.map((user) => (
+                                            userDetails?.map((user) => (
                                                 <MenuItem value={user?._id}>
                                                     <Checkbox checked={formik.values.assignTo.indexOf(user?._id) > -1} />
                                                     <ListItemText primary={`${user?.firstName} ${user?.lastName}`} />

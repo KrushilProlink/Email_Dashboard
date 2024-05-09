@@ -136,7 +136,7 @@ const Policy = () => {
             Policy
           </Typography>
           <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-            New Policy
+            Add New
           </Button>
         </Stack>
         <TableStyle>

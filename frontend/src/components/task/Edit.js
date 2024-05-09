@@ -18,17 +18,23 @@ import ClearIcon from "@mui/icons-material/Clear";
 import moment from "moment";
 import dayjs from "dayjs";
 import { apiget, apiput } from "../../service/api";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLeadData } from "src/redux/slice/leadSlice";
+import { fetchContactData } from "src/redux/slice/contactSlice";
 
-const ViewEdit = ({ open, handleClose, id, setUserAction }) => {
+const ViewEdit = ({ open, handleClose, taskData, setUserAction }) => {
 
-    const [taskData, setTaskData] = useState({})
-    const [user, setUser] = useState([])
-    const [leadData, setLeadData] = useState([])
-    const [contactData, setContactData] = useState([])
+    // const [taskData, setTaskData] = useState({})
+    // const [leadData, setLeadData] = useState([])
+    // const [contactData, setContactData] = useState([])
 
+    const dispatch = useDispatch()
     const userid = localStorage.getItem('user_id')
     const userRole = localStorage.getItem("userRole");
     const userdata = JSON.parse(localStorage.getItem('user'));
+    const userDetails = useSelector((state) => state?.userDetails?.data)
+    const leadData = useSelector((state) => state?.leadDetails?.data)
+    const contactData = useSelector((state) => state?.contactDetails?.data)
 
     const validationSchema = yup.object({
         subject: yup.string().required("Subject is required"),
@@ -59,7 +65,8 @@ const ViewEdit = ({ open, handleClose, id, setUserAction }) => {
 
     const EditTask = async (values) => {
         const data = values;
-        const result = await apiput(`task/edit/${id}`, data)
+        const result = await apiput(`task/edit/${taskData?._id}`, data)
+        setUserAction(result)
         if (result && result.status === 200) {
             handleClose();
         }
@@ -92,45 +99,26 @@ const ViewEdit = ({ open, handleClose, id, setUserAction }) => {
     });
 
 
-
-    // task api
-    const fetchdata = async () => {
-        const result = await apiget(`task/view/${id}`)
-        setUserAction(result)
-        if (result && result.status === 200) {
-            setTaskData(result?.data?.tasks)
-        }
-    }
-
-    // user api
-    const fetchUserData = async () => {
-        const result = await apiget('user/list')
-        if (result && result.status === 200) {
-            setUser(result?.data?.result)
-        }
-    }
-
-    // lead api
-    const fetchLeadData = async () => {
-        const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setLeadData(result?.data?.result)
-        }
-    }
-    // contact api
-    const fetchContactData = async () => {
-        const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setContactData(result?.data?.result)
-        }
-    }
+    // // lead api
+    // const fetchLeadData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setLeadData(result?.data?.result)
+    //     }
+    // }
+    // // contact api
+    // const fetchContactData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setContactData(result?.data?.result)
+    //     }
+    // }
     useEffect(() => {
-        fetchdata();
-        fetchUserData();
-        fetchLeadData();
-        fetchContactData();
-    }, [open])
-
+        if (leadData?.length === 0 && contactData?.length === 0) {
+            dispatch(fetchLeadData())
+            dispatch(fetchContactData())
+        }
+    }, [])
     return (
         <div>
             <Dialog
@@ -269,7 +257,7 @@ const ViewEdit = ({ open, handleClose, id, setUserAction }) => {
                                             error={formik.touched.assignTo && Boolean(formik.errors.assignTo)}
                                         >
                                             {userdata?.role === 'admin' ?
-                                                user.map((item) => {
+                                                userDetails?.map((item) => {
                                                     return (
                                                         <MenuItem key={item._id} value={item._id}>
                                                             {`${item.firstName} ${item.lastName}`}

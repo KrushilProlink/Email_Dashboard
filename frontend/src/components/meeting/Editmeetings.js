@@ -19,18 +19,23 @@ import { Autocomplete, FormControl, FormHelperText, FormLabel, MenuItem, Select 
 import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { apiget, apiput } from "../../service/api";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLeadData } from "src/redux/slice/leadSlice";
+import { fetchContactData } from "src/redux/slice/contactSlice";
 
 const Editmeetings = (props) => {
 
-    const { handleClose, open, id, fetchMeeting } = props
+    const { handleClose, open, meetingData, fetchMeeting } = props
 
-    const [meetingDetails, setMeetingDetails] = useState({});
-    const [leadData, setLeadData] = useState([])
-    const [contactData, setContactData] = useState([])
+    // const [leadData, setLeadData] = useState([])
+    // const [contactData, setContactData] = useState([])
     const params = useParams();
+    const dispatch = useDispatch()
 
     const userid = localStorage.getItem('user_id')
     const userRole = localStorage.getItem("userRole");
+    const leadData = useSelector((state) => state?.leadDetails?.data)
+    const contactData = useSelector((state) => state?.contactDetails?.data)
 
     // -----------  validationSchema
     const validationSchema = yup.object({
@@ -46,53 +51,46 @@ const Editmeetings = (props) => {
 
     // -----------   initialValues
     const initialValues = {
-        subject: meetingDetails.subject,
-        status: meetingDetails.status,
-        startDate: meetingDetails.startDate,
-        endDate: meetingDetails.endDate,
-        duration: meetingDetails.duration,
-        location: meetingDetails.location,
-        relatedTo: meetingDetails.relatedTo,
-        note: meetingDetails.note,
-        lead_id: meetingDetails.lead_id?._id,
-        contact_id: meetingDetails.contact_id?._id,
+        subject: meetingData.subject,
+        status: meetingData.status,
+        startDate: meetingData.startDate,
+        endDate: meetingData.endDate,
+        duration: meetingData.duration,
+        location: meetingData.location,
+        relatedTo: meetingData.relatedTo,
+        note: meetingData.note,
+        lead_id: meetingData.lead_id?._id,
+        contact_id: meetingData.contact_id?._id,
         modifiedOn: ""
 
     };
 
-    // fetch api
-    const fetchdata = async () => {
-        const result = await apiget(`meeting/view/${params.id}`)
-        if (result && result.status === 200) {
-            setMeetingDetails(result?.data?.meetings)
-        }
-    }
 
     // edit api
     const EditMeeting = async (values) => {
         const data = values;
-        const result = await apiput(`meeting/edit/${id}`, data)
+        const result = await apiput(`meeting/edit/${meetingData?._id}`, data)
         if (result && result.status === 200) {
             handleClose();
             fetchMeeting();
         }
     }
 
-    // lead api
-    const fetchLeadData = async () => {
-        const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setLeadData(result?.data?.result)
-        }
-    }
+    // // lead api
+    // const fetchLeadData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setLeadData(result?.data?.result)
+    //     }
+    // }
 
-    // contact api
-    const fetchContactData = async () => {
-        const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setContactData(result?.data?.result)
-        }
-    }
+    // // contact api
+    // const fetchContactData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setContactData(result?.data?.result)
+    //     }
+    // }
 
 
     const formik = useFormik({
@@ -118,10 +116,10 @@ const Editmeetings = (props) => {
     });
 
     useEffect(() => {
-        fetchdata();
-        fetchLeadData();
-        fetchContactData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (leadData?.length === 0 && contactData?.length === 0) {
+            dispatch(fetchLeadData())
+            dispatch(fetchContactData())
+        }
     }, [])
 
     return (

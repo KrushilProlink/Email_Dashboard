@@ -163,7 +163,7 @@ const Meeting = () => {
               Meetings List
             </Typography>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenMeeting}>
-              New Meeting
+              Add New
             </Button>
           </Stack>
           <Box width="100%">

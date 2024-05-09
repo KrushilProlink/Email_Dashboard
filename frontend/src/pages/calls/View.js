@@ -64,7 +64,7 @@ const View = () => {
     return (
         <div>
             {/* open Edit Model */}
-            <Editcalls open={openEdit} handleClose={handleCloseEdit} id={params.id} fetchcalls={fetchdata} />
+            <Editcalls open={openEdit} handleClose={handleCloseEdit} callData={callData} fetchcalls={fetchdata} />
 
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />

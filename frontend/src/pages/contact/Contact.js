@@ -25,12 +25,16 @@ import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddContact from './Add';
 import EditContact from './Edit';
 import ImportModel from '../../components/Import/ImportModel';
+import { fetchContactData } from 'src/redux/slice/contactSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
 // ----------------------------------------------------------------------
 
-function CustomToolbar({ selectedRowIds, fetchdata }) {
+function CustomToolbar({ selectedRowIds, fetchContactData }) {
     const [opendelete, setOpendelete] = useState(false);
     const [smsModelOpen, setSmsModelOpen] = useState(false);
     const [openImpt, setOpenImpt] = useState(false);
+    const dispatch = useDispatch();
     const userid = localStorage.getItem('user_id');
 
     const fieldsInCrm = [
@@ -59,15 +63,15 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
 
     const deleteManyContact = async (data) => {
         await deleteManyApi('contact/deletemany', data)
-        fetchdata()
         handleCloseDelete();
+        dispatch(fetchContactData())
     }
 
     const sendSMS = async (payload) => {
         const result = await apipost('sms/contact', payload)
         if (result?.status === 200) {
             handleSmsModelClose();
-            fetchdata()
+            dispatch(fetchContactData())
         } else {
             handleSmsModelClose();
             // toast.error("Something went wrong")
@@ -93,16 +97,18 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
 
 const Contact = () => {
 
-    const [contactList, setContactList] = useState([]);
+    const [contactData, setContactData] = useState({});
     const [userAction, setUserAction] = useState(null);
     const [selectedRowIds, setSelectedRowIds] = useState([]);
     const [openEdit, setOpenEdit] = useState(false);
     const [openAdd, setOpenAdd] = useState(false);
     const [id, setId] = useState('');
     const navigate = useNavigate()
-
+    const dispatch = useDispatch()
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole")
+
+    const allData = useSelector((state) => state?.contactDetails?.data)
 
     // open add model
     const handleOpenAdd = () => setOpenAdd(true);
@@ -162,13 +168,13 @@ const Contact = () => {
             // eslint-disable-next-line arrow-body-style
             renderCell: (params) => {
                 const handleFirstNameClick = async (data) => {
-                    setId(data)
+                    setContactData(data)
                     handleOpenEdit();
                 };
                 return (
                     <Box>
                         <Stack direction={"row"} spacing={2}>
-                            <Button variant='text' size='small' color='primary' onClick={() => handleFirstNameClick(params.row._id)}><EditIcon /></Button>
+                            <Button variant='text' size='small' color='primary' onClick={() => handleFirstNameClick(params?.row)}><EditIcon /></Button>
                         </Stack>
                     </Box>
                 );
@@ -177,22 +183,22 @@ const Contact = () => {
 
     ];
 
-    const fetchdata = async () => {
-        const result = await apiget(userRole === "admin" ? `contact/list` : `contact/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setContactList(result?.data?.result)
-        }
-    }
+    // const fetchdata = async () => {
+    //     const result = await apiget(userRole === "admin" ? `contact/list` : `contact/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setAllData(result?.data?.result)
+    //     }
+    // }
 
     useEffect(() => {
-        fetchdata();
+        dispatch(fetchContactData());
     }, [userAction])
     return (
         <>
             {/* Add Contact Model */}
             <AddContact open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
             {/* Edit Contact Model */}
-            <EditContact open={openEdit} handleClose={handleCloseEdit} id={id} fetchContact={fetchdata} />
+            <EditContact open={openEdit} handleClose={handleCloseEdit} contactData={contactData} setUserAction={setUserAction} />
 
             <Container maxWidth>
                 <TableStyle>
@@ -201,15 +207,15 @@ const Contact = () => {
                             Contact
                         </Typography>
                         <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-                            New Contact
+                            Add New
                         </Button>
                     </Stack>
                     <Box width="100%">
                         <Card style={{ height: "600px", paddingTop: "15px" }}>
                             <DataGrid
-                                rows={contactList}
+                                rows={allData}
                                 columns={columns}
-                                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
+                                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchContactData }) }}
                                 checkboxSelection
                                 onRowSelectionModelChange={handleSelectionChange}
                                 rowSelectionModel={selectedRowIds}

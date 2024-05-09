@@ -81,10 +81,6 @@ const View = () => {
 
 
 
-    useEffect(() => {
-        fetchdata();
-    }, [userAction])
-
     // Export data in csv file
     const policyCsvData = [
         {
@@ -133,15 +129,19 @@ const View = () => {
         );
         downloadLink.click();
 
-        // handleCloseaction();
     };
+
+    useEffect(() => {
+        fetchdata();
+    }, [userAction])
+
     return (
         <div>
             {/* Add Model */}
             <AddModel open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
 
             {/* Edit Mode */}
-            <EditModel open={openEdit} handleClose={handleCloseEdit} setUserAction={setUserAction} id={params.id} fetchPolicy={fetchdata} />
+            <EditModel open={openEdit} handleClose={handleCloseEdit} setUserAction={setUserAction} policyData={policyData} fetchPolicy={fetchdata} />
 
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />

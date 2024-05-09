@@ -94,28 +94,27 @@ const Documents = () => {
         {
             field: "file",
             headerName: "File",
-            flex: 1,
+            width: 400,
         },
 
         {
             field: "fileName",
             headerName: "File Name",
-            flex: 1,
+            width: 400,
         },
         {
             field: "createdOn",
             headerName: "CreateOn",
-            flex: 1,
+            width: 250,
             valueFormatter: (params) => {
                 const date = new Date(params.value);
                 return date.toDateString();
             },
-
         },
         {
             field: "action",
             headerName: "Action",
-            flex: 1,
+            width: 400,
             renderCell: (params) => {
                 const handleFirstNameClick = async () => { downloadFile(params.row._id) };
                 const downloadUrl = `${constant.baseUrl}document/file/${params.row._id}`;
@@ -158,7 +157,7 @@ const Documents = () => {
                         Documents
                     </Typography>
                     <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-                        New Document
+                        Add New
                     </Button>
                 </Stack>
                 <TableStyle>

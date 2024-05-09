@@ -11,12 +11,13 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { useFormik } from "formik";
 import { FormLabel, Select, FormControl, MenuItem, FormHelperText, Checkbox, ListItemText } from "@mui/material";
 import { apiget, apiput } from "../../service/api";
+import { useSelector } from "react-redux";
 
 const AssignTo = (props) => {
     const { open, handleClose, documentId } = props;
     const userid = localStorage.getItem('user_id');
 
-    const [users, setUsers] = useState([]);
+    const userDetails = useSelector((state) => state?.userDetails?.data)
 
     // -----------   initialValues
     const initialValues = {
@@ -47,14 +48,6 @@ const AssignTo = (props) => {
         },
     });
 
-    // user api
-    const fetchUsersdata = async () => {
-        const result = await apiget('user/list')
-        if (result && result.status === 200) {
-            setUsers(result?.data?.result)
-        }
-    }
-
     const fetchDocumentdata = async () => {
         const result = await apiget(`document/list/?_id=${documentId}`);
         if (result && result.status === 200) {
@@ -64,7 +57,6 @@ const AssignTo = (props) => {
 
     useEffect(() => {
         if (documentId) {
-            fetchUsersdata();
             fetchDocumentdata();
         }
     }, [open, documentId]);
@@ -119,7 +111,7 @@ const AssignTo = (props) => {
                                             <div>
                                                 {
                                                     selected.map((value) => {
-                                                        const userData = users.find((user) => user._id === value)
+                                                        const userData = userDetails.find((user) => user._id === value)
                                                         return (
                                                             <div key={value}>
                                                                 {`${userData?.firstName} ${userData?.lastName}`}
@@ -131,7 +123,7 @@ const AssignTo = (props) => {
                                         )}
                                     >
                                         {
-                                            users?.map((user) => (
+                                            userDetails?.map((user) => (
                                                 <MenuItem value={user?._id}>
                                                     <Checkbox checked={formik.values.assignTo.indexOf(user?._id) > -1} />
                                                     <ListItemText primary={`${user?.firstName} ${user?.lastName}`} />

@@ -85,7 +85,9 @@ const View = () => {
     }
 
     useEffect(() => {
-        fetchdata();
+        if (params.id) {
+            fetchdata();
+        }
     }, [userAction])
 
 
@@ -149,7 +151,7 @@ const View = () => {
             <AddLead open={openAdd} handleClose={handleCloseAdd} />
 
             {/* Add Edit Model */}
-            <EditModel open={openEdit} handleClose={handleCloseEdit} id={params.id} fetchLead={fetchdata} />
+            <EditModel open={openEdit} handleClose={handleCloseEdit} leadData={leadData} setUserAction={setUserAction} />
 
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import ClearIcon from "@mui/icons-material/Clear";
-import { Autocomplete, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
+import { Autocomplete, CircularProgress, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -18,15 +18,19 @@ import * as yup from "yup";
 import { policyTypeList } from '../../_mock/data';
 import { apiget, apiput } from '../../service/api';
 import Palette from '../../theme/palette';
+import { useSelector } from 'react-redux';
+import { LoadingButton } from '@mui/lab';
 
 const Edit = (props) => {
 
-    const { open, handleClose, id, fetchLead } = props
+    const { open, handleClose, setUserAction, leadData } = props
 
-    const [leadData, setLeadData] = useState({});
+    // const [leadData, setLeadData] = useState({});
     const [user, setUser] = useState([])
-    const userdata = JSON.parse(localStorage.getItem('user'));
+    const [isLoading, setIsLoading] = useState(false);
 
+    const userdata = JSON.parse(localStorage.getItem('user'));
+    const userDetails = useSelector((state) => state?.userDetails?.data)
 
     // -----------  validationSchema
     const validationSchema = yup.object({
@@ -80,14 +84,21 @@ const Edit = (props) => {
 
     // edit Lead api
     const editLead = async (values) => {
-        const data = values;
-        const result = await apiput(`lead/edit/${id}`, data)
+        setIsLoading(true)
+        try {
+            const data = values;
+            const result = await apiput(`lead/edit/${leadData?._id}`, data);
+            setUserAction(result);
 
-        if (result && result.status === 200) {
-            handleClose();
-            fetchLead();
+            if (result && result?.status === 200) {
+                handleClose();
+            }
+        } catch (error) {
+            console.error('Error editing lead:', error);
         }
+        setIsLoading(false)
     }
+
 
     // formik
     const formik = useFormik({
@@ -132,31 +143,6 @@ const Edit = (props) => {
 
         },
     });
-
-
-    // fetch Lead api
-    const fetchdata = async () => {
-        const result = await apiget(`lead/view/${id}`)
-        if (result && result.status === 200) {
-            setLeadData(result?.data?.lead)
-            formik.setFieldValue("gender", result?.data?.lead?.gender)
-            formik.values.gender = result?.data?.lead?.gender
-        }
-    }
-
-    // user api
-    const fetchUserData = async () => {
-        const result = await apiget('user/list')
-        if (result && result.status === 200) {
-            setUser(result?.data?.result)
-        }
-    }
-
-    useEffect(() => {
-        fetchdata();
-        fetchUserData();
-
-    }, [open])
 
     return (
         <div>
@@ -207,7 +193,7 @@ const Edit = (props) => {
                                             label=""
                                             size='small'
                                             fullWidth
-                                            value={formik.values.title}
+                                            value={formik.values.title || null}
                                             onChange={formik.handleChange}
                                             error={
                                                 formik.touched.title &&
@@ -370,7 +356,7 @@ const Edit = (props) => {
                                             label=""
                                             size='small'
                                             fullWidth
-                                            value={formik.values.leadSource}
+                                            value={formik.values.leadSource || null}
                                             onChange={formik.handleChange}
                                         >
                                             <MenuItem value="call"> Call </MenuItem>
@@ -410,7 +396,7 @@ const Edit = (props) => {
                                             name="leadStatus"
                                             size='small'
                                             fullWidth
-                                            value={formik.values.leadStatus}
+                                            value={formik.values.leadStatus || null}
                                             onChange={formik.handleChange}
 
                                         >
@@ -439,12 +425,12 @@ const Edit = (props) => {
                                             label=""
                                             size='small'
                                             fullWidth
-                                            value={formik.values.assigned_agent}
+                                            value={formik.values.assigned_agent || null}
                                             onChange={formik.handleChange}
 
                                         >
                                             {userdata?.role === 'admin' ?
-                                                user.map((item) => {
+                                                userDetails?.map((item) => {
                                                     return (
                                                         <MenuItem key={item._id} value={item._id}>
                                                             {`${item.firstName} ${item.lastName}`}
@@ -630,7 +616,7 @@ const Edit = (props) => {
                                             label=""
                                             size='small'
                                             fullWidth
-                                            value={formik.values.QualificationStatus}
+                                            value={formik.values.QualificationStatus || null}
                                             onChange={formik.handleChange}
                                         >
                                             <MenuItem value="Qualified">Qualified</MenuItem>
@@ -735,7 +721,7 @@ const Edit = (props) => {
                                             label=""
                                             size='small'
                                             fullWidth
-                                            value={formik.values.termLength}
+                                            value={formik.values.termLength || null}
                                             onChange={formik.handleChange}
                                         >
                                             <MenuItem value="1 year">1 year</MenuItem>
@@ -757,7 +743,7 @@ const Edit = (props) => {
                                             label=""
                                             size='small'
                                             fullWidth
-                                            value={formik.values.conversionReason}
+                                            value={formik.values.conversionReason || null}
                                             onChange={formik.handleChange}
                                         >
                                             <MenuItem value="Coverage Needs">Coverage Needs</MenuItem>
@@ -802,7 +788,7 @@ const Edit = (props) => {
                                             label=""
                                             size='small'
                                             fullWidth
-                                            value={formik.values.leadCategory}
+                                            value={formik.values.leadCategory || null}
                                             onChange={formik.handleChange}
                                         >
                                             <MenuItem value="Hot Lead">Hot Lead</MenuItem>
@@ -820,7 +806,7 @@ const Edit = (props) => {
                                             label=""
                                             size='small'
                                             fullWidth
-                                            value={formik.values.leadPriority}
+                                            value={formik.values.leadPriority || null}
                                             onChange={formik.handleChange}
                                         >
                                             <MenuItem value="High">High</MenuItem>
@@ -834,7 +820,9 @@ const Edit = (props) => {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={formik.handleSubmit} variant='contained' color='primary'>Save</Button>
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                    </LoadingButton>
                     <Button onClick={() => {
                         formik.resetForm()
                         handleClose()

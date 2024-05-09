@@ -15,6 +15,7 @@ import DocumentRoute from './documentRoutes.js'
 import PolicyDocumentRoute from './policyDocumentRoutes.js'
 import emailTemmplateRoute from './emailTemplateRoutes.js'
 import smsRoute from './smsRoutes.js'
+import CalendarRoute from './calendarRoutes.js'
 // import lipanampesaRoute from './lipanampesaRoutes.js';
 
 router.use('/lead', LeadRoute);
@@ -31,6 +32,7 @@ router.use('/document', DocumentRoute)
 router.use('/policydocument', PolicyDocumentRoute)
 router.use('/emailtemplate', emailTemmplateRoute)
 router.use('/sms', smsRoute)
+router.use('/calendar', CalendarRoute)
 // router.use('/lipanampesa', lipanampesaRoute);
 
 export default router;

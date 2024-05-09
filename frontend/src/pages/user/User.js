@@ -66,7 +66,7 @@ const User = () => {
     }
     useEffect(() => {
         fetchdata();
-    }, [openAdd])
+    }, [])
 
     return (
         <>
@@ -78,7 +78,7 @@ const User = () => {
                         User
                     </Typography>
                     <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-                        New User
+                        Add New
                     </Button>
                 </Stack>
                 <TableStyle>

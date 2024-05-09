@@ -21,13 +21,13 @@ import { toast } from "react-toastify";
 // import { GiCancel } from "react-icons/gi";
 import Palette from "../../theme/palette";
 import { apiget, apipost } from "../../service/api";
+import { useSelector } from "react-redux";
 
 const Add = (props) => {
   const { open, handleClose, setUserAction } = props
   const userid = localStorage.getItem('user_id');
   const userdata = JSON.parse(localStorage.getItem('user'));
-
-  const [user, setUser] = React.useState([])
+  const userDetails = useSelector((state) => state?.userDetails?.data)
 
 
   // -----------  validationSchema
@@ -80,12 +80,6 @@ const Add = (props) => {
     }
   }
 
-  const fetchUserData = async () => {
-    const result = await apiget('user/list')
-    if (result && result.status === 200) {
-      setUser(result?.data?.result)
-    }
-  }
   // formik
   const formik = useFormik({
     initialValues,
@@ -95,9 +89,7 @@ const Add = (props) => {
     },
   });
 
-  useEffect(() => {
-    fetchUserData();
-  }, [])
+
   return (
     <div>
       <Dialog
@@ -110,8 +102,6 @@ const Add = (props) => {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            // backgroundColor: "#2b4054",
-            // color: "white",
           }}
         >
           <Typography variant="h6">Add New </Typography>
@@ -316,7 +306,7 @@ const Add = (props) => {
                   onChange={formik.handleChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={4} md={4}>
+              <Grid item xs={12} sm={6} md={6}>
                 <FormControl fullWidth>
                   <FormLabel>Assigned Agent</FormLabel>
                   <Select
@@ -337,7 +327,7 @@ const Add = (props) => {
                     }
                   >
                     {userdata?.role === 'admin' ?
-                      user.map((item) => {
+                      userDetails?.map((item) => {
                         return (
                           <MenuItem key={item._id} value={item._id}>
                             {`${item.firstName} ${item.lastName}`}

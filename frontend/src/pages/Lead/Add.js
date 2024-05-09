@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import ClearIcon from "@mui/icons-material/Clear";
-import { Autocomplete, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
+import { Autocomplete, CircularProgress, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -16,14 +16,18 @@ import * as yup from "yup";
 import { apiget, apipost } from '../../service/api';
 import { policyTypeList } from '../../_mock/data';
 import Palette from '../../theme/palette';
+import { useSelector } from 'react-redux';
+import { LoadingButton } from '@mui/lab';
 
 const Add = (props) => {
 
   const { open, handleClose, _id, setUserAction } = props
   const [user, setUser] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
 
   const userid = localStorage.getItem('user_id');
   const userdata = JSON.parse(localStorage.getItem('user'));
+  const userDetails = useSelector((state) => state?.userDetails?.data)
 
   // -----------  validationSchema
   const validationSchema = yup.object({
@@ -80,16 +84,21 @@ const Add = (props) => {
 
   // add Lead api
   const addLead = async (values) => {
-    const data = values;
-    const result = await apipost('lead/add', data)
-    setUserAction(result)
+    setIsLoading(true);
+    try {
+      const data = values;
+      const result = await apipost('lead/add', data);
+      setUserAction(result);
 
-    if (result && result.status === 201) {
-      formik.resetForm();
-      handleClose();
+      if (result && result.status === 201) {
+        formik.resetForm();
+        handleClose();
+      }
+    } catch (error) {
+      console.error('Error adding lead:', error);
     }
+    setIsLoading(false);
   }
-
   // formik
   const formik = useFormik({
     initialValues,
@@ -98,17 +107,7 @@ const Add = (props) => {
       addLead(values)
     },
   });
-  // user api
-  const fetchUserData = async () => {
-    const result = await apiget('user/list')
-    if (result && result.status === 200) {
-      setUser(result?.data?.result)
-    }
-  }
 
-  useEffect(() => {
-    fetchUserData();
-  }, [])
 
   return (
     <div>
@@ -399,7 +398,7 @@ const Add = (props) => {
                       }
                     >
                       {userdata?.role === 'admin' ?
-                        user.map((item) => {
+                        userDetails?.map((item) => {
                           return (
                             <MenuItem key={item._id} value={item._id}>
                               {`${item.firstName} ${item.lastName}`}
@@ -781,7 +780,9 @@ const Add = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={formik.handleSubmit} variant='contained' color='primary'>Save</Button>
+          <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+            {isLoading ? <CircularProgress size={27} /> : 'Save'}
+          </LoadingButton>
           <Button onClick={() => {
             formik.resetForm()
             handleClose()

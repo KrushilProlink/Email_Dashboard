@@ -17,12 +17,15 @@ import * as yup from "yup";
 import { apipost, apiget } from "src/service/api";
 import { toast } from "react-toastify";
 import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, FormControl, Select, MenuItem, } from "@mui/material";
+import { useSelector } from "react-redux";
+import { fetchTemplateData } from "src/redux/slice/emailTemplateSlice";
 
 const Addemail = (props) => {
     const { open, handleClose, _id, setUserAction, receiver, module } = props
 
     const [messageType, setMessageType] = useState("template");
-    const [emailTemplateData, setEmailTemplateData] = useState([]);
+    // const [emailTemplateData, setEmailTemplateData] = useState([]);
+    const emailTemplateData = useSelector((state) => state?.tempDetails?.data)
 
     const user = JSON.parse(localStorage.getItem('user'))
 
@@ -82,17 +85,19 @@ const Addemail = (props) => {
         formik.setFieldValue('html', '');
     };
 
-    // emailtemplate api
-    const fetchEmailTemplatesData = async () => {
-        const result = await apiget('emailtemplate/list')
-        if (result && result.status === 200) {
-            setEmailTemplateData(result?.data?.result)
-        }
-    }
+    // // emailtemplate api
+    // const fetchEmailTemplatesData = async () => {
+    //     const result = await apiget('emailtemplate/list')
+    //     if (result && result.status === 200) {
+    //         setEmailTemplateData(result?.data?.result)
+    //     }
+    // }
 
     useEffect(() => {
-        fetchEmailTemplatesData();
-    }, [open]);
+        if(emailTemplateData === 0){
+            dispatch(fetchTemplateData())
+        }
+    }, []);
 
     return (
         <div>

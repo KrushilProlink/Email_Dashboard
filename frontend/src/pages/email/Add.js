@@ -19,15 +19,23 @@ import * as yup from "yup";
 import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, Autocomplete, DialogContentText } from "@mui/material";
 import { apipost, apiget } from "../../service/api";
 import Palette from "../../theme/palette";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLeadData } from "src/redux/slice/leadSlice";
+import { fetchContactData } from "src/redux/slice/contactSlice";
+import { fetchTemplateData } from "src/redux/slice/emailTemplateSlice";
 
 const Add = (props) => {
     const { open, handleClose, setUserAction } = props;
-    const [leadData, setLeadData] = useState([]);
-    const [contactData, setContactData] = useState([]);
-    const [emailTemplateData, setEmailTemplateData] = useState([]);
+    // const [leadData, setLeadData] = useState([]);
+    // const [contactData, setContactData] = useState([]);
+    // const [emailTemplateData, setEmailTemplateData] = useState([]);
     const [messageType, setMessageType] = useState("template");
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole");
+    const dispatch = useDispatch();
+    const leadData = useSelector((state) => state?.leadDetails?.data)
+    const contactData = useSelector((state) => state?.contactDetails?.data)
+    const emailTemplateData = useSelector((state) => state?.tempDetails?.data)
 
     // -----------  validationSchema
     const validationSchema = yup.object({
@@ -87,29 +95,29 @@ const Add = (props) => {
         }
     });
 
-    // lead api
-    const fetchLeadData = async () => {
-        const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setLeadData(result?.data?.result)
-        }
-    }
+    // // lead api
+    // const fetchLeadData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setLeadData(result?.data?.result)
+    //     }
+    // }
 
-    // contact api
-    const fetchContactData = async () => {
-        const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setContactData(result?.data?.result)
-        }
-    }
+    // // contact api
+    // const fetchContactData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setContactData(result?.data?.result)
+    //     }
+    // }
 
-    // emailtemplate api
-    const fetchEmailTemplatesData = async () => {
-        const result = await apiget('emailtemplate/list')
-        if (result && result.status === 200) {
-            setEmailTemplateData(result?.data?.result)
-        }
-    }
+    // // emailtemplate api
+    // const fetchEmailTemplatesData = async () => {
+    //     const result = await apiget('emailtemplate/list')
+    //     if (result && result.status === 200) {
+    //         setEmailTemplateData(result?.data?.result)
+    //     }
+    // }
 
     useEffect(() => {
         formik.setFieldValue("lead_id", "");
@@ -118,11 +126,12 @@ const Add = (props) => {
     }, [formik.values.relatedTo]);
 
     useEffect(() => {
-        fetchLeadData();
-        fetchContactData();
-        fetchEmailTemplatesData();
-    }, [open]);
-
+        if (leadData?.length === 0 && contactData?.length === 0 && emailTemplateData === 0) {
+            dispatch(fetchLeadData())
+            dispatch(fetchContactData())
+            dispatch(fetchTemplateData())
+        }
+    }, [])
     return (
         <div>
             <Dialog

@@ -7,18 +7,20 @@ import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify/Iconify';
 import { apiget, deleteManyApi } from '../../service/api';
 import DeleteModel from '../../components/Deletemodle'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTemplateData } from 'src/redux/slice/emailTemplateSlice';
 
-function CustomToolbar({ selectedRowIds, fetchdata }) {
+function CustomToolbar({ selectedRowIds, fetchTemplateData }) {
     const [opendelete, setOpendelete] = useState(false);
     const [userAction, setUserAction] = useState(null);
-
+    const dispatch = useDispatch();
     const handleCloseDelete = () => setOpendelete(false)
 
     const handleOpenDelete = () => setOpendelete(true)
 
     const deleteManyEmailTemplate = async (data) => {
         const result = await deleteManyApi('emailtemplate/deletemanny', data)
-        fetchdata()
+        dispatch(fetchTemplateData())
         setUserAction(result)
         handleCloseDelete();
     }
@@ -38,12 +40,14 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
 
 const EmailTemplate = () => {
 
-    const [designList, setDesignList] = useState([])
+    // const [designList, setDesignList] = useState([])
     const [selectedRowIds, setSelectedRowIds] = useState([]);
     const navigate = useNavigate()
-
+    const dispatch = useDispatch()
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole");
+
+    const tempList = useSelector((state) => state?.tempDetails?.data)
 
     const columns = [
         {
@@ -104,15 +108,15 @@ const EmailTemplate = () => {
         setSelectedRowIds(selectionModel);
     };
 
-    const fetchdata = async () => {
-        const result = await apiget(userRole === "admin" ? `emailtemplate/list` : `emailtemplate/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setDesignList(result.data.result)
-        }
-    }
+    // const fetchdata = async () => {
+    //     const result = await apiget(userRole === "admin" ? `emailtemplate/list` : `emailtemplate/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setDesignList(result.data.result)
+    //     }
+    // }
 
     useEffect(() => {
-        fetchdata()
+        dispatch(fetchTemplateData())
     }, [])
 
 
@@ -125,15 +129,15 @@ const EmailTemplate = () => {
                             Email Template List
                         </Typography>
                         <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} >
-                            <Link to="/dashboard/emailtemplate/add" style={{ textDecoration: "none", color: "white" }}>New Template</Link>
+                            <Link to="/dashboard/emailtemplate/add" style={{ textDecoration: "none", color: "white" }}>Add New</Link>
                         </Button>
                     </Stack>
                     <Box width="100%">
                         <Card style={{ height: "600px", paddingTop: "15px" }}>
                             <DataGrid
-                                rows={designList}
+                                rows={tempList}
                                 columns={columns}
-                                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
+                                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchTemplateData }) }}
                                 checkboxSelection
                                 onRowSelectionModelChange={handleSelectionChange}
                                 rowSelectionModel={selectedRowIds}

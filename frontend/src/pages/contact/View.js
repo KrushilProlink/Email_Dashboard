@@ -75,9 +75,11 @@ const View = () => {
 
     // fetch api
     const fetchdata = async () => {
-        const result = await apiget(`contact/view/${params.id}`)
-        if (result && result.status === 200) {
-            setContactData(result?.data)
+        if (params?.id) {
+            const result = await apiget(`contact/view/${params.id}`)
+            if (result && result.status === 200) {
+                setContactData(result?.data)
+            }
         }
     }
     // delete api
@@ -86,10 +88,6 @@ const View = () => {
         navigate('/dashboard/contact')
     }
 
-    useEffect(() => {
-        fetchdata();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userAction])
 
     // Export data in csv file
     const contactCsvData = [
@@ -129,8 +127,11 @@ const View = () => {
         );
         downloadLink.click();
 
-        // handleCloseaction();
     };
+
+    useEffect(() => {
+        fetchdata();
+    }, [userAction])
 
     return (
         <div>
@@ -138,7 +139,7 @@ const View = () => {
             <AddContact open={open} handleClose={handleClose} />
 
             {/* Add Edit Model */}
-            <EditContact open={openEdit} handleClose={handleCloseEdit} id={params.id} fetchContact={fetchdata} />
+            <EditContact open={openEdit} handleClose={handleCloseEdit} contactData={contactData} setUserAction={setUserAction} />
 
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />

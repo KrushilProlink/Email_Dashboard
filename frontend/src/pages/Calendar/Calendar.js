@@ -67,51 +67,17 @@ const Calendar = () => {
         </>
     );
 
-    // delete api
-    const deletedata = async () => {
-        await apidelete(`task/delete/${taskId}`)
-        handleCloseViewEdit()
+
+    const fetchData = async () => {
+        const result = await apiget(userRole === "admin" ? `calendar` : `calendar/?createdBy=${userid}`);
+        if (result?.status === 200) {
+            setData(result?.data?.data)
+        }
     }
 
-    const fetchApiTask = async () => {
-        const result = await apiget(userRole === "admin" ? `task/list` : `task/list/?createdBy=${userid}`);
-        return result.data.result.map(item => ({
-            title: item.subject,
-            start: item.startDate,
-            end: item.endDate,
-            textColor: item.textColor,
-            backgroundColor: item.backgroundColor
-        }));
-    };
-
-    const fetchApiMeeting = async () => {
-        const result = await apiget(userRole === "admin" ? `meeting/list` : `meeting/list/?createdBy=${userid}`);
-        return result.data.result.map(item => ({
-            title: item.subject,
-            start: item.startDate,
-            end: item.endDate,
-        }));
-    };
-
-    const fetchApiCall = async () => {
-        const result = await apiget(userRole === "admin" ? `call/list` : `call/list/?createdBy=${userid}`);
-        return result.data.result.map(item => ({
-            title: item.subject,
-            start: item.startDateTime,
-        }));
-    };
-
     useEffect(() => {
-        const fetchData = async () => {
-            const taskApiData = await fetchApiTask();
-            const meetingApiData = await fetchApiMeeting();
-            const callApiData = await fetchApiCall();
-            const combinedData = [...taskApiData, ...meetingApiData, ...callApiData];
-            setData(combinedData);
-        };
-
         fetchData();
-    }, [openTask, openViewEdit, userAction])
+    }, [userAction])
 
     return (
         <div>

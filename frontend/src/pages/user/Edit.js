@@ -15,15 +15,12 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import FormLabel from "@mui/material/FormLabel";
 import { useEffect, useState } from "react";
-
 import { apiget, apiput } from "../../service/api";
-// import { FiSave } from "react-icons/fi";
-// import { GiCancel } from "react-icons/gi";
+
 
 const Edit = (props) => {
 
-    const { handleClose, open, id, fetchUser, emailEdit } = props
-    const [userDetails, setUserDetails] = useState({});
+    const { handleClose, open, userDetails, fetchUser, emailEdit } = props
 
     // -----------  validationSchema
     const validationSchema = yup.object({
@@ -41,18 +38,10 @@ const Edit = (props) => {
         modifiedOn: ""
     };
 
-    // fetch api
-    const fetchdata = async () => {
-        const result = await apiget(`user/view/${id}`)
-        if (result && result.status === 200) {
-            setUserDetails(result.data)
-        }
-    }
-
     // edit api
     const EditUser = async (values) => {
         let data = values;
-        const result = await apiput(`user/edit/${id}`, data)
+        const result = await apiput(`user/edit/${userDetails?.id}`, data)
         if (result && result.status === 200) {
             handleClose();
             fetchUser();
@@ -74,9 +63,6 @@ const Edit = (props) => {
         },
     });
 
-    useEffect(() => {
-        fetchdata();
-    }, [])
     return (
         <div>
             <Dialog

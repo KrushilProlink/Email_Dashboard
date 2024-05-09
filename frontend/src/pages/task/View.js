@@ -52,13 +52,15 @@ const View = () => {
     }
 
     useEffect(() => {
-        fetchdata();
+        if (params.id) {
+            fetchdata();
+        }
     }, [userAction])
 
     return (
         <div>
             {/* open Edit tasks model */}
-            <ViewEdit open={openEdit} handleClose={handleCloseEdit} id={params.id} lead='lead' contact='contact' setUserAction={setUserAction} />
+            <ViewEdit open={openEdit} handleClose={handleCloseEdit} taskData={taskData} lead='lead' contact='contact' setUserAction={setUserAction} />
 
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />

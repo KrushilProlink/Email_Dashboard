@@ -16,16 +16,22 @@ import Typography from "@mui/material/Typography";
 import ClearIcon from "@mui/icons-material/Clear";
 import { toast } from "react-toastify";
 import { apiget, apipost } from "../../service/api";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchContactData } from "src/redux/slice/contactSlice";
+import { fetchLeadData } from "src/redux/slice/leadSlice";
 
 
 const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
 
-    const [user, setUser] = useState([])
-    const [leadData, setLeadData] = useState([])
-    const [contactData, setContactData] = useState([])
+    // const [leadData, setLeadData] = useState([])
+    // const [contactData, setContactData] = useState([])
+    const dispatch = useDispatch()
     const userid = localStorage.getItem('user_id')
     const userRole = localStorage.getItem("userRole");
     const userdata = JSON.parse(localStorage.getItem('user'));
+    const userDetails = useSelector((state) => state?.userDetails?.data)
+    const leadData = useSelector((state) => state?.leadDetails?.data)
+    const contactData = useSelector((state) => state?.contactDetails?.data)
 
     const validationSchema = yup.object({
         subject: yup.string().required("Subject is required"),
@@ -72,36 +78,29 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
         },
     });
 
-    // user api
-    const fetchdata = async () => {
-        const result = await apiget('user/list')
-        if (result && result.status === 200) {
-            // const data = result?.data?.result?.filter(item => item._id !== userdata._id)
-            setUser(result?.data?.result)
-        }
-    }
 
-    // lead api
-    const fetchLeadData = async () => {
-        const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setLeadData(result?.data?.result)
-        }
-    }
+    // // lead api
+    // const fetchLeadData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setLeadData(result?.data?.result)
+    //     }
+    // }
 
     // contact api
-    const fetchContactData = async () => {
-        const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setContactData(result?.data?.result)
-        }
-    }
+    // const fetchContactData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setContactData(result?.data?.result)
+    //     }
+    // }
 
     useEffect(() => {
-        fetchdata();
-        fetchLeadData();
-        fetchContactData();
-    }, [open])
+        if (leadData?.length === 0 && contactData?.length === 0) {
+            dispatch(fetchLeadData())
+            dispatch(fetchContactData())
+        }
+    }, [])
 
     return (
         <div>
@@ -249,7 +248,7 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
                                             error={formik.touched.assignTo && Boolean(formik.errors.assignTo)}
                                         >
                                             {userdata?.role === 'admin' ?
-                                                user.map((item) => {
+                                                userDetails?.map((item) => {
                                                     return (
                                                         <MenuItem key={item._id} value={item._id}>
                                                             {`${item.firstName} ${item.lastName}`}

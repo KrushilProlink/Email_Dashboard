@@ -187,10 +187,10 @@ const Task = () => {
         <TableStyle>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4">
-              Tasks List
+              Tasks
             </Typography>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenTask}>
-              New Task
+              Add New
             </Button>
           </Stack>
           <Box width="100%" >

@@ -17,13 +17,20 @@ import MenuItem from "@mui/material/MenuItem";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { apiget, apipost } from "../../service/api";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLeadData } from "src/redux/slice/leadSlice";
+import { fetchContactData } from "src/redux/slice/contactSlice";
 
 const Addcalls = (props) => {
     const { open, handleClose, _id, setUserAction } = props
-    const [leadData, setLeadData] = useState([])
-    const [contactData, setContactData] = useState([])
-    const userRole = localStorage.getItem("userRole");
+    // const [leadData, setLeadData] = useState([])
+    // const [contactData, setContactData] = useState([])
+    const dispatch = useDispatch()
 
+    const leadData = useSelector((state) => state?.leadDetails?.data)
+    const contactData = useSelector((state) => state?.contactDetails?.data)
+
+    const userRole = localStorage.getItem("userRole");
     const userid = localStorage.getItem('user_id')
 
     // -----------  validationSchema
@@ -63,20 +70,20 @@ const Addcalls = (props) => {
     }
 
     // lead api
-    const fetchLeadData = async () => {
-        const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setLeadData(result?.data?.result)
-        }
-    }
+    // const fetchLeadData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setLeadData(result?.data?.result)
+    //     }
+    // }
 
     // contact api
-    const fetchContactData = async () => {
-        const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setContactData(result?.data?.result)
-        }
-    }
+    // const fetchContactData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setContactData(result?.data?.result)
+    //     }
+    // }
 
     // formik
     const formik = useFormik({
@@ -89,10 +96,11 @@ const Addcalls = (props) => {
     });
 
     useEffect(() => {
-        fetchLeadData();
-        fetchContactData();
+        if (leadData?.length === 0 && contactData?.length === 0) {
+            dispatch(fetchLeadData())
+            dispatch(fetchContactData())
+        }
     }, [])
-
     return (
         <div>
             <Dialog

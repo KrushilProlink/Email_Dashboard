@@ -143,7 +143,7 @@ const Call = () => {
               Calls List
             </Typography>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenCall}>
-              New Call
+              Add New
             </Button>
           </Stack>
           <Box width="100%">

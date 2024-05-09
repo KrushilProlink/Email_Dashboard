@@ -19,14 +19,17 @@ import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddLead from './Add';
 import EditModel from './Edit';
 import ImportModel from '../../components/Import/ImportModel';
+import { fetchLeadData } from 'src/redux/slice/leadSlice';
+import { useDispatch, useSelector } from 'react-redux';
 // ----------------------------------------------------------------------
 
-function CustomToolbar({ selectedRowIds, fetchdata }) {
+function CustomToolbar({ selectedRowIds, fetchLeadData }) {
   const [opendelete, setOpendelete] = useState(false);
   const [smsModelOpen, setSmsModelOpen] = useState(false);
   const [userAction, setUserAction] = useState(null);
   const [openImpt, setOpenImpt] = useState(false);
   const userid = localStorage.getItem('user_id');
+  const dispatch = useDispatch();
 
   const fieldsInCrm = [
     { Header: "First Name", accessor: 'firstName', type: 'string', required: true },
@@ -53,7 +56,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
 
   const deleteManyLead = async (data) => {
     const result = await deleteManyApi('lead/deletemany', data)
-    fetchdata()
+    dispatch(fetchLeadData())
     setUserAction(result)
     handleCloseDelete();
   }
@@ -63,7 +66,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
     if (result?.status === 200) {
       setUserAction(result)
       handleSmsModelClose();
-      fetchdata()
+      dispatch(fetchLeadData())
     } else {
       handleSmsModelClose();
       // toast.error("Something went wrong")
@@ -95,14 +98,16 @@ const Lead = () => {
 
   const [userAction, setUserAction] = useState(null);
   const [selectedRowIds, setSelectedRowIds] = useState([]);
-  const [leadData, setLeadData] = useState([]);
-  const [id, setId] = useState('')
+  // const [allData, setAllData] = useState([]);
+  const [leadData, setLeadData] = useState({})
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const userid = localStorage.getItem('user_id');
   const userRole = localStorage.getItem("userRole");
+
+  const allData = useSelector((state) => state?.leadDetails?.data)
 
   // open edit model
   const handleOpenEdit = () => setOpenEdit(true);;
@@ -111,6 +116,10 @@ const Lead = () => {
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
+  const handleFirstNameClick = (id) => {
+    navigate(`/dashboard/lead/view/${id}`)
+  };
+
   const columns = [
     {
       field: "firstName",
@@ -118,12 +127,8 @@ const Lead = () => {
       flex: 1,
       cellClassName: "name-column--cell name-column--cell--capitalize",
       renderCell: (params) => {
-        const handleFirstNameClick = () => {
-          navigate(`/dashboard/lead/view/${params.row._id}`)
-        };
-
         return (
-          <Box onClick={handleFirstNameClick}>
+          <Box onClick={() => handleFirstNameClick(params?.row?._id)}>
             {params.value}
           </Box>
         );
@@ -157,12 +162,12 @@ const Lead = () => {
       // eslint-disable-next-line arrow-body-style
       renderCell: (params) => {
         const handleFirstNameClick = async (data) => {
-          setId(data)
+          setLeadData(data)
           handleOpenEdit();
         };
         return (
           <>
-            <Button variant='text' size='small' color='primary' onClick={() => handleFirstNameClick(params?.row?._id)}><EditIcon /></Button>
+            <Button variant='text' size='small' color='primary' onClick={() => handleFirstNameClick(params?.row)}><EditIcon /></Button>
           </>
         );
       }
@@ -170,12 +175,12 @@ const Lead = () => {
   ];
 
 
-  const fetchdata = async () => {
-    const result = await apiget(userRole === "admin" ? `lead/list` : `lead/list/?createdBy=${userid}`)
-    if (result && result.status === 200) {
-      setLeadData(result?.data?.result)
-    }
-  }
+  // const fetchdata = async () => {
+  //   const result = await apiget(userRole === "admin" ? `lead/list` : `lead/list/?createdBy=${userid}`)
+  //   if (result && result.status === 200) {
+  //     setAllData(result?.data?.result)
+  //   }
+  // }
 
   const handleSelectionChange = (selectionModel) => {
     setSelectedRowIds(selectionModel);
@@ -183,14 +188,15 @@ const Lead = () => {
 
 
   useEffect(() => {
-    fetchdata();
-  }, [openAdd, userAction])
+    // fetchdata();
+    dispatch(fetchLeadData())
+  }, [userAction])
   return (
     <>
       {/* Add Lead Model */}
       <AddLead open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
       {/* Edit Lead Model */}
-      <EditModel open={openEdit} handleClose={handleCloseEdit} id={id} fetchLead={fetchdata} />
+      <EditModel open={openEdit} handleClose={handleCloseEdit} setUserAction={setUserAction} leadData={leadData} />
 
       <Container maxWidth>
         <Stack direction="row" alignItems="center" mb={5} justifyContent={"space-between"}>
@@ -199,7 +205,7 @@ const Lead = () => {
           </Typography>
           <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd}>
-              New Lead
+              Add New
             </Button>
           </Stack>
         </Stack>
@@ -207,9 +213,9 @@ const Lead = () => {
           <Box width="100%">
             <Card style={{ height: "600px", paddingTop: "15px" }}>
               <DataGrid
-                rows={leadData}
+                rows={allData}
                 columns={columns}
-                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
+                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchLeadData }) }}
                 checkboxSelection
                 onRowSelectionModelChange={handleSelectionChange}
                 rowSelectionModel={selectedRowIds}

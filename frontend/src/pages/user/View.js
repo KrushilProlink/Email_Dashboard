@@ -62,7 +62,7 @@ const View = () => {
 
     useEffect(() => {
         fetchdata();
-    }, [openAdd])
+    }, [])
 
     return (
         <div>
@@ -70,9 +70,8 @@ const View = () => {
             {/* Add User Model */}
             <AddUser open={openAdd} handleClose={handleCloseAdd} />
 
-            {/* Add Edit Model */}
-            {/* <EditUser open={openEdit} emailEdit={JSON.parse(localStorage.getItem('user'))._id === params.id} handleClose={handleCloseEdit} id={params.id} fetchUser={fetchdata} /> */}
-            <EditUser open={openEdit} emailEdit={!(location.state === null || (location.state && location.state.addButton !== false))} handleClose={handleCloseEdit} id={params.id} fetchUser={fetchdata} />
+            {/* Edit User Model */}
+            <EditUser open={openEdit} emailEdit={!(location.state === null || (location.state && location.state.addButton !== false))} handleClose={handleCloseEdit} userDetails={userDetails} fetchUser={fetchdata} />
 
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />

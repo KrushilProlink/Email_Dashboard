@@ -20,7 +20,8 @@ import {
   AppConversionRates,
 } from '../sections/@dashboard/app';
 import { apiget } from '../service/api';
-
+import { fetchUserData } from 'src/redux/slice/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
@@ -32,6 +33,8 @@ export default function DashboardAppPage() {
   const [totalEvent, setTotalEvent] = useState([])
   const userid = localStorage.getItem('user_id');
   const userRole = localStorage.getItem("userRole")
+
+  const dispatch = useDispatch();
 
   // lead api
   const fetchLead = async () => {
@@ -71,6 +74,11 @@ export default function DashboardAppPage() {
     fetchPolicy();
     fetchEvent();
   }, [])
+
+  useEffect(() => {
+    dispatch(fetchUserData())
+  }, [])
+
   return (
     <>
       <Helmet>
@@ -79,7 +87,7 @@ export default function DashboardAppPage() {
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back 
+          Hi, Welcome back
         </Typography>
 
         <Grid container spacing={3}>

@@ -20,15 +20,14 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { apiget, apiput } from "../../service/api";
 import Palette from "../../theme/palette";
+import { useSelector } from "react-redux";
 
 
 const Edit = (props) => {
 
-  const { open, handleClose, id, fetchContact } = props
-  const [contactData, setContactData] = useState({});
+  const { open, handleClose, contactData, setUserAction } = props
   const userdata = JSON.parse(localStorage.getItem('user'));
-  const [user, setUser] = useState([])
-
+  const userDetails = useSelector((state) => state?.userDetails?.data)
 
 
   // -----------  validationSchema
@@ -72,35 +71,15 @@ const Edit = (props) => {
   // add Contact Edit api
   const editContact = async (values) => {
     const data = values;
-    const result = await apiput(`contact/edit/${id}`, data)
+    const result = await apiput(`contact/edit/${contactData?._id}`, data)
+    setUserAction(result);
 
-    if (result && result.status === 200) {
+    if (result && result?.status === 200) {
       handleClose();
-      fetchContact();
     }
   }
 
-  // fetch api
-  const fetchdata = async () => {
-    const result = await apiget(`contact/view/${id}`)
-    if (result && result.status === 200) {
-      setContactData(result?.data)
-    }
-  }
 
-  const fetchUserData = async () => {
-    const result = await apiget('user/list')
-    if (result && result.status === 200) {
-      setUser(result?.data?.result)
-    }
-  }
-  useEffect(() => {
-    fetchdata();
-  }, [open])
-
-  useEffect(() => {
-    fetchUserData();
-  }, [])
   // formik
   const formik = useFormik({
     initialValues,
@@ -373,7 +352,7 @@ const Edit = (props) => {
 
                   >
                     {userdata?.role === 'admin' ?
-                      user.map((item) => {
+                      userDetails?.map((item) => {
                         return (
                           <MenuItem key={item._id} value={item._id}>
                             {`${item.firstName} ${item.lastName}`}

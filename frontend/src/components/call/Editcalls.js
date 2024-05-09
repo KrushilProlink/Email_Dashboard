@@ -18,13 +18,20 @@ import { Autocomplete, FormControl, FormHelperText, FormLabel, Select } from "@m
 import MenuItem from "@mui/material/MenuItem";
 import { useParams } from "react-router-dom";
 import { apiget, apiput } from "../../service/api";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLeadData } from "src/redux/slice/leadSlice";
+import { fetchContactData } from "src/redux/slice/contactSlice";
 
 const Editcalls = (props) => {
-    const { handleClose, open, id, fetchcalls } = props
+    const { handleClose, open, callData, fetchcalls } = props
 
-    const [callDetails, setCallDetails] = useState({});
-    const [leadData, setLeadData] = useState([])
-    const [contactData, setContactData] = useState([])
+    // const [leadData, setLeadData] = useState([])
+    // const [contactData, setContactData] = useState([])
+    const dispatch = useDispatch()
+
+    const leadData = useSelector((state) => state?.leadDetails?.data)
+
+    const contactData = useSelector((state) => state?.contactDetails?.data)
 
     const userRole = localStorage.getItem("userRole");
     const userid = localStorage.getItem('user_id')
@@ -43,46 +50,38 @@ const Editcalls = (props) => {
 
     // -----------   initialValues
     const initialValues = {
-        subject: callDetails.subject,
-        status: callDetails.status,
-        startDateTime: callDetails.startDateTime,
-        duration: callDetails.duration,
-        relatedTo: callDetails.relatedTo,
-        note: callDetails.note,
-        lead_id: callDetails?.lead_id?._id,
-        contact_id: callDetails?.contact_id?._id,
+        subject: callData.subject,
+        status: callData.status,
+        startDateTime: callData.startDateTime,
+        duration: callData.duration,
+        relatedTo: callData.relatedTo,
+        note: callData.note,
+        lead_id: callData?.lead_id?._id,
+        contact_id: callData?.contact_id?._id,
         modifiedOn: ""
 
     };
 
-    // fetch api
-    const fetchdata = async () => {
-        const result = await apiget(`call/view/${params.id}`)
-        if (result && result.status === 200) {
-            setCallDetails(result?.data?.calls)
-        }
-    }
-
     // lead api
-    const fetchLeadData = async () => {
-        const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setLeadData(result?.data?.result)
-        }
-    }
+    // const fetchLeadData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `lead/list` : `lead/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setLeadData(result?.data?.result)
+    //     }
+    // }
 
-    // contact api
-    const fetchContactData = async () => {
-        const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setContactData(result?.data?.result)
-        }
-    }
+    // // contact api
+    // const fetchContactData = async () => {
+    //     const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
+    //     if (result && result.status === 200) {
+    //         setContactData(result?.data?.result)
+    //     }
+    // }
 
     // edit api
     const EditCall = async (values) => {
         const data = values;
-        const result = await apiput(`call/edit/${id}`, data)
+        const result = await apiput(`call/edit/${callData?._id}`, data)
         if (result && result.status === 200) {
             handleClose();
             fetchcalls();
@@ -110,11 +109,11 @@ const Editcalls = (props) => {
     });
 
     useEffect(() => {
-        fetchdata();
-        fetchLeadData();
-        fetchContactData();
+        if (leadData?.length === 0 && contactData?.length === 0) {
+            dispatch(fetchLeadData())
+            dispatch(fetchContactData())
+        }
     }, [])
-
     return (
         <div>
             <Dialog

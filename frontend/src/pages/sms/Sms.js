@@ -153,7 +153,7 @@ const Sms = () => {
     <>
 
       {/* Add Tasks */}
-      <AddTask open={openTask} handleClose={handleCloseTask} setUserAction={setUserAction} />
+      {/* <AddTask open={openTask} handleClose={handleCloseTask} setUserAction={setUserAction} /> */}
 
       <Container maxWidth>
         <TableStyle>

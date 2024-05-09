@@ -129,7 +129,7 @@ const Email = () => {
                             Emails List
                         </Typography>
                         <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd} >
-                            New Email
+                            Add New
                         </Button>
                     </Stack>
                     <Box width="100%">

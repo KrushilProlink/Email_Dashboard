@@ -20,9 +20,9 @@ import { apiget, apiput } from '../../service/api';
 import Palette from '../../theme/palette';
 
 const Edit = (props) => {
-    const { open, handleClose, setUserAction, id, fetchPolicy } = props
+    const { open, handleClose, setUserAction, policyData, fetchPolicy } = props
 
-    const [policyData, setPolicyData] = useState({})
+    // const [policyData, setPolicyData] = useState({})
 
 
     const userid = localStorage.getItem('user_id')
@@ -79,18 +79,10 @@ const Edit = (props) => {
         assigned_agent: userid
     };
 
-    // policy View api
-    const fetchdata = async () => {
-        const result = await apiget(`policy/view/${id}`)
-        if (result && result.status === 200) {
-            setPolicyData(result?.data?.policy[0])
-        }
-    }
-
     // edit Policy api
     const editPolicy = async (values) => {
         const data = values;
-        const result = await apiput(`policy/edit/${id}`, data)
+        const result = await apiput(`policy/edit/${policyData?._id}`, data)
         setUserAction(result)
         if (result && result.status === 200) {
             handleClose();
@@ -138,11 +130,6 @@ const Edit = (props) => {
             editPolicy(policyData)
         },
     });
-
-    useEffect(() => {
-        fetchdata();
-    }, [])
-
     return (
         <div>
             <Dialog

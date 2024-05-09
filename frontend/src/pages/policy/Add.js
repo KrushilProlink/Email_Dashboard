@@ -21,7 +21,6 @@ import Palette from '../../theme/palette';
 const Add = (props) => {
     const { open, handleClose, setUserAction, _id } = props
 
-    const [contactList, setContactList] = useState([])
     const userid = localStorage.getItem('user_id')
     const userRole = localStorage.getItem("userRole")
 
@@ -101,15 +100,6 @@ const Add = (props) => {
         },
     });
 
-    const fetchdata = async () => {
-        const result = await apiget(userRole === 'admin' ? `contact/list` : `contact/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setContactList(result?.data?.result)
-        }
-    }
-    useEffect(() => {
-        fetchdata();
-    }, [])
     return (
         <div>
             <Dialog
