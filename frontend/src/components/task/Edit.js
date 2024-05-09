@@ -17,10 +17,10 @@ import Typography from "@mui/material/Typography";
 import ClearIcon from "@mui/icons-material/Clear";
 import moment from "moment";
 import dayjs from "dayjs";
-import { apiget, apiput } from "../../service/api";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLeadData } from "src/redux/slice/leadSlice";
-import { fetchContactData } from "src/redux/slice/contactSlice";
+import { apiget, apiput } from "../../service/api";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { fetchContactData } from "../../redux/slice/contactSlice";
 
 const ViewEdit = ({ open, handleClose, taskData, setUserAction }) => {
 

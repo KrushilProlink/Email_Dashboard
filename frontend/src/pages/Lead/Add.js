@@ -9,6 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
+import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import * as yup from "yup";
@@ -16,7 +17,6 @@ import * as yup from "yup";
 import { apiget, apipost } from '../../service/api';
 import { policyTypeList } from '../../_mock/data';
 import Palette from '../../theme/palette';
-import { useSelector } from 'react-redux';
 import { LoadingButton } from '@mui/lab';
 
 const Add = (props) => {

@@ -9,18 +9,18 @@ import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
 import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 // components
 import DeleteModel from '../../components/Deletemodle';
 import SMSModel from '../../components/SMSModel';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify';
-import { apiget, apipost, deleteManyApi } from '../../service/api';
 import AddLead from './Add';
 import EditModel from './Edit';
 import ImportModel from '../../components/Import/ImportModel';
-import { fetchLeadData } from 'src/redux/slice/leadSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { apiget, apipost, deleteManyApi } from '../../service/api';
+import { fetchLeadData } from '../../redux/slice/leadSlice';
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchLeadData }) {

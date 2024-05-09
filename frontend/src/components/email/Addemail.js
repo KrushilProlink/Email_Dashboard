@@ -17,12 +17,12 @@ import * as yup from "yup";
 import { apipost, apiget } from "src/service/api";
 import { toast } from "react-toastify";
 import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, FormControl, Select, MenuItem, } from "@mui/material";
-import { useSelector } from "react-redux";
-import { fetchTemplateData } from "src/redux/slice/emailTemplateSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTemplateData } from "../../redux/slice/emailTemplateSlice";
 
 const Addemail = (props) => {
     const { open, handleClose, _id, setUserAction, receiver, module } = props
-
+    const dispatch = useDispatch()
     const [messageType, setMessageType] = useState("template");
     // const [emailTemplateData, setEmailTemplateData] = useState([]);
     const emailTemplateData = useSelector((state) => state?.tempDetails?.data)
@@ -94,7 +94,7 @@ const Addemail = (props) => {
     // }
 
     useEffect(() => {
-        if(emailTemplateData === 0){
+        if (emailTemplateData === 0) {
             dispatch(fetchTemplateData())
         }
     }, []);

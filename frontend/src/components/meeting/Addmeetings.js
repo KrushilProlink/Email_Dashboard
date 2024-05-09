@@ -17,10 +17,10 @@ import { useEffect, useState } from "react";
 import { Autocomplete, FormControl, FormHelperText, FormLabel, MenuItem, Select } from "@mui/material";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
-import { apiget, apipost } from "../../service/api";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLeadData } from "src/redux/slice/leadSlice";
-import { fetchContactData } from "src/redux/slice/contactSlice";
+import { apiget, apipost } from "../../service/api";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { fetchContactData } from "../../redux/slice/contactSlice";
 
 const Addmeetings = (props) => {
     const { open, handleClose, _id, setUserAction, data } = props

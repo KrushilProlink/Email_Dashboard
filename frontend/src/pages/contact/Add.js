@@ -22,12 +22,14 @@ import { toast } from "react-toastify";
 import Palette from "../../theme/palette";
 import { apiget, apipost } from "../../service/api";
 import { useSelector } from "react-redux";
+import { LoadingButton } from "@mui/lab";
 
 const Add = (props) => {
   const { open, handleClose, setUserAction } = props
   const userid = localStorage.getItem('user_id');
   const userdata = JSON.parse(localStorage.getItem('user'));
   const userDetails = useSelector((state) => state?.userDetails?.data)
+  const [isLoading, setIsLoading] = React.useState(false);
 
 
   // -----------  validationSchema
@@ -454,15 +456,10 @@ const Add = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button
-            type="submit"
-            variant="contained"
-            onClick={formik.handleSubmit}
-            style={{ textTransform: "capitalize" }}
-          // startIcon={<FiSave />}
-          >
-            Save
-          </Button>
+
+          <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+            {isLoading ? <CircularProgress size={27} /> : 'Save'}
+          </LoadingButton>
           <Button
             type="reset"
             variant="outlined"

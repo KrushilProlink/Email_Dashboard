@@ -15,10 +15,10 @@ import * as yup from "yup";
 import Typography from "@mui/material/Typography";
 import ClearIcon from "@mui/icons-material/Clear";
 import { toast } from "react-toastify";
-import { apiget, apipost } from "../../service/api";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchContactData } from "src/redux/slice/contactSlice";
-import { fetchLeadData } from "src/redux/slice/leadSlice";
+import { apiget, apipost } from "../../service/api";
+import { fetchContactData } from "../../redux/slice/contactSlice";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
 
 
 const AddEvent = ({ open, handleClose, setUserAction, _id }) => {

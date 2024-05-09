@@ -18,10 +18,10 @@ import { GiCancel } from "react-icons/gi";
 import { Autocomplete, FormControl, FormHelperText, FormLabel, MenuItem, Select } from "@mui/material";
 import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
-import { apiget, apiput } from "../../service/api";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLeadData } from "src/redux/slice/leadSlice";
-import { fetchContactData } from "src/redux/slice/contactSlice";
+import { apiget, apiput } from "../../service/api";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { fetchContactData } from "../../redux/slice/contactSlice";
 
 const Editmeetings = (props) => {
 

@@ -3,12 +3,12 @@ import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { DeleteOutline } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify/Iconify';
 import { apiget, deleteManyApi } from '../../service/api';
 import DeleteModel from '../../components/Deletemodle'
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchTemplateData } from 'src/redux/slice/emailTemplateSlice';
+import { fetchTemplateData } from '../../redux/slice/emailTemplateSlice';
 
 function CustomToolbar({ selectedRowIds, fetchTemplateData }) {
     const [opendelete, setOpendelete] = useState(false);

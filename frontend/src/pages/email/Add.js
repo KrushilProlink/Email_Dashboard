@@ -20,9 +20,9 @@ import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup, Autocom
 import { apipost, apiget } from "../../service/api";
 import Palette from "../../theme/palette";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLeadData } from "src/redux/slice/leadSlice";
-import { fetchContactData } from "src/redux/slice/contactSlice";
-import { fetchTemplateData } from "src/redux/slice/emailTemplateSlice";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { fetchContactData } from "../../redux/slice/contactSlice";
+import { fetchTemplateData } from "../../redux/slice/emailTemplateSlice";
 
 const Add = (props) => {
     const { open, handleClose, setUserAction } = props;

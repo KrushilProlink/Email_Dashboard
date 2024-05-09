@@ -16,10 +16,10 @@ import { Autocomplete, FormControl, FormHelperText, FormLabel, Select } from "@m
 import MenuItem from "@mui/material/MenuItem";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
-import { apiget, apipost } from "../../service/api";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLeadData } from "src/redux/slice/leadSlice";
-import { fetchContactData } from "src/redux/slice/contactSlice";
+import { apiget, apipost } from "../../service/api";
+import { fetchLeadData } from "../../redux/slice/leadSlice"
+import { fetchContactData } from "../../redux/slice/contactSlice";
 
 const Addcalls = (props) => {
     const { open, handleClose, _id, setUserAction } = props
