@@ -137,7 +137,7 @@ const Sms = () => {
   ];
 
   const fetchdata = async () => {
-    const result = await apiget(userRole === "admin" ? `sms/list` : `sms/list/?createdBy=${userid}`)
+    const result = await apiget(`sms/list`)
     if (result && result.status === 200) {
       setAllSms(result?.data?.result)
     }
