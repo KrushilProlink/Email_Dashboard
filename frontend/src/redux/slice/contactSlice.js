@@ -4,6 +4,7 @@ import { apiget } from '../../service/api';
 export const fetchContactData = createAsyncThunk('fetchContactData', async () => {
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole");
+    // eslint-disable-next-line no-useless-catch
     try {
         const response = await apiget(userRole === "admin" ? `contact/list` : `contact/list/?createdBy=${userid}`);
         return response?.data?.result;

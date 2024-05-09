@@ -116,12 +116,13 @@ const Editmeetings = (props) => {
     });
 
     useEffect(() => {
-        if (leadData?.length === 0 && contactData?.length === 0) {
+        if (leadData?.length === 0) {
             dispatch(fetchLeadData())
+        }
+        if (contactData?.length === 0) {
             dispatch(fetchContactData())
         }
-    }, [])
-
+    }, [open])
     return (
         <div>
             <Dialog

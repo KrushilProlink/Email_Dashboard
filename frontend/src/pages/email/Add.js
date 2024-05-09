@@ -124,13 +124,19 @@ const Add = (props) => {
         formik.setFieldValue("receiver", "");
     }, [formik.values.relatedTo]);
 
+
     useEffect(() => {
-        if (leadData?.length === 0 && contactData?.length === 0 && emailTemplateData === 0) {
+        if (leadData?.length === 0) {
             dispatch(fetchLeadData())
+        }
+        if (contactData?.length === 0) {
             dispatch(fetchContactData())
+        }
+        if (emailTemplateData?.length === 0) {
             dispatch(fetchTemplateData())
         }
-    }, [])
+    }, [open])
+
     return (
         <div>
             <Dialog

@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { apiget } from '../../service/api';
 

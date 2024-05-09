@@ -97,7 +97,7 @@ const Addemail = (props) => {
         if (emailTemplateData === 0) {
             dispatch(fetchTemplateData())
         }
-    }, []);
+    }, [open]);
 
     return (
         <div>

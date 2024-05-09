@@ -1,5 +1,6 @@
+/* eslint-disable no-useless-catch */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { apiget } from 'src/service/api';
+import { apiget } from '../../service/api';
 
 export const fetchLeadData = createAsyncThunk('fetchLeadData', async () => {
     const userid = localStorage.getItem('user_id');

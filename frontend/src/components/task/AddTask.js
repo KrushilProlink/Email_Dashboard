@@ -96,11 +96,13 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
     // }
 
     useEffect(() => {
-        if (leadData?.length === 0 && contactData?.length === 0) {
+        if (leadData?.length === 0) {
             dispatch(fetchLeadData())
+        }
+        if (contactData?.length === 0) {
             dispatch(fetchContactData())
         }
-    }, [])
+    }, [open])
 
     return (
         <div>
