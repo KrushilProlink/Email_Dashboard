@@ -1,4 +1,3 @@
-/*
 import mongoose from "mongoose"
 
 const Payment = new mongoose.Schema({
@@ -10,9 +9,8 @@ const Payment = new mongoose.Schema({
     resultDesc: { type: String, required: true },
     phoneNumber: { type: Number, required: true },
     amount: { type: Number, required: true },
-    mpesaReceiptNumber: { type: Sring, required: true },
+    mpesaReceiptNumber: { type: String, required: true },
     transactopDate: { type: Date, required: true },
 })
 
 export default mongoose.model('Payment_details', Payment);
-*/
