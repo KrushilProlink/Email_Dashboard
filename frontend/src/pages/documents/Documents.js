@@ -118,6 +118,7 @@ const Documents = () => {
             field: "action",
             headerName: "Action",
             width: 370,
+            sortable: false,
             renderCell: (params) => {
                 const handleFirstNameClick = async () => { downloadFile(params.row._id) };
                 const downloadUrl = `${constant.baseUrl}document/file/${params.row._id}`;

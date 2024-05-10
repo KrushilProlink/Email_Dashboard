@@ -124,7 +124,7 @@ const Contact = () => {
         {
             field: "firstName",
             headerName: "Frist Name",
-            flex: 1,
+            width: 250,
             cellClassName: "name-column--cell name-column--cell--capitalize",
             renderCell: (params) => {
                 const handleFirstNameClick = () => {
@@ -141,28 +141,29 @@ const Contact = () => {
         {
             field: "lastName",
             headerName: "Last Name",
-            flex: 1,
+            width: 250,
             cellClassName: "name-column--cell--capitalize"
         },
         {
             field: "gender",
             headerName: "Gender",
-            flex: 1,
+            width: 250,
         },
         {
             field: "phoneNumber",
             headerName: "Phone Number",
-            flex: 1,
+            width: 250,
         },
         {
             field: "emailAddress",
             headerName: "Email Address",
-            flex: 1,
+            width: 250,
         },
         {
             field: "action",
             headerName: "Action",
-            flex: 1,
+            width: 250,
+            sortable: false,
             // eslint-disable-next-line arrow-body-style
             renderCell: (params) => {
                 const handleFirstNameClick = async (data) => {

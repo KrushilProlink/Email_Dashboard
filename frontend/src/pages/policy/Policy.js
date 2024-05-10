@@ -69,7 +69,7 @@ const Policy = () => {
     {
       field: "policyNumber",
       headerName: "Policy Number",
-      flex: 1,
+      width: 300,
       cellClassName: "name-column--cell",
       renderCell: (params) => {
         const handleFirstNameClick = () => {
@@ -86,12 +86,12 @@ const Policy = () => {
     {
       field: "policyType",
       headerName: "Policy Type",
-      flex: 1,
+      width: 300,
     },
     {
       field: "policyStartDate",
       headerName: "Policy start date",
-      flex: 1,
+      width: 300,
       valueFormatter: (params) => {
         const date = new Date(params.value);
         return date.toDateString();
@@ -100,7 +100,7 @@ const Policy = () => {
     {
       field: "policyEndDate",
       headerName: "Policy end date",
-      flex: 1,
+      width: 300,
       valueFormatter: (params) => {
         const date = new Date(params.value);
         return date.toDateString();
@@ -109,7 +109,7 @@ const Policy = () => {
     {
       field: "policyStatus",
       headerName: "Policy status",
-      flex: 1,
+      width: 300,
     }
   ];
 

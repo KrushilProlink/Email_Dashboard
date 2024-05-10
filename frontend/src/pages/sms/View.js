@@ -46,8 +46,6 @@ const View = () => {
                         />
                         <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
                             <Actionbutton
-                                // handleOpenEdit={handleOpenEdit}
-                                // handleOpenDelete={handleOpenDelete}
                                 back={back}
                             />
                         </Stack>

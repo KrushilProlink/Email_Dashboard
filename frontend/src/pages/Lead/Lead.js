@@ -3,24 +3,24 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect, useState } from 'react';
 // @mui
-import { DeleteOutline, Message, FileUploadOutlined } from '@mui/icons-material';
+import { DeleteOutline, FileUploadOutlined } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
 import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 // components
 import DeleteModel from '../../components/Deletemodle';
+import ImportModel from '../../components/Import/ImportModel';
 import SMSModel from '../../components/SMSModel';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify';
+import { fetchLeadData } from '../../redux/slice/leadSlice';
+import { apipost, deleteManyApi } from '../../service/api';
 import AddLead from './Add';
 import EditModel from './Edit';
-import ImportModel from '../../components/Import/ImportModel';
-import { apiget, apipost, deleteManyApi } from '../../service/api';
-import { fetchLeadData } from '../../redux/slice/leadSlice';
+
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchLeadData }) {
@@ -124,7 +124,7 @@ const Lead = () => {
     {
       field: "firstName",
       headerName: "Frist Name",
-      flex: 1,
+      width: 250,
       cellClassName: "name-column--cell name-column--cell--capitalize",
       renderCell: (params) => {
         return (
@@ -137,28 +137,29 @@ const Lead = () => {
     {
       field: "lastName",
       headerName: "Last Name",
-      flex: 1,
+      width: 250,
       cellClassName: "name-column--cell--capitalize",
     },
     {
       field: "gender",
       headerName: "Gender",
-      flex: 1,
+      width: 250,
     },
     {
       field: "phoneNumber",
       headerName: "Phone Number",
-      flex: 1,
+      width: 250,
     },
     {
       field: "emailAddress",
       headerName: "Email Address",
-      flex: 1,
+      width: 250,
     },
     {
       field: "action",
       headerName: "Action",
-      flex: 1,
+      width: 250,
+      sortable: false,
       // eslint-disable-next-line arrow-body-style
       renderCell: (params) => {
         const handleFirstNameClick = async (data) => {
