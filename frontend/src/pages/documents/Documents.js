@@ -164,8 +164,10 @@ const Documents = () => {
                             <Card style={{ height: "600px", paddingTop: "15px" }}>
                                 <DataGrid
                                     rows={data}
-                                    columns={columns}
-                                    components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchDocumentData }) }}
+                                    columns={columns.map((column, index) => ({
+                                        ...column,
+                                        disableColumnMenu: index === columns.length - 1 // Disable menu icon for the last column
+                                    }))} components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchDocumentData }) }}
                                     checkboxSelection
                                     onRowSelectionModelChange={handleSelectionChange}
                                     rowSelectionModel={selectedRowIds}

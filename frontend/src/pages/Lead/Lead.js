@@ -217,8 +217,8 @@ const Lead = () => {
                 <span className="loader" />
               </Card>
             ) : (
-              <Card style={{ height: "600px", paddingTop: "15px" }}>
-                <DataGrid
+              <Card style={{ height: "600px", paddingTop: "15px" }} className='tableWraper'>
+                {/* <DataGrid
                   rows={data}
                   columns={columns}
                   components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchLeadData }) }}
@@ -226,13 +226,26 @@ const Lead = () => {
                   onRowSelectionModelChange={handleSelectionChange}
                   rowSelectionModel={selectedRowIds}
                   getRowId={row => row._id}
+                /> */}
+                <DataGrid
+                  rows={data}
+                  columns={columns.map((column, index) => ({
+                    ...column,
+                    disableColumnMenu: index === columns.length - 1 // Disable menu icon for the last column
+                  }))}
+                  components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchLeadData }) }}
+                  checkboxSelection
+                  onRowSelectionModelChange={handleSelectionChange}
+                  rowSelectionModel={selectedRowIds}
+                  getRowId={row => row._id}
                 />
+
               </Card>
             )}
 
           </Box>
         </TableStyle>
-      </Container >
+      </Container>
     </>
   );
 }
