@@ -1,32 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable arrow-body-style */
-import * as React from "react";
+import { Autocomplete, CircularProgress, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, MenuItem, Radio, RadioGroup, Select, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Autocomplete, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, MenuItem, Radio, RadioGroup, Select, TextField } from "@mui/material";
-import { useState, useEffect } from "react";
 import { useFormik } from "formik";
+import * as React from "react";
+import { useEffect } from "react";
 import * as yup from "yup";
 // import { apipost } from "../../service/api";
-import Typography from "@mui/material/Typography";
 import ClearIcon from "@mui/icons-material/Clear";
-import moment from "moment";
+import { LoadingButton } from "@mui/lab";
+import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
+import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { apiget, apiput } from "../../service/api";
-import { fetchLeadData } from "../../redux/slice/leadSlice";
 import { fetchContactData } from "../../redux/slice/contactSlice";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { apiput } from "../../service/api";
 
 const ViewEdit = ({ open, handleClose, taskData, setUserAction }) => {
 
     // const [taskData, setTaskData] = useState({})
     // const [leadData, setLeadData] = useState([])
     // const [contactData, setContactData] = useState([])
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const dispatch = useDispatch()
     const userid = localStorage.getItem('user_id')
@@ -64,12 +66,18 @@ const ViewEdit = ({ open, handleClose, taskData, setUserAction }) => {
 
 
     const EditTask = async (values) => {
-        const data = values;
-        const result = await apiput(`task/edit/${taskData?._id}`, data)
-        setUserAction(result)
-        if (result && result.status === 200) {
-            handleClose();
+        setIsLoading(true)
+        try {
+            const data = values;
+            const result = await apiput(`task/edit/${taskData?._id}`, data)
+            setUserAction(result)
+            if (result && result.status === 200) {
+                handleClose();
+            }
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
     }
 
     // formik
@@ -426,24 +434,10 @@ const ViewEdit = ({ open, handleClose, taskData, setUserAction }) => {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={formik.handleSubmit}
-                        style={{ textTransform: "capitalize" }}
-                        color="secondary"
-                    >
-                        Update
-                    </Button>
-                    {/* <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={deletedata}
-                        style={{ textTransform: "capitalize" }}
-                        color="error"
-                    >
-                        Delete
-                    </Button> */}
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Update'}
+                    </LoadingButton>
+
                     <Button
                         type="reset"
                         variant="outlined"
@@ -458,7 +452,7 @@ const ViewEdit = ({ open, handleClose, taskData, setUserAction }) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div >
+        </div>
     );
 }
 

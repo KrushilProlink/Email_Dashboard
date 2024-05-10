@@ -2,20 +2,20 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 // @mui
-import { Card, Stack, Button, Container, Typography, Box } from '@mui/material';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
 // components
-import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { DeleteOutline } from '@mui/icons-material';
+import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
 // sections
 // mock
-import { apiget, deleteManyApi } from '../../service/api';
-import DeleteModel from '../../components/Deletemodle'
+import { useDispatch, useSelector } from 'react-redux';
+import DeleteModel from '../../components/Deletemodle';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify/Iconify';
-import AddMeeting from '../../components/meeting/Addmeetings'
+import AddMeeting from '../../components/meeting/Addmeetings';
 import { fetchMeetingData } from '../../redux/slice/meetingSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { deleteManyApi } from '../../service/api';
 // ----------------------------------------------------------------------
 function CustomToolbar({ selectedRowIds, fetchMeetingData }) {
   const [opendelete, setOpendelete] = useState(false);

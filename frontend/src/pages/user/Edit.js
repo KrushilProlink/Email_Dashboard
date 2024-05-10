@@ -1,26 +1,28 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
-import * as React from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import { LoadingButton } from "@mui/lab";
+import { CircularProgress } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Typography from "@mui/material/Typography";
+import FormLabel from "@mui/material/FormLabel";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import ClearIcon from "@mui/icons-material/Clear";
+import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
+import { useState } from "react";
 import * as yup from "yup";
-import FormLabel from "@mui/material/FormLabel";
-import { useEffect, useState } from "react";
-import { apiget, apiput } from "../../service/api";
+import { apiput } from "../../service/api";
 
 
 const Edit = (props) => {
 
     const { handleClose, open, userDetails, fetchUser, emailEdit } = props
+    const [isLoading, setIsLoading] = useState(false);
 
     // -----------  validationSchema
     const validationSchema = yup.object({
@@ -40,12 +42,19 @@ const Edit = (props) => {
 
     // edit api
     const EditUser = async (values) => {
-        let data = values;
-        const result = await apiput(`user/edit/${userDetails?.id}`, data)
-        if (result && result.status === 200) {
-            handleClose();
-            fetchUser();
+        setIsLoading(true)
+
+        try {
+            let data = values;
+            const result = await apiput(`user/edit/${userDetails?.id}`, data)
+            if (result && result.status === 200) {
+                handleClose();
+                fetchUser();
+            }
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
     }
 
     const formik = useFormik({
@@ -152,14 +161,9 @@ const Edit = (props) => {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={formik.handleSubmit}
-                        style={{ textTransform: "capitalize" }}
-                    >
-                        Save
-                    </Button>
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                    </LoadingButton>
                     <Button
                         type="reset"
                         variant="outlined"

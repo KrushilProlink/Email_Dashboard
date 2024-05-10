@@ -1,30 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable arrow-body-style */
-import * as React from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import { LoadingButton } from "@mui/lab";
+import { Autocomplete, CircularProgress, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, MenuItem, Radio, RadioGroup, Select, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Autocomplete, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, MenuItem, Radio, RadioGroup, Select, TextField } from "@mui/material";
-import { useState, useEffect } from "react";
-import { useFormik } from "formik";
-import * as yup from "yup";
 import Typography from "@mui/material/Typography";
-import ClearIcon from "@mui/icons-material/Clear";
-import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as React from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { apiget, apipost } from "../../service/api";
+import * as yup from "yup";
 import { fetchContactData } from "../../redux/slice/contactSlice";
 import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { apipost } from "../../service/api";
 
 
 const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
 
     // const [leadData, setLeadData] = useState([])
     // const [contactData, setContactData] = useState([])
+    const [isLoading, setIsLoading] = React.useState(false);
+
     const dispatch = useDispatch()
     const userid = localStorage.getItem('user_id')
     const userRole = localStorage.getItem("userRole");
@@ -60,13 +62,21 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
 
     }
     const addTask = async (values) => {
-        const data = values
-        const result = await apipost('task/add', data)
-        setUserAction(result)
-        if (result && result.status === 201) {
-            handleClose()
-            formik.resetForm();
+        setIsLoading(true)
+        try {
+            const data = values
+            const result = await apipost('task/add', data)
+            setUserAction(result)
+            if (result && result.status === 201) {
+                handleClose()
+                formik.resetForm();
+            }
+
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
+
     }
 
     // formik
@@ -417,15 +427,9 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={formik.handleSubmit}
-                        style={{ textTransform: "capitalize" }}
-                        color="secondary"
-                    >
-                        Save
-                    </Button>
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                    </LoadingButton>
                     <Button
                         type="reset"
                         variant="outlined"
@@ -440,7 +444,7 @@ const AddEvent = ({ open, handleClose, setUserAction, _id }) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div >
+        </div>
     );
 }
 

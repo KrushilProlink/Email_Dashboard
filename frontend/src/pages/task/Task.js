@@ -1,50 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { Helmet } from 'react-helmet-async';
-import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 // @mui
-import {
-  Card,
-  Table,
-  Stack,
-  Paper,
-  Avatar,
-  Button,
-  Popover,
-  Checkbox,
-  TableRow,
-  MenuItem,
-  TableBody,
-  TableCell,
-  Container,
-  Typography,
-  IconButton,
-  TableContainer,
-  TablePagination,
-  Box,
-} from '@mui/material';
-// components
-import { useNavigate } from 'react-router-dom';
-import { nbNO } from '@mui/x-date-pickers';
-import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { DeleteOutline } from '@mui/icons-material';
-import Label from '../../components/label';
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
-// sections
-import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
-// mock
-import USERLIST from '../../_mock/user';
-import Palette from '../../theme/palette';
-import { apiget, deleteManyApi } from '../../service/api';
-import DeleteModel from '../../components/Deletemodle'
-import TableStyle from '../../components/TableStyle';
-import AddTask from '../../components/task/AddTask'
-import { fetchTaskData } from '../../redux/slice/taskSlice';
+import {
+  Box,
+  Button,
+  Card,
+  Container,
+  Stack,
+  Typography
+} from '@mui/material';
+import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import DeleteModel from '../../components/Deletemodle';
+import TableStyle from '../../components/TableStyle';
+import Iconify from '../../components/iconify';
+import AddTask from '../../components/task/AddTask';
+import { fetchTaskData } from '../../redux/slice/taskSlice';
+import { deleteManyApi } from '../../service/api';
 
 // ----------------------------------------------------------------------
 function CustomToolbar({ selectedRowIds, fetchTaskData }) {

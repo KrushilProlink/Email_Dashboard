@@ -68,14 +68,21 @@ const Add = (props) => {
 
   // add contact api
   const addContact = async (values) => {
-    const data = values;
-    const result = await apipost('contact/add', data)
-    setUserAction(result)
+    setIsLoading(true)
 
-    if (result && result.status === 201) {
-      formik.resetForm();
-      handleClose();
+    try {
+      const data = values;
+      const result = await apipost('contact/add', data)
+      setUserAction(result)
+
+      if (result && result.status === 201) {
+        formik.resetForm();
+        handleClose();
+      }
+    } catch (error) {
+      console.log(error);
     }
+    setIsLoading(false)
   }
 
   // formik

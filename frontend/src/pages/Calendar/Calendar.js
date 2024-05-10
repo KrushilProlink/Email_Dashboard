@@ -1,23 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useEffect } from 'react';
-import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from '@fullcalendar/react';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { Stack, Typography } from '@mui/material';
 import Container from '@mui/material/Container';
-import { Button, Card, Stack, Typography } from '@mui/material';
-import moment from 'moment';
-import Iconify from '../../components/iconify/Iconify';
-import AddTask from '../../components/task/AddTask';
-import { apidelete, apiget } from '../../service/api';
-import ViewEdit from '../../components/task/Edit'
-import ActionButtonTwo from '../../components/ActionButtonTwo';
-import AddMeeting from '../../components/meeting/Addmeetings'
-import AddCall from '../../components/call/Addcalls'
-import { fetchCalendarData } from '../../redux/slice/calendarSlice';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import ActionButtonTwo from '../../components/ActionButtonTwo';
+import AddCall from '../../components/call/Addcalls';
+import AddMeeting from '../../components/meeting/Addmeetings';
+import AddTask from '../../components/task/AddTask';
+import { fetchCalendarData } from '../../redux/slice/calendarSlice';
 
 const Calendar = () => {
     const [userAction, setUserAction] = useState(null)

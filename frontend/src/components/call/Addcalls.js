@@ -1,30 +1,32 @@
 /* eslint-disable react/prop-types */
-import * as React from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import { LoadingButton } from "@mui/lab";
+import { Autocomplete, CircularProgress, FormControl, FormHelperText, FormLabel, Select } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import ClearIcon from "@mui/icons-material/Clear";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { Autocomplete, FormControl, FormHelperText, FormLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
-import { toast } from "react-toastify";
-import { useState, useEffect } from "react";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useFormik } from "formik";
+import * as React from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { apiget, apipost } from "../../service/api";
-import { fetchLeadData } from "../../redux/slice/leadSlice"
+import * as yup from "yup";
 import { fetchContactData } from "../../redux/slice/contactSlice";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { apipost } from "../../service/api";
 
 const Addcalls = (props) => {
     const { open, handleClose, _id, setUserAction } = props
     // const [leadData, setLeadData] = useState([])
     // const [contactData, setContactData] = useState([])
+    const [isLoading, setIsLoading] = React.useState(false);
+
     const dispatch = useDispatch()
 
     const leadData = useSelector((state) => state?.leadDetails?.data)
@@ -59,14 +61,21 @@ const Addcalls = (props) => {
 
     // add call api
     const addCall = async (values) => {
-        const data = values;
-        const result = await apipost('call/add', data)
-        setUserAction(result)
+        setIsLoading(true)
+        try {
+            const data = values;
+            const result = await apipost('call/add', data)
+            setUserAction(result)
 
-        if (result && result.status === 201) {
-            formik.resetForm();
-            handleClose();
+            if (result && result.status === 201) {
+                formik.resetForm();
+                handleClose();
+            }
+
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
     }
 
     // lead api
@@ -324,15 +333,9 @@ const Addcalls = (props) => {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={formik.handleSubmit}
-                        style={{ textTransform: "capitalize" }}
-                        color="secondary"
-                    >
-                        Save
-                    </Button>
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                    </LoadingButton>
                     <Button
                         type="reset"
                         variant="outlined"

@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
 
+import react, { useState } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Autocomplete, FormControl, FormHelperText, FormLabel, Grid, MenuItem, Select, TextField } from '@mui/material';
+import { Autocomplete, CircularProgress, FormControl, FormHelperText, FormLabel, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -11,11 +11,11 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
-import { toast } from 'react-toastify';
 import * as yup from "yup";
 
+import { LoadingButton } from '@mui/lab';
 import { policyTypeList } from '../../_mock/data';
-import { apiget, apipost } from '../../service/api';
+import { apipost } from '../../service/api';
 import Palette from '../../theme/palette';
 
 const Add = (props) => {
@@ -23,6 +23,9 @@ const Add = (props) => {
 
     const userid = localStorage.getItem('user_id')
     const userRole = localStorage.getItem("userRole")
+
+    const [isLoading, setIsLoading] = useState(false);
+
 
     // -----------  validationSchema
     const validationSchema = yup.object({
@@ -628,7 +631,9 @@ const Add = (props) => {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={formik.handleSubmit} variant='contained' color='primary'>Save</Button>
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                    </LoadingButton>
                     <Button onClick={() => {
                         formik.resetForm()
                         handleClose()

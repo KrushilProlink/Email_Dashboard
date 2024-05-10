@@ -2,22 +2,19 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { useEffect, useState } from 'react';
-// @mui
-import { Card, Stack, Button, Container, Typography, Box } from '@mui/material';
-// components
-import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { DeleteOutline } from '@mui/icons-material';
-import Iconify from '../../components/iconify';
-// sections
-import AddDocument from './Add'
-import { apidelete, apiget, deleteManyApi } from '../../service/api';
-import TableStyle from '../../components/TableStyle';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
+import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import DeleteModel from '../../components/Deletemodle';
-import AssignToUserModel from './AssignTo';
+import TableStyle from '../../components/TableStyle';
+import Iconify from '../../components/iconify';
 import { constant } from '../../constant';
 import { fetchDocumentData } from '../../redux/slice/documentSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { apidelete, apiget, deleteManyApi } from '../../service/api';
+import AddDocument from './Add';
+import AssignToUserModel from './AssignTo';
 // ----------------------------------------------------------------------
 
 function CustomToolbar({ selectedRowIds, fetchDocumentData }) {
