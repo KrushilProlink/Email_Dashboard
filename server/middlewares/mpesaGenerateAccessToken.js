@@ -3,6 +3,7 @@ import 'dotenv/config';
 
 const generateAccessToken = async (req, res, next) => {
     try {
+
         // const url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
         const url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 
