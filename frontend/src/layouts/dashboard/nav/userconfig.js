@@ -1,4 +1,5 @@
 // component
+import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded';
 import SvgColor from '../../../components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -66,6 +67,11 @@ const UserConfig = [
     title: 'Email Template',
     path: '/dashboard/emailtemplate',
     icon: icon('ic_emailTemplate'),
+  },
+  {
+    title: 'Payment',
+    path: '/dashboard/payment',
+    icon: <PaymentsRoundedIcon />,
   },
 ];
 

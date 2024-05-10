@@ -1,4 +1,5 @@
 // component
+import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded';
 import SvgColor from '../../../components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -71,6 +72,11 @@ const navConfig = [
     title: 'User Management',
     path: '/dashboard/user',
     icon: icon('ic_user'),
+  },
+  {
+    title: 'Payment',
+    path: '/dashboard/payment',
+    icon: <PaymentsRoundedIcon />,
   },
 
 

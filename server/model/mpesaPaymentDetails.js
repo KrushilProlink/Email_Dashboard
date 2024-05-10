@@ -16,7 +16,18 @@ const Payment = new mongoose.Schema({
     firstName: { type: String },
     lastName: { type: String },
     errorCode: { type: String },
-    errorMessage: { type: String }
+    errorMessage: { type: String },
+    accountNo: {
+        type: String,
+        required: true
+    },
+    createdOn: { type: Date, default: Date.now },
+    modifiedOn: { type: Date, default: Date.now },
+    createdBy: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        required: true
+    },
 })
 
-export default mongoose.model('Payment_details', Payment);
+export default mongoose.model('Payment_details', Payment); // lastName, firstName, emailAddress, amount, senderPhoneNumber

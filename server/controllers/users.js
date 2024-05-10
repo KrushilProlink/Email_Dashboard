@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 
 const index = async (req, res) => {
     let result = await User.find({ deleted: false })
+    result = result.sort((a, b) => b.createdOn - a.createdOn);
     let totalRecords = await User.countDocuments();
     res.send({ result, total_recodes: totalRecords })
 }

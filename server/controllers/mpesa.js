@@ -3,6 +3,7 @@ import axios from 'axios';
 import 'dotenv/config';
 import { v4 as uuidv4 } from 'uuid';
 import PaymentDetails from '../model/mpesaPaymentDetails.js';
+import User from '../model/User.js';
 
 const parseDate = (val) => {
     return (val < 10) ? "0" + val : val;
@@ -19,12 +20,37 @@ const getTimestamp = () => {
     return dateObject.getFullYear() + "" + month + "" + day + "" + hour + "" + minute + second;
 };
 
+const index = async (req, res) => {
+    const query = req.query
+
+    const user = await User.findById(req.user.userId)
+    if (user?.role !== "admin") {
+        query.createdBy = req.user.userId;
+    }
+
+    let allData = await PaymentDetails.find(query).populate({
+        path: 'createdBy',
+    }).exec()
+
+    let result = allData.filter(item => item.createdBy !== null);
+    result = result.sort((a, b) => b.createdOn - a.createdOn);
+
+    let totalRecords = result.length
+
+    res.send({ result, total_recodes: totalRecords })
+};
+
+const view = async (req, res) => {
+    let paymentData = await PaymentDetails.findById(req.params.id);
+    res.status(200).json({ paymentData })
+}
+
 const initiateSTKPush = async (req, res) => {
     try {
-        if (!req.body.amount || !req.body.phone) {
-            return res.status(400).send({ message: 'amount and phone are required fields' });
+        if (!req.body.amount || !req.body.phone || !req.body.accountNo) {
+            return res.status(400).send({ message: 'amount, phone, accountNo are required fields' });
         }
-        const { amount, phone } = req.body;           // phone - MSISDN (12 digits Mobile Number) e.g. 2547XXXXXXXX
+        const { amount, phone, accountNo } = req.body;           // phone - MSISDN (12 digits Mobile Number) e.g. 2547XXXXXXXX
         const Order_ID = uuidv4();
 
         const url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
@@ -53,7 +79,7 @@ const initiateSTKPush = async (req, res) => {
                 "PhoneNumber": phone,                                          // will receive the STK Pin Prompt.
                 // "CallBackURL": `${process.env.BACKEND_URL || callback_url}/lipanampesa/stkPushCallback/${Order_ID}`,
                 "CallBackURL": `${callback_url}/lipanampesa/stkPushCallback/${Order_ID}`,
-                "AccountReference": "CompanyS1",                   // will display to the customer in the STK Pin Prompt message, 12 characters max         // need to change
+                "AccountReference": accountNo,                   // will display to the customer in the STK Pin Prompt message, 12 characters max         // need to change
                 "TransactionDesc": "Online Payment"                // 13 characters max
             },
             {
@@ -74,7 +100,9 @@ const initiateSTKPush = async (req, res) => {
                 amount: req.body?.amount,
                 emailAddress: req.body?.emailAddress,
                 firstName: req.body?.firstName,
-                lastName: req.body?.lastName
+                lastName: req.body?.lastName,
+                createdBy: req.user.userId,
+                accountNo: req?.body?.accountNo
             };
 
             if (response.data.ResponseCode === "0") {
@@ -83,8 +111,7 @@ const initiateSTKPush = async (req, res) => {
 
             const newPayment = new PaymentDetails(payment);
             await newPayment.save();
-
-            return res.send({ success: true, data: response.data });
+            return res.send({ success: true, data: response.data, message: response.data?.CustomerMessage });
 
         }).catch(async (error) => {
             console.log("--- stkPush error1 ---:: ", error);
@@ -98,7 +125,9 @@ const initiateSTKPush = async (req, res) => {
                 status: 'Failed',
                 emailAddress: req.body?.emailAddress,
                 firstName: req.body?.firstName,
-                lastName: req.body?.lastName
+                lastName: req.body?.lastName,
+                createdBy: req.user.userId,
+                accountNo: req?.body?.accountNo
             });
             await newPayment.save();
 
@@ -164,11 +193,13 @@ const stkPushCallback = async (req, res) => {
             existingPayment.amount = Amount;
             existingPayment.mpesaReceiptNumber = MpesaReceiptNumber;
             existingPayment.transactionDate = TransactionDate;
+            existingPayment.modifiedOn = new Date();
 
             if (ResultDesc === "The service request is processed successfully.") {
                 existingPayment.status = 'Completed';
             } else {
-                existingPayment.status = ResultDesc;
+                // existingPayment.status = ResultDesc;
+                existingPayment.status = 'Failed';
             }
 
             await existingPayment.save();
@@ -217,4 +248,4 @@ const confirmPayment = async (req, res) => {
     }
 };
 
-export default { initiateSTKPush, stkPushCallback, confirmPayment, getTimestamp };
+export default { initiateSTKPush, stkPushCallback, confirmPayment, getTimestamp, index, view };

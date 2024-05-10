@@ -108,125 +108,122 @@ const index = async (req, res) => {
         }
     ]);
 
+    allData = allData.sort((a, b) => b.createdOn - a.createdOn);
 
     let totalRecords = allData.length
     res.send({ result: allData, total_recodes: totalRecords })
 };
 
+// const contactSMS = async (req, res) => {
+//     try {
+//         const { ids, message } = req.body;
+//         const query = req.query;
+//         query._id = { $in: ids };
+//         query.deleted = false;
+//         let data = await Contact.find(query);
+
+//         const smsPromises = data.map(async (item) => {
+//             try {
+//                 const smsSend = await sendSMS({ to: `+254${item.phoneNumber}`, message });
+
+//                 if (smsSend && smsSend.status === 200) {
+//                     return { item, status: 'Delivered' };
+//                 } else {
+//                     return { item, status: 'Failed', errorMessage: smsSend.message };
+//                 }
+//             } catch (error) {
+//                 console.error('Failed to send SMS:', error);
+//                 return { item, status: 'Failed', errorMessage: error.message };
+//             }
+//         });
+
+//         const results = await Promise.all(smsPromises);
+
+//         for (const result of results) {
+//             const newSms = new SMS({
+//                 sender: req.user.userId,
+//                 status: result.status,
+//                 startTime: new Date(),
+//                 relatedTo: "Contact",
+//                 message: message || "",
+//                 errorMessage: result.errorMessage,
+//                 contact_id: result.item._id,
+//                 createdOn: new Date(),
+//                 receiver: result.item.phoneNumber,
+//             });
+//             await newSms.save();
+//         }
+
+//         const successRecds = results.filter(result => result.status === 'Delivered');
+//         const failedRecds = results.filter(result => result.status === 'Failed');
+
+//         if (successRecds && successRecds?.length <= 0) {
+//             return res.status(401).json({
+//                 // message: `SMS send process executed. <br>Success: ${successRecds?.length} <br>Failed: ${failedRecds?.length}`,
+//                 message: `SMS send process executed. Success: ${successRecds?.length} Failed: ${failedRecds?.length}`,
+//                 errors: results.filter(result => result.status === 'Failed').map(result => result.errorMessage + "."),
+//                 failedRecords: failedRecds,
+//                 successRecords: successRecds
+//             });
+//         }
+
+//         return res.status(200).json({
+//             // message: `SMS send process executed. <br>Success : ${successRecds?.length} <br>Failed: ${failedRecds?.length}`,
+//             message: `SMS send process executed. Success: ${successRecds?.length} Failed: ${failedRecds?.length}`,
+//             errors: results.filter(result => result.status === 'Failed').map(result => result.errorMessage + "."),
+//             failedRecords: failedRecds,
+//             successRecords: successRecds
+//         });
+
+//     } catch (err) {
+//         console.error('Failed to send SMS :', err);
+//         res.status(500).json({ error: 'Failed to send SMS ' });
+//     }
+// };
+
 const contactSMS = async (req, res) => {
     try {
         const { ids, message } = req.body;
-        const query = req.query;
-        query._id = { $in: ids };
-        query.deleted = false;
-        let data = await Contact.find(query);
+        const query = { ...req.query, deleted: false, _id: { $in: ids } };
 
-        const smsPromises = data.map(async (item) => {
-            try {
-                const smsSend = await sendSMS({ to: `+254${item.phoneNumber}`, message });
+        let contactData = await Contact.find(query);
 
-                if (smsSend && smsSend.status === 200) {
-                    return { item, status: 'Delivered' };
-                } else {
-                    return { item, status: 'Failed', errorMessage: smsSend.message };
+        const phoneNumbers = contactData
+            ?.map(contact => {
+                let phoneNumber = contact?.phoneNumber;
+
+                if (phoneNumber && phoneNumber.charAt(0) === '0' || phoneNumber.charAt(0) === 0) {
+                    phoneNumber = phoneNumber.substring(1);
                 }
-            } catch (error) {
-                console.error('Failed to send SMS:', error);
-                return { item, status: 'Failed', errorMessage: error.message };
-            }
-        });
+                return `254${phoneNumber}`;
+            })
+            .join(',');
 
-        const results = await Promise.all(smsPromises);
+        const smsSendResults = await sendSMS({ senderId: process.env.CLOUDREBUE_SMS_SENDER, phone: phoneNumbers, message });
 
-        for (const result of results) {
+        for (const [index, result] of smsSendResults.entries()) {
             const newSms = new SMS({
-                sender: req.user.userId,
-                status: result.status,
+                sender: req?.user?.userId,
+                status: result?.status === true ? 'Delivered' : 'Failed',
                 startTime: new Date(),
                 relatedTo: "Contact",
                 message: message || "",
-                errorMessage: result.errorMessage,
-                contact_id: result.item._id,
+                errorMessage: result?.status !== true ? result?.message : '',
+                contact_id: contactData?.[index]._id,
                 createdOn: new Date(),
-                receiver: result.item.phoneNumber,
+                receiver: result.phone,
             });
             await newSms.save();
         }
 
-        const successRecds = results.filter(result => result.status === 'Delivered');
-        const failedRecds = results.filter(result => result.status === 'Failed');
+        const successRecds = smsSendResults.filter(result => result.status === true);
+        const failedRecds = smsSendResults.filter(result => result.status === false);
 
         if (successRecds && successRecds?.length <= 0) {
             return res.status(401).json({
                 // message: `SMS send process executed. <br>Success: ${successRecds?.length} <br>Failed: ${failedRecds?.length}`,
                 message: `SMS send process executed. Success: ${successRecds?.length} Failed: ${failedRecds?.length}`,
-                errors: results.filter(result => result.status === 'Failed').map(result => result.errorMessage + "."),
-                failedRecords: failedRecds,
-                successRecords: successRecds
-            });
-        }
-
-        return res.status(200).json({
-            // message: `SMS send process executed. <br>Success : ${successRecds?.length} <br>Failed: ${failedRecds?.length}`,
-            message: `SMS send process executed. Success: ${successRecds?.length} Failed: ${failedRecds?.length}`,
-            errors: results.filter(result => result.status === 'Failed').map(result => result.errorMessage + "."),
-            failedRecords: failedRecds,
-            successRecords: successRecds
-        });
-
-    } catch (err) {
-        console.error('Failed to send SMS :', err);
-        res.status(500).json({ error: 'Failed to send SMS ' });
-    }
-};
-
-const leadSMS = async (req, res) => {
-    try {
-        const { ids, message } = req.body;
-        const query = { ...req.query, deleted: false, _id: { $in: ids } };
-        let data = await Lead.find(query);
-
-        const smsPromises = data.map(async (item) => {
-            try {
-                const smsSend = await sendSMS({ to: `+254${item.phoneNumber}`, message });
-
-                if (smsSend && smsSend.status === 200) {
-                    return { item, status: 'Delivered' };
-                } else {
-                    return { item, status: 'Failed', errorMessage: smsSend.message };
-                }
-            } catch (error) {
-                console.error('Failed to send SMS:', error);
-                return { item, status: 'Failed', errorMessage: error.message };
-            }
-        });
-
-        const results = await Promise.all(smsPromises);
-
-        // Update database after all SMS messages are sent
-        for (const result of results) {
-            const newSms = new SMS({
-                sender: req.user.userId,
-                status: result.status,
-                startTime: new Date(),
-                relatedTo: "Lead",
-                message: message || "",
-                errorMessage: result.errorMessage || "",
-                lead_id: result.item._id,
-                createdOn: new Date(),
-                receiver: result.item.phoneNumber,
-            });
-            await newSms.save();
-        }
-
-        const successRecds = results.filter(result => result.status === 'Delivered');
-        const failedRecds = results.filter(result => result.status === 'Failed');
-
-        if (successRecds && successRecds?.length <= 0) {
-            return res.status(401).json({
-                // message: `SMS send process executed. <br>Success: ${successRecds?.length} <br>Failed: ${failedRecds?.length}`,
-                message: `SMS send process executed. Success: ${successRecds?.length} Failed: ${failedRecds?.length}`,
-                errors: results.filter(result => result.status === 'Failed').map(result => result.errorMessage + "."),
+                errors: smsSendResults.filter(result => result?.status === false).map(result => result?.message + "."),
                 failedRecords: failedRecds,
                 successRecords: successRecds
             });
@@ -235,7 +232,69 @@ const leadSMS = async (req, res) => {
         return res.status(200).json({
             // message: `SMS send process executed. <br>Success: ${successRecds?.length} <br>Failed: ${failedRecds?.length}`,
             message: `SMS send process executed. Success: ${successRecds?.length} Failed: ${failedRecds?.length}`,
-            errors: results.filter(result => result.status === 'Failed').map(result => result.errorMessage + "."),
+            errors: smsSendResults.filter(result => result?.status === false).map(result => result?.message + "."),
+            failedRecords: failedRecds,
+            successRecords: successRecds
+        });
+
+    } catch (err) {
+        console.error('Failed to send SMS:', err);
+        res.status(500).json({ error: 'Failed to send SMS' });
+    }
+};
+
+const leadSMS = async (req, res) => {
+    try {
+        const { ids, message } = req.body;
+        const query = { ...req.query, deleted: false, _id: { $in: ids } };
+
+        let leadData = await Lead.find(query);
+
+        const phoneNumbers = leadData
+            ?.map(contact => {
+                let phoneNumber = contact?.phoneNumber;
+
+                if (phoneNumber && phoneNumber.charAt(0) === '0' || phoneNumber.charAt(0) === 0) {
+                    phoneNumber = phoneNumber.substring(1);
+                }
+                return `254${phoneNumber}`;
+            })
+            .join(',');
+
+        const smsSendResults = await sendSMS({ senderId: process.env.CLOUDREBUE_SMS_SENDER, phone: phoneNumbers, message });
+
+        for (const [index, result] of smsSendResults.entries()) {
+            const newSms = new SMS({
+                sender: req?.user?.userId,
+                status: result?.status === true ? 'Delivered' : 'Failed',
+                startTime: new Date(),
+                relatedTo: "Lead",
+                message: message || "",
+                errorMessage: result?.status !== true ? result?.message : '',
+                lead_id: leadData?.[index]._id,
+                createdOn: new Date(),
+                receiver: result.phone,
+            });
+            await newSms.save();
+        }
+
+        const successRecds = smsSendResults.filter(result => result.status === true);
+        const failedRecds = smsSendResults.filter(result => result.status === false);
+
+        if (successRecds && successRecds?.length <= 0) {
+            return res.status(401).json({
+                // message: `SMS send process executed. <br>Success: ${successRecds?.length} <br>Failed: ${failedRecds?.length}`,
+                message: `SMS send process executed. Success: ${successRecds?.length} Failed: ${failedRecds?.length}`,
+                errors: smsSendResults.filter(result => result?.status === false).map(result => result?.message + "."),
+                failedRecords: failedRecds,
+                successRecords: successRecds
+            });
+        }
+
+        return res.status(200).json({
+            // message: `SMS send process executed. <br>Success: ${successRecds?.length} <br>Failed: ${failedRecds?.length}`,
+            message: `SMS send process executed. Success: ${successRecds?.length} Failed: ${failedRecds?.length}`,
+            errors: smsSendResults.filter(result => result?.status === false).map(result => result?.message + "."),
             failedRecords: failedRecds,
             successRecords: successRecds
         });

@@ -3,6 +3,7 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+import moment from "moment";
 import { useEffect, useState } from 'react';
 // @mui
 import { Card, Stack, Container, Typography, Box, Button } from '@mui/material';
@@ -109,6 +110,18 @@ const Email = () => {
                     <Box onClick={handleFirstNameClick}>
                         {`${params.row.createdBy.firstName} ${params.row.createdBy.lastName}`}
                     </Box>
+                );
+            }
+        },
+        {
+            field: "createdOn",
+            headerName: "Create Date",
+            flex: 1,
+            renderCell: (params) => {
+                return (
+                    <>
+                        {moment(params?.row?.createdOn).format('lll')}
+                    </>
                 );
             }
         }

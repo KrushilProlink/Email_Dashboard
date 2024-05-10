@@ -19,6 +19,8 @@ const index = async (req, res) => {
         .populate("assignTo", ["firstName", "lastName"])
 
     let totalRecords = allData.length
+    allData = allData.sort((a, b) => b.createdOn - a.createdOn);
+
     res.send({ result: allData, total_recodes: totalRecords })
 }
 

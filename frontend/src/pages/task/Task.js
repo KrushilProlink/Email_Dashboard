@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+import moment from "moment";
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
@@ -162,7 +163,19 @@ const Task = () => {
           </Box>
         );
       }
-    }
+    },
+    {
+      field: "createdOn",
+      headerName: "Create Date",
+      flex: 1,
+      renderCell: (params) => {
+        return (
+          <>
+            {moment(params?.row?.createdOn).format('lll')}
+          </>
+        );
+      }
+    },
 
 
   ];
