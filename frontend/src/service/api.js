@@ -49,7 +49,6 @@ export const apipost = async (path, data) => {
             toast.success(response.data.message || "Action success");
             // toast.success(<div dangerouslySetInnerHTML={{ __html: response.data.message }} />);
         }
-        console.log("--- api post try ---", response)
         return response;
     } catch (error) {
         if (error && error.response) {

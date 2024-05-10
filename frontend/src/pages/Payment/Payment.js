@@ -50,9 +50,8 @@ const Payment = () => {
             flex: 1,
             cellClassName: "name-column--cell name-column--cell--capitalize",
             renderCell: (params) => {
-                console.log(params);
                 const handleFirstNameClick = () => {
-                    navigate(`/dashboard/user/view/${params.row.createdBy?._id}`);
+                    navigate(`/dashboard/payment/view/${params.row._id}`)
                 };
 
                 return (

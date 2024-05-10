@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
 import ClearIcon from "@mui/icons-material/Clear";
-import { Autocomplete, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Rating, Select, TextField } from '@mui/material';
+import { FormLabel, Grid, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -12,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import * as yup from "yup";
-import { apiget, apipost } from '../../service/api';
+import { apipost } from '../../service/api';
 
 
 const Add = (props) => {
@@ -28,6 +27,7 @@ const Add = (props) => {
         emailAddress: yup.string().email('Invalid email').required("Email is required"),
         phone: yup.string().matches(/^(0)?[0-9]{9,14}$/, 'Phone Number is invalid').required('Phone Number is required'),
         amount: yup.number().min(1, "Amount must be at least 1").required('Amount is required'),
+        accountNo: yup.number().required('Account Number is required'),
     });
 
     // -----------   initialValues
@@ -35,8 +35,9 @@ const Add = (props) => {
         firstName: userdata?.firstName,
         lastName: userdata?.lastName,
         emailAddress: userdata?.emailAddress,
-        phone: "",       // senderPhoneNumber
+        phone: "",       // senderPhoneNumber        // need to pass 254 from frontend
         amount: "",
+        accountNo: ""
     };
 
     const makePaymentRequest = async (values) => {    // initiateSTKPush
@@ -111,7 +112,6 @@ const Add = (props) => {
                                         size='small'
                                         maxRows={10}
                                         fullWidth
-                                        disabled
                                         value={formik.values.firstName}
                                         onChange={formik.handleChange}
                                         error={
@@ -131,7 +131,6 @@ const Add = (props) => {
                                         label=""
                                         size='small'
                                         fullWidth
-                                        disabled
                                         value={formik.values.lastName}
                                         onChange={formik.handleChange}
                                         error={formik.touched.lastName && Boolean(formik.errors.lastName)}
@@ -146,7 +145,7 @@ const Add = (props) => {
                                         label=""
                                         size='small'
                                         fullWidth
-                                        disabled
+                                        // disabled
                                         value={formik.values.emailAddress}
                                         onChange={formik.handleChange}
                                         error={
@@ -193,6 +192,25 @@ const Add = (props) => {
                                         }
                                         helperText={
                                             formik.touched.phone && formik.errors.phone
+                                        }
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormLabel>Account Number</FormLabel>
+                                    <TextField
+                                        id="accountNo"
+                                        name="accountNo"
+                                        size='small'
+                                        fullWidth
+                                        type="number"
+                                        value={formik.values.accountNo}
+                                        onChange={formik.handleChange}
+                                        error={
+                                            formik.touched.accountNo &&
+                                            Boolean(formik.errors.accountNo)
+                                        }
+                                        helperText={
+                                            formik.touched.accountNo && formik.errors.accountNo
                                         }
                                     />
                                 </Grid>

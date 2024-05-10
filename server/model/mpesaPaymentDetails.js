@@ -17,6 +17,10 @@ const Payment = new mongoose.Schema({
     lastName: { type: String },
     errorCode: { type: String },
     errorMessage: { type: String },
+    accountNo: {
+        type: String,
+        required: true
+    },
     createdOn: { type: Date, default: Date.now },
     modifiedOn: { type: Date, default: Date.now },
     createdBy: {

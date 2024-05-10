@@ -40,12 +40,17 @@ const index = async (req, res) => {
     res.send({ result, total_recodes: totalRecords })
 };
 
+const view = async (req, res) => {
+    let paymentData = await PaymentDetails.findById(req.params.id);
+    res.status(200).json({ paymentData })
+}
+
 const initiateSTKPush = async (req, res) => {
     try {
-        if (!req.body.amount || !req.body.phone) {
-            return res.status(400).send({ message: 'amount and phone are required fields' });
+        if (!req.body.amount || !req.body.phone || !req.body.accountNo) {
+            return res.status(400).send({ message: 'amount, phone, accountNo are required fields' });
         }
-        const { amount, phone } = req.body;           // phone - MSISDN (12 digits Mobile Number) e.g. 2547XXXXXXXX
+        const { amount, phone, accountNo } = req.body;           // phone - MSISDN (12 digits Mobile Number) e.g. 2547XXXXXXXX
         const Order_ID = uuidv4();
 
         const url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
@@ -74,7 +79,7 @@ const initiateSTKPush = async (req, res) => {
                 "PhoneNumber": phone,                                          // will receive the STK Pin Prompt.
                 // "CallBackURL": `${process.env.BACKEND_URL || callback_url}/lipanampesa/stkPushCallback/${Order_ID}`,
                 "CallBackURL": `${callback_url}/lipanampesa/stkPushCallback/${Order_ID}`,
-                "AccountReference": "CompanyS1",                   // will display to the customer in the STK Pin Prompt message, 12 characters max         // need to change
+                "AccountReference": accountNo,                   // will display to the customer in the STK Pin Prompt message, 12 characters max         // need to change
                 "TransactionDesc": "Online Payment"                // 13 characters max
             },
             {
@@ -96,7 +101,8 @@ const initiateSTKPush = async (req, res) => {
                 emailAddress: req.body?.emailAddress,
                 firstName: req.body?.firstName,
                 lastName: req.body?.lastName,
-                createdBy: req.user.userId
+                createdBy: req.user.userId,
+                accountNo: req?.body?.accountNo
             };
 
             if (response.data.ResponseCode === "0") {
@@ -120,7 +126,8 @@ const initiateSTKPush = async (req, res) => {
                 emailAddress: req.body?.emailAddress,
                 firstName: req.body?.firstName,
                 lastName: req.body?.lastName,
-                createdBy: req.user.userId
+                createdBy: req.user.userId,
+                accountNo: req?.body?.accountNo
             });
             await newPayment.save();
 
@@ -241,4 +248,4 @@ const confirmPayment = async (req, res) => {
     }
 };
 
-export default { initiateSTKPush, stkPushCallback, confirmPayment, getTimestamp, index };
+export default { initiateSTKPush, stkPushCallback, confirmPayment, getTimestamp, index, view };

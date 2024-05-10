@@ -188,9 +188,18 @@ const contactSMS = async (req, res) => {
 
         let contactData = await Contact.find(query);
 
-        const phoneNumbers = contactData?.map(contact => `254${contact?.phoneNumber}`).join(',');
+        const phoneNumbers = leadData
+            ?.map(contact => {
+                let phoneNumber = contact?.phoneNumber;
 
-        const smsSendResults = await sendSMS({ senderId: process.env.CLOUDREBUE_SMS_SENDER, phone: phoneNumbers, MessageEvent });
+                if (phoneNumber && phoneNumber.charAt(0) === '0' || phoneNumber.charAt(0) === 0) {
+                    phoneNumber = phoneNumber.substring(1);
+                }
+                return `254${phoneNumber}`;
+            })
+            .join(',');
+
+        const smsSendResults = await sendSMS({ senderId: process.env.CLOUDREBUE_SMS_SENDER, phone: phoneNumbers, message });
 
         for (const [index, result] of smsSendResults.entries()) {
             const newSms = new SMS({
@@ -241,7 +250,17 @@ const leadSMS = async (req, res) => {
 
         let leadData = await Lead.find(query);
 
-        const phoneNumbers = leadData?.map(contact => `254${contact?.phoneNumber}`).join(',');
+        const phoneNumbers = leadData
+            ?.map(contact => {
+                let phoneNumber = contact?.phoneNumber;
+
+                if (phoneNumber && phoneNumber.charAt(0) === '0' || phoneNumber.charAt(0) === 0) {
+                    phoneNumber = phoneNumber.substring(1);
+                }
+                return `254${phoneNumber}`;
+            })
+            .join(',');
+
         const smsSendResults = await sendSMS({ senderId: process.env.CLOUDREBUE_SMS_SENDER, phone: phoneNumbers, message });
 
         for (const [index, result] of smsSendResults.entries()) {

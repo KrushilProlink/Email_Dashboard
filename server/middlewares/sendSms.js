@@ -33,7 +33,7 @@ const sendSMS = async (req) => {
         sender: req.senderId,
         phone: req.phone,
         message: req.message,
-        link_id: null
+        link_id: null,
         // correlator: req.correlator,
     };
 
