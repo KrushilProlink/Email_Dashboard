@@ -13,6 +13,7 @@ const View = () => {
     const [smsData, setSmsData] = useState({});
     const [userAction, setUserAction] = useState(null);
     const [value, setValue] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const params = useParams()
     const navigate = useNavigate()
@@ -26,11 +27,18 @@ const View = () => {
 
     // fetch api
     const fetchSmsdata = async () => {
-        const result = await apiget(`sms/view/${params.id}`)
-        if (result && result.status === 200) {
-            setSmsData(result?.data?.sms[0])
+        setIsLoading(true)
+        try {
+            const result = await apiget(`sms/view/${params.id}`);
+            if (result && result.status === 200) {
+                setSmsData(result?.data?.sms[0]);
+            }
+        } catch (error) {
+            console.error("Error fetching SMS data:", error);
         }
-    }
+        setIsLoading(false)
+    };
+
 
     useEffect(() => {
         fetchSmsdata();
@@ -60,10 +68,10 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={smsData} setUserAction={setUserAction} />
+                        <Overview data={smsData} setUserAction={setUserAction} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Other data={smsData} />
+                        <Other data={smsData} isLoading={isLoading} />
                     </CustomTabPanel>
                 </Box>
 

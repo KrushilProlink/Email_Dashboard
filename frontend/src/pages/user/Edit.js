@@ -46,7 +46,7 @@ const Edit = (props) => {
 
         try {
             let data = values;
-            const result = await apiput(`user/edit/${userDetails?.id}`, data)
+            const result = await apiput(`user/edit/${userDetails?._id}`, data)
             if (result && result.status === 200) {
                 handleClose();
                 fetchUser();

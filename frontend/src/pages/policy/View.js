@@ -35,6 +35,8 @@ const View = () => {
     const [isVisibleClaim, setIsVisibleClaim] = useState(false);
     const [isVisibleNotes, setIsVisibleNotes] = useState(false);
     const [isVisiblePolicyDoc, setIsVisiblePolicyDoc] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
     const params = useParams()
     const navigate = useNavigate()
 
@@ -66,12 +68,18 @@ const View = () => {
 
 
     // fetch api
-    const fetchdata = async () => {
-        const result = await apiget(`policy/view/${params.id}`)
-        if (result && result.status === 200) {
-            setPolicyData(result?.data?.policy[0])
+    const fetchData = async () => {
+        setIsLoading(true)
+        try {
+            const result = await apiget(`policy/view/${params.id}`);
+            if (result && result.status === 200) {
+                setPolicyData(result?.data?.policy[0]);
+            }
+        } catch (error) {
+            console.error("Error fetching policy data:", error);
         }
-    }
+        setIsLoading(false)
+    };
 
     // delete api
     const deletedata = async () => {
@@ -132,7 +140,7 @@ const View = () => {
     };
 
     useEffect(() => {
-        fetchdata();
+        fetchData();
     }, [userAction])
 
     return (
@@ -141,7 +149,7 @@ const View = () => {
             <AddModel open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
 
             {/* Edit Mode */}
-            <EditModel open={openEdit} handleClose={handleCloseEdit} setUserAction={setUserAction} policyData={policyData} fetchPolicy={fetchdata} />
+            <EditModel open={openEdit} handleClose={handleCloseEdit} setUserAction={setUserAction} policyData={policyData} fetchPolicy={fetchData} />
 
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} deletedata={deletedata} id={params.id} />
@@ -152,12 +160,12 @@ const View = () => {
                         {
                             policyData?.contact_id ?
                                 <Header
-                                    title={`${policyData?.contact_id?.firstName} ${policyData?.contact_id?.lastName}`}
+                                    title={!isLoading ? `${policyData?.contact_id?.firstName} ${policyData?.contact_id?.lastName}` : "Loading..."}
                                     subtitle="Policy Details"
                                 />
                                 :
                                 <Header
-                                    title={policyData?.insuredPersonName}
+                                    title={!isLoading ? policyData?.insuredPersonName : "Loading..."}
                                     subtitle="Policy Details"
                                 />
                         }
@@ -182,13 +190,13 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={policyData} setUserAction={setUserAction} />
+                        <Overview data={policyData} setUserAction={setUserAction} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Moreinformation data={policyData} />
+                        <Moreinformation data={policyData} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={2}>
-                        <Other data={policyData} />
+                        <Other data={policyData} isLoading={isLoading} />
                     </CustomTabPanel>
                 </Box>
 

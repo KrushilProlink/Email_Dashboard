@@ -21,6 +21,7 @@ const View = () => {
     const [openEdit, setOpenEdit] = useState(false);
     const [opendelete, setOpendelete] = useState(false);
     const [value, setValue] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate()
     const params = useParams()
@@ -43,12 +44,19 @@ const View = () => {
     }
 
     // fetch api
+
     const fetchdata = async () => {
-        const result = await apiget(`call/view/${params.id}`)
-        if (result && result.status === 200) {
-            setCallData(result?.data?.calls)
+        setIsLoading(true)
+        try {
+            const result = await apiget(`call/view/${params.id}`);
+            if (result && result.status === 200) {
+                setCallData(result?.data?.calls);
+            }
+        } catch (error) {
+            console.error("Error fetching call data:", error);
         }
-    }
+        setIsLoading(false)
+    };
 
     // delete api
     const deletedata = async () => {
@@ -93,10 +101,10 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={callData} />
+                        <Overview data={callData} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Other data={callData} />
+                        <Other data={callData} isLoading={isLoading} />
                     </CustomTabPanel>
                 </Box>
             </Container>

@@ -23,6 +23,7 @@ const View = () => {
     const [value, setValue] = useState(0);
     const navigate = useNavigate()
     const params = useParams()
+    const [isLoading, setIsLoading] = useState(false);
 
     const location = useLocation();
     const userdata = JSON.parse(localStorage.getItem('user'));
@@ -46,13 +47,19 @@ const View = () => {
         navigate('/dashboard/user')
     }
 
-    // fetch api
     const fetchdata = async () => {
-        const result = await apiget(`user/view/${params.id}`)
-        if (result && result.status === 200) {
-            setUserDetails(result.data)
+        setIsLoading(true)
+        try {
+            const result = await apiget(`user/view/${params.id}`);
+            if (result && result.status === 200) {
+                setUserDetails(result.data);
+            }
+        } catch (error) {
+            console.error("Error fetching user details:", error);
         }
-    }
+        setIsLoading(false)
+    };
+
 
     // delete api
     const deletedata = async () => {
@@ -80,7 +87,7 @@ const View = () => {
                 <Grid container display="flex" alignItems="center">
                     <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>
                         <Header
-                            title={`${userDetails?.firstName} ${userDetails?.lastName}`}
+                            title={!isLoading ? `${userDetails?.firstName} ${userDetails?.lastName}` : "Loading..."}
                             subtitle="Profile Details"
                         />
                         <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
@@ -111,10 +118,10 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={userDetails} />
+                        <Overview data={userDetails} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Other data={userDetails} />
+                        <Other data={userDetails} isLoading={isLoading} />
                     </CustomTabPanel>
                 </Box>
             </Container>

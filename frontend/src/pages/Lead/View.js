@@ -34,6 +34,7 @@ const View = () => {
     const [openAdd, setOpenAdd] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [opendelete, setOpendelete] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [value, setValue] = useState(0);
     const [isVisibleNotes, setIsVisibleNotes] = useState(false);
     const [isVisibleCall, setIsVisibleCall] = useState(false);
@@ -71,12 +72,18 @@ const View = () => {
     }
 
     // fetch api
-    const fetchdata = async () => {
-        const result = await apiget(`lead/view/${params.id}`)
-        if (result && result.status === 200) {
-            setLeadData(result?.data?.lead)
+    const fetchData = async () => {
+        setIsLoading(true)
+        try {
+            const result = await apiget(`lead/view/${params.id}`);
+            if (result && result.status === 200) {
+                setLeadData(result?.data?.lead);
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
         }
-    }
+        setIsLoading(false)
+    };
 
     // delete api
     const deletedata = async () => {
@@ -86,7 +93,7 @@ const View = () => {
 
     useEffect(() => {
         if (params.id) {
-            fetchdata();
+            fetchData();
         }
     }, [userAction])
 
@@ -160,7 +167,7 @@ const View = () => {
                 <Grid container display="flex" alignItems="center">
                     <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>
                         <Header
-                            title={`${leadData?.title} ${leadData?.firstName} ${leadData?.lastName}`}
+                            title={!isLoading ? `${leadData?.title} ${leadData?.firstName} ${leadData?.lastName}` : "Loading..."}
                             subtitle="Lead"
                         />
                         <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
@@ -184,13 +191,13 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={leadData} setUserAction={setUserAction} />
+                        <Overview data={leadData} setUserAction={setUserAction} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Moreinformation data={leadData} />
+                        <Moreinformation data={leadData} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={2}>
-                        <Other data={leadData} />
+                        <Other data={leadData} isLoading={isLoading} />
                     </CustomTabPanel>
                 </Box>
 

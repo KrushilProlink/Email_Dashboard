@@ -17,6 +17,7 @@ const View = () => {
     const [openEdit, setOpenEdit] = useState(false);
     const [opendelete, setOpendelete] = useState(false);
     const [value, setValue] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const params = useParams()
     const navigate = useNavigate()
@@ -37,13 +38,19 @@ const View = () => {
     }
 
 
-    // fetch api
-    const fetchdata = async () => {
-        const result = await apiget(`task/view/${params.id}`)
-        if (result && result.status === 200) {
-            setTaskData(result?.data?.tasks)
+    const fetchData = async () => {
+        setIsLoading(true)
+        try {
+            const result = await apiget(`task/view/${params.id}`);
+            if (result && result.status === 200) {
+                setTaskData(result?.data?.tasks);
+            }
+        } catch (error) {
+            console.error("Error fetching task data:", error);
         }
-    }
+        setIsLoading(false)
+    };
+
 
     // delete api
     const deletedata = async () => {
@@ -53,7 +60,7 @@ const View = () => {
 
     useEffect(() => {
         if (params.id) {
-            fetchdata();
+            fetchData();
         }
     }, [userAction])
 
@@ -90,10 +97,10 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={taskData} setUserAction={setUserAction} />
+                        <Overview data={taskData} setUserAction={setUserAction} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Other data={taskData} />
+                        <Other data={taskData} isLoading={isLoading} />
                     </CustomTabPanel>
                 </Box>
 

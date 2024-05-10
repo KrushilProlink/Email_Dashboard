@@ -6,10 +6,15 @@ import Palette from '../../theme/palette'
 
 
 // eslint-disable-next-line arrow-body-style
-const Overview = ({ data }) => {
+const Overview = ({ data, isLoading }) => {
   return (
     <div>
-      <Card style={{ borderTopLeftRadius: "0px", borderTopRightRadius: "0px" }}>
+       {isLoading ? (
+        <Card style={{ display: 'flex', justifyContent: 'center', paddingBottom: "70px" }}>
+          <span className="loader" />
+        </Card>
+      ) : (
+        <Card style={{ borderTopLeftRadius: "0px", borderTopRightRadius: "0px" }}>
         <Box p={3}>
           <Grid container display="flex" spacing={4}>
             <Grid item xs={12} sm={6}>
@@ -59,6 +64,8 @@ const Overview = ({ data }) => {
           </Grid>
         </Box>
       </Card>
+      )}
+      
     </div>
   )
 }

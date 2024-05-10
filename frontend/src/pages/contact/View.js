@@ -38,6 +38,7 @@ const View = () => {
     const [isVisibleCall, setIsVisibleCall] = useState(false);
     const [isVisibleMeetings, setIsVisibleMeetings] = useState(false);
     const [isVisibleEmail, setIsVisibleEmail] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate()
     const params = useParams()
 
@@ -74,14 +75,21 @@ const View = () => {
 
 
     // fetch api
-    const fetchdata = async () => {
-        if (params?.id) {
-            const result = await apiget(`contact/view/${params.id}`)
-            if (result && result.status === 200) {
-                setContactData(result?.data)
+    const fetchData = async () => {
+        setIsLoading(true)
+        try {
+            if (params?.id) {
+                const result = await apiget(`contact/view/${params.id}`);
+                if (result && result.status === 200) {
+                    setContactData(result?.data);
+                }
             }
+        } catch (error) {
+            console.error("Error fetching data:", error);
         }
-    }
+        setIsLoading(false)
+    };
+
     // delete api
     const deletedata = async () => {
         await apidelete(`contact/delete/${params.id}`)
@@ -130,7 +138,7 @@ const View = () => {
     };
 
     useEffect(() => {
-        fetchdata();
+        fetchData();
     }, [userAction])
 
     return (
@@ -148,7 +156,7 @@ const View = () => {
                 <Grid container display="flex" alignItems="center">
                     <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>
                         <Header
-                            title={`${contactData?.firstName} ${contactData?.lastName}`}
+                            title={!isLoading ? `${contactData?.firstName} ${contactData?.lastName}` : "Loading..."}
                             subtitle="Contact Details"
                         />
                         <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
@@ -173,13 +181,13 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={contactData} setUserAction={setUserAction} />
+                        <Overview data={contactData} setUserAction={setUserAction} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Moreinformation data={contactData} />
+                        <Moreinformation data={contactData} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={2}>
-                        <Other data={contactData} />
+                        <Other data={contactData} isLoading={isLoading} />
                     </CustomTabPanel>
                 </Box>
 

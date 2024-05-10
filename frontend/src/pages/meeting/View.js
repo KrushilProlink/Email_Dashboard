@@ -26,6 +26,8 @@ const View = () => {
     const [openEdit, setOpenEdit] = useState(false);
     const [opendelete, setOpendelete] = useState(false);
     const [value, setValue] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+
     const navigate = useNavigate()
     const params = useParams()
 
@@ -48,11 +50,18 @@ const View = () => {
 
     // fetch api
     const fetchdata = async () => {
-        const result = await apiget(`meeting/view/${params.id}`)
-        if (result && result.status === 200) {
-            setMeetingData(result?.data?.meetings)
+        setIsLoading(true)
+        try {
+            const result = await apiget(`meeting/view/${params.id}`);
+            if (result && result.status === 200) {
+                setMeetingData(result?.data?.meetings);
+            }
+        } catch (error) {
+            console.error("Error fetching meeting data:", error);
         }
-    }
+        setIsLoading(false)
+    };
+
 
     // delete api
     const deletedata = async () => {
@@ -96,10 +105,10 @@ const View = () => {
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <Overview data={meetingData} />
+                        <Overview data={meetingData} isLoading={isLoading} />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <Other data={meetingData} />
+                        <Other data={meetingData} isLoading={isLoading} />
                     </CustomTabPanel>
                 </Box>
             </Container>
