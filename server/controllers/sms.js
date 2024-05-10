@@ -188,7 +188,7 @@ const contactSMS = async (req, res) => {
 
         let contactData = await Contact.find(query);
 
-        const phoneNumbers = leadData
+        const phoneNumbers = contactData
             ?.map(contact => {
                 let phoneNumber = contact?.phoneNumber;
 
