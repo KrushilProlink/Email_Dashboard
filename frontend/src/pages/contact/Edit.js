@@ -1,25 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import * as React from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import { LoadingButton } from "@mui/lab";
+import { CircularProgress, FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
-import ClearIcon from "@mui/icons-material/Clear";
+import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from "@mui/material";
-import { useEffect, useState } from "react";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
+import { useFormik } from "formik";
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import { apiget, apiput } from "../../service/api";
+import * as yup from "yup";
+import { apiput } from "../../service/api";
 import Palette from "../../theme/palette";
 
 
@@ -71,13 +71,20 @@ const Edit = (props) => {
 
   // add Contact Edit api
   const editContact = async (values) => {
-    const data = values;
-    const result = await apiput(`contact/edit/${contactData?._id}`, data)
-    setUserAction(result);
+    setIsLoading(true)
+    try {
+      const data = values;
+      const result = await apiput(`contact/edit/${contactData?._id}`, data)
+      setUserAction(result);
+      if (result && result?.status === 200) {
+        handleClose();
+      }
 
-    if (result && result?.status === 200) {
-      handleClose();
+    } catch (error) {
+      console.log(error);
     }
+    setIsLoading(false)
+
   }
 
 
@@ -480,14 +487,9 @@ const Edit = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button
-            type="submit"
-            variant="contained"
-            onClick={formik.handleSubmit}
-            style={{ textTransform: "capitalize" }}
-          >
-            Save
-          </Button>
+          <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+            {isLoading ? <CircularProgress size={27} /> : 'Save'}
+          </LoadingButton>
           <Button
             type="reset"
             variant="outlined"

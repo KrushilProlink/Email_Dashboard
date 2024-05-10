@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import ClearIcon from "@mui/icons-material/Clear";
-import { Autocomplete, FormControl, FormHelperText, FormLabel, Grid, MenuItem, Select, TextField } from '@mui/material';
+import { Autocomplete, CircularProgress, FormControl, FormHelperText, FormLabel, Grid, MenuItem, Select, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -15,12 +15,14 @@ import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import * as yup from "yup";
 
+import { LoadingButton } from '@mui/lab';
 import { policyTypeList } from '../../_mock/data';
-import { apiget, apiput } from '../../service/api';
+import { apiput } from '../../service/api';
 import Palette from '../../theme/palette';
 
 const Edit = (props) => {
     const { open, handleClose, setUserAction, policyData, fetchPolicy } = props
+    const [isLoading, setIsLoading] = useState(false);
 
     // const [policyData, setPolicyData] = useState({})
 
@@ -81,13 +83,21 @@ const Edit = (props) => {
 
     // edit Policy api
     const editPolicy = async (values) => {
-        const data = values;
-        const result = await apiput(`policy/edit/${policyData?._id}`, data)
-        setUserAction(result)
-        if (result && result.status === 200) {
-            handleClose();
-            fetchPolicy();
+        setIsLoading(true)
+        try {
+            const data = values;
+            const result = await apiput(`policy/edit/${policyData?._id}`, data)
+            setUserAction(result)
+            if (result && result.status === 200) {
+                handleClose();
+                fetchPolicy();
+            }
+
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
+
     }
 
 
@@ -659,8 +669,9 @@ const Edit = (props) => {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={formik.handleSubmit} variant='contained' color='primary'>Save</Button>
-                    <Button onClick={() => {
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                    </LoadingButton>                    <Button onClick={() => {
                         formik.resetForm()
                         handleClose()
                     }} variant='outlined' color='error'>Cancle</Button>

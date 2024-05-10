@@ -1,19 +1,23 @@
 /* eslint-disable arrow-body-style */
-import { Box, Button, Container, FormLabel, Grid, Stack, TextField } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { useNavigate, useParams } from 'react-router-dom';
+import { LoadingButton } from '@mui/lab';
+import { Box, Button, CircularProgress, Container, FormLabel, Grid, Stack, TextField } from '@mui/material';
+import { truncate } from 'lodash';
+import React, { useEffect, useRef, useState } from 'react';
 import { EmailEditor } from 'react-email-editor';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Header from '../../components/Header'
+import DeleteModel from '../../components/Deletemodle';
+import Header from '../../components/Header';
 import { apidelete, apiget, apiput } from '../../service/api';
-import DeleteModel from '../../components/Deletemodle'
 
 const View = () => {
 
     const emailEditorRef = useRef(null);
     const [preview, setPreview] = useState(false);
     const [opendelete, setOpendelete] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
     const [design, setDesign] = useState({})
     const [name, setName] = useState('');
     const navigate = useNavigate()
@@ -24,26 +28,32 @@ const View = () => {
     const handleCloseDelete = () => setOpendelete(false);
 
     const saveDesign = () => {
-        if (name !== "") {
-            emailEditorRef.current.editor?.exportHtml(async (allData) => {
-                const { html, design } = allData
+        setIsLoading(true)
+        try {
+            if (name !== "") {
+                emailEditorRef.current.editor?.exportHtml(async (allData) => {
+                    const { html, design } = allData
 
-                const data = {
-                    html,
-                    design,
-                    name,
-                    modifiedOn: new Date()
-                }
-                const result = await apiput(`emailtemplate/edit/${params.id}`, data)
+                    const data = {
+                        html,
+                        design,
+                        name,
+                        modifiedOn: new Date()
+                    }
+                    const result = await apiput(`emailtemplate/edit/${params.id}`, data)
 
-                if (result && result.status === 200) {
-                    navigate('/dashboard/emailtemplate')
-                }
+                    if (result && result.status === 200) {
+                        navigate('/dashboard/emailtemplate')
+                    }
 
-            });
-        } else {
-            toast.error("Template Name is required")
+                });
+            } else {
+                toast.error("Template Name is required")
+            }
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
     }
 
     const togglePreview = () => {
@@ -98,7 +108,9 @@ const View = () => {
                             />
                             <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
                                 <Button variant="contained" color="secondary" onClick={togglePreview}>{preview ? "Hide Preview" : "Show Preview"}</Button>
-                                <Button variant="contained" color="secondary" onClick={saveDesign}>Save</Button>
+                                <LoadingButton onClick={saveDesign} variant='contained' color='secondary' disabled={!!isLoading}>
+                                    {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                                </LoadingButton>
                                 <Button variant="contained" color="error" onClick={handleOpenDelete}>Delete</Button>
                                 <Button variant="contained" color="secondary" startIcon={<ArrowBackIosIcon />} onClick={back}>Back</Button>
                             </Stack>

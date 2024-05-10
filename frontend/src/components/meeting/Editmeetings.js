@@ -1,27 +1,27 @@
 /* eslint-disable react/prop-types */
-import * as React from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import { LoadingButton } from "@mui/lab";
+import { Autocomplete, CircularProgress, FormControl, FormHelperText, FormLabel, MenuItem, Select } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import ClearIcon from "@mui/icons-material/Clear";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { useState, useEffect } from "react";
-import { FiSave } from "react-icons/fi";
-import { GiCancel } from "react-icons/gi";
-import { Autocomplete, FormControl, FormHelperText, FormLabel, MenuItem, Select } from "@mui/material";
-import { useParams } from "react-router-dom";
+import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
+import { useFormik } from "formik";
+import * as React from "react";
+import { useEffect } from "react";
+import { GiCancel } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
-import { apiget, apiput } from "../../service/api";
-import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { useParams } from "react-router-dom";
+import * as yup from "yup";
 import { fetchContactData } from "../../redux/slice/contactSlice";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { apiput } from "../../service/api";
 
 const Editmeetings = (props) => {
 
@@ -29,6 +29,8 @@ const Editmeetings = (props) => {
 
     // const [leadData, setLeadData] = useState([])
     // const [contactData, setContactData] = useState([])
+    const [isLoading, setIsLoading] = React.useState(false);
+
     const params = useParams();
     const dispatch = useDispatch()
 
@@ -68,12 +70,19 @@ const Editmeetings = (props) => {
 
     // edit api
     const EditMeeting = async (values) => {
-        const data = values;
-        const result = await apiput(`meeting/edit/${meetingData?._id}`, data)
-        if (result && result.status === 200) {
-            handleClose();
-            fetchMeeting();
+        setIsLoading(true)
+        try {
+            const data = values;
+            const result = await apiput(`meeting/edit/${meetingData?._id}`, data)
+            if (result && result.status === 200) {
+                handleClose();
+                fetchMeeting();
+            }
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
+
     }
 
     // // lead api
@@ -377,16 +386,9 @@ const Editmeetings = (props) => {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={formik.handleSubmit}
-                        style={{ textTransform: "capitalize" }}
-                        color="secondary"
-                        startIcon={<FiSave />}
-                    >
-                        Save
-                    </Button>
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                    </LoadingButton>
                     <Button
                         type="reset"
                         variant="outlined"

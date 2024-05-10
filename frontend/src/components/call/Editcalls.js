@@ -1,29 +1,31 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import * as React from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import { LoadingButton } from "@mui/lab";
+import { Autocomplete, CircularProgress, FormControl, FormHelperText, FormLabel, Select } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import ClearIcon from "@mui/icons-material/Clear";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { useEffect, useState } from "react";
-import { Autocomplete, FormControl, FormHelperText, FormLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
-import { useParams } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useFormik } from "formik";
+import * as React from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { apiget, apiput } from "../../service/api";
-import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { useParams } from "react-router-dom";
+import * as yup from "yup";
 import { fetchContactData } from "../../redux/slice/contactSlice";
+import { fetchLeadData } from "../../redux/slice/leadSlice";
+import { apiput } from "../../service/api";
 
 const Editcalls = (props) => {
     const { handleClose, open, callData, fetchcalls } = props
+    const [isLoading, setIsLoading] = React.useState(false);
 
     // const [leadData, setLeadData] = useState([])
     // const [contactData, setContactData] = useState([])
@@ -80,12 +82,20 @@ const Editcalls = (props) => {
 
     // edit api
     const EditCall = async (values) => {
-        const data = values;
-        const result = await apiput(`call/edit/${callData?._id}`, data)
-        if (result && result.status === 200) {
-            handleClose();
-            fetchcalls();
+        setIsLoading(true)
+
+        try {
+
+            const data = values;
+            const result = await apiput(`call/edit/${callData?._id}`, data)
+            if (result && result.status === 200) {
+                handleClose();
+                fetchcalls();
+            }
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
     }
 
     const formik = useFormik({
@@ -338,15 +348,9 @@ const Editcalls = (props) => {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={formik.handleSubmit}
-                        style={{ textTransform: "capitalize" }}
-                        color="secondary"
-                    >
-                        Save
-                    </Button>
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                    </LoadingButton>
                     <Button
                         type="reset"
                         variant="outlined"

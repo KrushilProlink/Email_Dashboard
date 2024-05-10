@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import ClearIcon from "@mui/icons-material/Clear";
-import { Autocomplete, DialogContentText, FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Autocomplete, CircularProgress, DialogContentText, FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -28,6 +29,8 @@ const Add = (props) => {
     // const [leadData, setLeadData] = useState([]);
     // const [contactData, setContactData] = useState([]);
     // const [emailTemplateData, setEmailTemplateData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
     const [messageType, setMessageType] = useState("template");
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole");
@@ -58,14 +61,23 @@ const Add = (props) => {
 
     // add email api
     const addEmail = async (values) => {
-        const data = values;
-        const result = await apipost('email/add', data)
-        setUserAction(result)
+        setIsLoading(true)
 
-        if (result && result.status === 201) {
-            formik.resetForm();
-            handleClose();
+        try {
+            const data = values;
+            const result = await apipost('email/add', data)
+            setUserAction(result)
+
+            if (result && result.status === 201) {
+                formik.resetForm();
+                handleClose();
+            }
+
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
+
     };
 
     const handleMessageTypeChange = (e) => {
@@ -343,15 +355,9 @@ const Add = (props) => {
                 </DialogContent>
 
                 <DialogActions>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        onClick={formik.handleSubmit}
-                        style={{ textTransform: "capitalize" }}
-                    // startIcon={<FiSave />}
-                    >
-                        Save
-                    </Button>
+                    <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+                        {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                    </LoadingButton>
                     <Button
                         type="reset"
                         variant="outlined"

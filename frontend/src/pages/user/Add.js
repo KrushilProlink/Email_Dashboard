@@ -1,21 +1,23 @@
 /* eslint-disable prefer-const */
-import * as React from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import { LoadingButton } from "@mui/lab";
+import { Button, CircularProgress, Dialog, FormLabel } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import ClearIcon from "@mui/icons-material/Clear";
+import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
-import * as yup from "yup";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import { FormLabel, Dialog, Button } from "@mui/material";
+import * as yup from "yup";
 import { apipost } from "../../service/api";
 
 const Add = (props) => {
   // eslint-disable-next-line react/prop-types
   const { handleClose, open } = props
+  const [isLoading, setIsLoading] = useState(false);
 
   // -----------  validationSchema
   const validationSchema = yup.object({
@@ -36,14 +38,19 @@ const Add = (props) => {
 
   // add user api
   const addUser = async (values) => {
-    let data = values;
-    const result = await apipost('user/register', data)
+    setIsLoading(true)
+    try {
+      let data = values;
+      const result = await apipost('user/register', data)
 
-    if (result && result.status === 201) {
-      formik.resetForm();
-      handleClose();
-      toast.success(result.data.message)
+      if (result && result.status === 201) {
+        formik.resetForm();
+        handleClose();
+      }
+    } catch (error) {
+      console.log(error);
     }
+    setIsLoading(false)
   }
 
   const formik = useFormik({
@@ -164,14 +171,9 @@ const Add = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button
-            type="submit"
-            variant="contained"
-            onClick={formik.handleSubmit}
-            style={{ textTransform: "capitalize" }}
-          >
-            Save
-          </Button>
+          <LoadingButton onClick={formik.handleSubmit} variant='contained' color='primary' disabled={!!isLoading}>
+            {isLoading ? <CircularProgress size={27} /> : 'Save'}
+          </LoadingButton>
           <Button
             type="reset"
             variant="outlined"
