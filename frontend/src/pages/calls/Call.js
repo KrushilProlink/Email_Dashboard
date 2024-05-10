@@ -2,20 +2,20 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 // @mui
-import { Card, Button, Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
 // components
-import { useNavigate } from 'react-router-dom';
-import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
 import { DeleteOutline } from '@mui/icons-material';
+import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
 // sections
 // mock
-import { apiget, deleteManyApi } from '../../service/api';
-import DeleteModel from '../../components/Deletemodle'
-import TableStyle from '../../components/TableStyle';
-import Iconify from '../../components/iconify/Iconify';
-import AddCall from '../../components/call/Addcalls'
-import { fetchCallData } from '../../redux/slice/callSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import DeleteModel from '../../components/Deletemodle';
+import TableStyle from '../../components/TableStyle';
+import AddCall from '../../components/call/Addcalls';
+import Iconify from '../../components/iconify/Iconify';
+import { fetchCallData } from '../../redux/slice/callSlice';
+import { deleteManyApi } from '../../service/api';
 
 // ----------------------------------------------------------------------
 const CustomToolbar = ({ selectedRowIds, fetchCallData }) => {

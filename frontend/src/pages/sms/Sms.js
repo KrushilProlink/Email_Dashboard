@@ -5,36 +5,22 @@
 import { useEffect, useState } from 'react';
 // @mui
 import {
-  Card,
-  Stack,
-  Button,
-  Container,
-  Typography,
-  IconButton,
-  TableContainer,
-  TablePagination,
   Box,
-  tableBodyClasses,
+  Card,
+  Container,
+  Stack,
+  Typography
 } from '@mui/material';
 // components
-import { useNavigate } from 'react-router-dom';
-import { nbNO } from '@mui/x-date-pickers';
 import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
-import { DeleteOutline } from '@mui/icons-material';
-import Label from '../../components/label';
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
+import { useNavigate } from 'react-router-dom';
 // sections
-import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
 // mock
-import USERLIST from '../../_mock/user';
-import Palette from '../../theme/palette';
-import { apiget, deleteManyApi } from '../../service/api';
-import DeleteModel from '../../components/Deletemodle'
-import TableStyle from '../../components/TableStyle';
-import AddTask from '../../components/task/AddTask'
-import { fetchSmsData } from '../../redux/slice/smsSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import DeleteModel from '../../components/Deletemodle';
+import TableStyle from '../../components/TableStyle';
+import { fetchSmsData } from '../../redux/slice/smsSlice';
+import { deleteManyApi } from '../../service/api';
 
 // ----------------------------------------------------------------------
 function CustomToolbar({ selectedRowIds, fetchSmsData }) {

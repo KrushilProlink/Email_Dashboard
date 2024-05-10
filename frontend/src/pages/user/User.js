@@ -1,14 +1,13 @@
 
-import { useEffect, useState } from 'react';
-import { Card, Stack, Button, Container, Typography, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import Iconify from '../../components/iconify';
-import AddUser from './Add'
-import { apiget } from '../../service/api';
-import TableStyle from '../../components/TableStyle';
-import { fetchUserData } from '../../redux/slice/userSlice';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import TableStyle from '../../components/TableStyle';
+import Iconify from '../../components/iconify';
+import { fetchUserData } from '../../redux/slice/userSlice';
+import AddUser from './Add';
 // ----------------------------------------------------------------------
 
 const User = () => {

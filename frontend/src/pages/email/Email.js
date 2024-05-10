@@ -5,20 +5,20 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect, useState } from 'react';
 // @mui
-import { Card, Stack, Container, Typography, Box, Button } from '@mui/material';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
 // components
-import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
 // sections
 // mock
 import { DeleteOutline } from '@mui/icons-material';
-import DeleteModel from '../../components/Deletemodle'
-import AddEmail from './Add';
-import { apiget, deleteManyApi } from '../../service/api';
+import { useDispatch, useSelector } from 'react-redux';
+import DeleteModel from '../../components/Deletemodle';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify/Iconify';
 import { fetchEmailData } from '../../redux/slice/emailSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { deleteManyApi } from '../../service/api';
+import AddEmail from './Add';
 
 // ----------------------------------------------------------------------
 
