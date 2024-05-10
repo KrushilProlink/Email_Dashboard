@@ -15,7 +15,7 @@ import { apipost } from "../../service/api";
 
 const Add = (props) => {
   // eslint-disable-next-line react/prop-types
-  const { handleClose, open } = props
+  const { handleClose, open, setUserAction } = props
 
   // -----------  validationSchema
   const validationSchema = yup.object({
@@ -38,11 +38,10 @@ const Add = (props) => {
   const addUser = async (values) => {
     let data = values;
     const result = await apipost('user/register', data)
-
+    setUserAction(result)
     if (result && result.status === 201) {
       formik.resetForm();
       handleClose();
-      toast.success(result.data.message)
     }
   }
 

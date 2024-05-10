@@ -7,7 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import Container from '@mui/material/Container';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Card, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import Iconify from '../../components/iconify/Iconify';
 import AddTask from '../../components/task/AddTask';
@@ -16,18 +16,21 @@ import ViewEdit from '../../components/task/Edit'
 import ActionButtonTwo from '../../components/ActionButtonTwo';
 import AddMeeting from '../../components/meeting/Addmeetings'
 import AddCall from '../../components/call/Addcalls'
+import { fetchCalendarData } from '../../redux/slice/calendarSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Calendar = () => {
     const [userAction, setUserAction] = useState(null)
-    const [data, setData] = useState([]);
     const [taskId, setTaskId] = useState('')
     const [openTask, setOpenTask] = useState(false);
     const [openMeeting, setOpenMeeting] = useState(false);
     const [openCall, setOpenCall] = useState(false);
     const [openViewEdit, setOpenViewEdit] = useState(false)
-
+    const dispatch = useDispatch()
     const userid = localStorage.getItem('user_id')
     const userRole = localStorage.getItem("userRole")
+
+    const { data, isLoading } = useSelector((state) => state?.calendarDetails)
 
     // open task model
     const handleOpenTask = () => setOpenTask(true);
@@ -68,15 +71,8 @@ const Calendar = () => {
     );
 
 
-    const fetchData = async () => {
-        const result = await apiget(userRole === "admin" ? `calendar` : `calendar/?createdBy=${userid}`);
-        if (result?.status === 200) {
-            setData(result?.data?.data)
-        }
-    }
-
     useEffect(() => {
-        fetchData();
+        dispatch(fetchCalendarData());
     }, [userAction])
 
     return (
@@ -104,40 +100,47 @@ const Calendar = () => {
                         handleOpenCall={handleOpenCall}
                     />
                 </Stack>
-                <FullCalendar
-                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                    initialView="dayGridMonth"
-                    minHeight="400px"
-                    height="600px"
-                    // dateClick={handleDateClick}
-                    // events={calendarDataCalendar}
-                    events={data}
+                {isLoading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                        <span className="loader" />
+                    </div>
+                ) : (
+                    <FullCalendar
+                        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                        initialView="dayGridMonth"
+                        minHeight="400px"
+                        height="600px"
+                        // dateClick={handleDateClick}
+                        // events={calendarDataCalendar}
+                        events={data}
 
-                    headerToolbar={{
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    }}
-                    eventClick={handleEventClick}
-                    eventsSet={handleEvents}
-                    select={handleDateSelect}
-                    eventContent={renderEventContent}
-                    views={{
-                        listWeek: { buttonText: 'List' },
-                        multiMonthFourMonth: {
-                            type: 'multiMonth',
-                            buttonText: 'multiMonth',
-                            duration: { months: 4 },
-                        }
-                    }}
-                    buttonText={{
-                        today: 'Today',
-                        dayGridMonth: 'Month',
-                        timeGridWeek: 'Week',
-                        timeGridDay: 'Day',
-                    }}
-                    eventClassNames="custom-fullcalendar"
-                />
+                        headerToolbar={{
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        }}
+                        eventClick={handleEventClick}
+                        eventsSet={handleEvents}
+                        select={handleDateSelect}
+                        eventContent={renderEventContent}
+                        views={{
+                            listWeek: { buttonText: 'List' },
+                            multiMonthFourMonth: {
+                                type: 'multiMonth',
+                                buttonText: 'multiMonth',
+                                duration: { months: 4 },
+                            }
+                        }}
+                        buttonText={{
+                            today: 'Today',
+                            dayGridMonth: 'Month',
+                            timeGridWeek: 'Week',
+                            timeGridDay: 'Day',
+                        }}
+                        eventClassNames="custom-fullcalendar"
+                    />
+                )}
+
             </Container>
         </div>
     );

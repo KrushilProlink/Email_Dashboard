@@ -89,8 +89,6 @@ const Add = (props) => {
         },
         onSubmit: async (values) => {
             addEmail(values);
-            formik.resetForm();
-            handleClose();
         }
     });
 

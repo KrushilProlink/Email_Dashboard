@@ -7,24 +7,28 @@ import Iconify from '../../components/iconify';
 import AddUser from './Add'
 import { apiget } from '../../service/api';
 import TableStyle from '../../components/TableStyle';
-
+import { fetchUserData } from '../../redux/slice/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 // ----------------------------------------------------------------------
 
 const User = () => {
 
     const [allUser, setAllUser] = useState([]);
     const [openAdd, setOpenAdd] = useState(false);
+    const [userAction, setUserAction] = useState(null)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const { data, isLoading } = useSelector((state) => state?.userDetails)
 
     const handleOpenAdd = () => setOpenAdd(true);
     const handleCloseAdd = () => setOpenAdd(false);
-
 
     const columns = [
         {
             field: "firstName",
             headerName: "First Name",
-            flex: 2,
+            width: 400,
             cellClassName: "name-column--cell name-column--cell--capitalize",
             renderCell: (params) => {
                 const handleFirstNameClick = () => {
@@ -42,35 +46,29 @@ const User = () => {
             field: "lastName",
             headerName: "Last Name",
             cellClassName: "name-column--cell--capitalize",
-            flex: 2,
+            width: 400,
 
         },
         {
             field: "emailAddress",
             headerName: "Email Address",
-            flex: 2,
+            width: 400,
         },
         {
             field: "role",
             headerName: "Role",
             cellClassName: "name-column--cell--capitalize",
-            flex: 2
+            width: 300
         }
     ];
 
-    const fetchdata = async () => {
-        const result = await apiget('user/list')
-        if (result && result.status === 200) {
-            setAllUser(result?.data?.result)
-        }
-    }
     useEffect(() => {
-        fetchdata();
-    }, [])
+        dispatch(fetchUserData());
+    }, [userAction])
 
     return (
         <>
-            <AddUser open={openAdd} handleClose={handleCloseAdd} />
+            <AddUser open={openAdd} handleClose={handleCloseAdd} setUserAction={setUserAction} />
 
             <Container maxWidth>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -83,14 +81,21 @@ const User = () => {
                 </Stack>
                 <TableStyle>
                     <Box width="100%" >
-                        <Card style={{ height: "600px", paddingTop: "15px" }}>
-                            <DataGrid
-                                rows={allUser}
-                                columns={columns}
-                                components={{ Toolbar: GridToolbar }}
-                                getRowId={row => row._id}
-                            />
-                        </Card>
+                        {isLoading ? (
+                            <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                                <span className="loader" />
+                            </Card>
+                        ) : (
+                            <Card style={{ height: "600px", paddingTop: "15px" }}>
+                                <DataGrid
+                                    rows={data}
+                                    columns={columns}
+                                    components={{ Toolbar: GridToolbar }}
+                                    getRowId={row => row._id}
+                                />
+                            </Card>
+                        )}
+
                     </Box>
                 </TableStyle>
             </Container >

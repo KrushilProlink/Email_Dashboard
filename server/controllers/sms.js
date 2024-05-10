@@ -13,7 +13,6 @@ const index = async (req, res) => {
     if (user?.role !== "admin") {
         query.sender = mongoose.Types.ObjectId(req.user.userId);
     }
-    console.log(query)
 
     const newSMS = new SMS({
         sender: req.user.userId,

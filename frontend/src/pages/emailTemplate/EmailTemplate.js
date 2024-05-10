@@ -47,13 +47,13 @@ const EmailTemplate = () => {
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole");
 
-    const tempList = useSelector((state) => state?.tempDetails?.data)
+    const { data, isLoading } = useSelector((state) => state?.tempDetails)
 
     const columns = [
         {
             field: "name",
             headerName: "Template Name",
-            flex: 1,
+            width: 370,
             cellClassName: "name-column--cell name-column--cell--capitalize",
             renderCell: (params) => {
                 const handleFirstNameClick = () => {
@@ -71,7 +71,7 @@ const EmailTemplate = () => {
         {
             field: "createdOn",
             headerName: "CreatedOn",
-            flex: 1,
+            width: 370,
             valueFormatter: (params) => {
                 const date = new Date(params.value);
                 return date.toLocaleString();
@@ -80,7 +80,7 @@ const EmailTemplate = () => {
         {
             field: "modifiedOn",
             headerName: "ModifiedOn",
-            flex: 1,
+            width: 370,
             valueFormatter: (params) => {
                 const date = new Date(params.value);
                 return date.toLocaleString();
@@ -90,7 +90,7 @@ const EmailTemplate = () => {
             field: "createdBy",
             headerName: "Created By",
             cellClassName: "name-column--cell name-column--cell--capitalize",
-            flex: 1,
+            width: 370,
             renderCell: (params) => {
                 const handleFirstNameClick = () => {
                     navigate(`/dashboard/user/view/${params?.row?.createdBy?._id}`)
@@ -133,17 +133,24 @@ const EmailTemplate = () => {
                         </Button>
                     </Stack>
                     <Box width="100%">
-                        <Card style={{ height: "600px", paddingTop: "15px" }}>
-                            <DataGrid
-                                rows={tempList}
-                                columns={columns}
-                                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchTemplateData }) }}
-                                checkboxSelection
-                                onRowSelectionModelChange={handleSelectionChange}
-                                rowSelectionModel={selectedRowIds}
-                                getRowId={row => row._id}
-                            />
-                        </Card>
+                        {isLoading ? (
+                            <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                                <span className="loader" />
+                            </Card>
+                        ) : (
+                            <Card style={{ height: "600px", paddingTop: "15px" }}>
+                                <DataGrid
+                                    rows={data}
+                                    columns={columns}
+                                    components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchTemplateData }) }}
+                                    checkboxSelection
+                                    onRowSelectionModelChange={handleSelectionChange}
+                                    rowSelectionModel={selectedRowIds}
+                                    getRowId={row => row._id}
+                                />
+                            </Card>
+                        )}
+
                     </Box>
                 </TableStyle>
             </Container>

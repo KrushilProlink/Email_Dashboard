@@ -14,11 +14,12 @@ import DeleteModel from '../../components/Deletemodle'
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify/Iconify';
 import AddMeeting from '../../components/meeting/Addmeetings'
-
+import { fetchMeetingData } from '../../redux/slice/meetingSlice';
+import { useDispatch, useSelector } from 'react-redux';
 // ----------------------------------------------------------------------
-function CustomToolbar({ selectedRowIds, fetchdata }) {
+function CustomToolbar({ selectedRowIds, fetchMeetingData }) {
   const [opendelete, setOpendelete] = useState(false);
-
+  const dispatch = useDispatch()
   const handleCloseDelete = () => setOpendelete(false);
   const handleOpenDelete = () => setOpendelete(true);
 
@@ -26,7 +27,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
 
   const deleteManyMettings = async (data) => {
     await deleteManyApi('meeting/deletemany', data)
-    fetchdata();
+    dispatch(fetchMeetingData());
     handleCloseDelete();
   }
 
@@ -45,7 +46,8 @@ const Meeting = () => {
   const [allMeeting, setAllMeeting] = useState([]);
   const [selectedRowIds, setSelectedRowIds] = useState([]);
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
+  const { data, isLoading } = useSelector((state) => state?.meetingDetails)
   const userid = localStorage.getItem('user_id');
   const userRole = localStorage.getItem("userRole")
 
@@ -61,7 +63,7 @@ const Meeting = () => {
     {
       field: "subject",
       headerName: "Subject",
-      flex: 1,
+      width: 215,
       cellClassName: "name-column--cell name-column--cell--capitalize",
       renderCell: (params) => {
         const handleFirstNameClick = () => {
@@ -78,7 +80,7 @@ const Meeting = () => {
     {
       field: "startDate",
       headerName: "Start Date",
-      flex: 1,
+      width: 215,
       valueFormatter: (params) => {
         const date = new Date(params.value);
         return date.toLocaleString();
@@ -87,7 +89,7 @@ const Meeting = () => {
     {
       field: "endDate",
       headerName: "End Date",
-      flex: 1,
+      width: 215,
       valueFormatter: (params) => {
         const date = new Date(params.value);
         return date.toLocaleString();
@@ -96,18 +98,18 @@ const Meeting = () => {
     {
       field: "duration",
       headerName: "Duration",
-      flex: 1,
+      width: 215,
     },
     {
       field: "status",
       headerName: "Status",
-      flex: 1,
+      width: 215,
     },
     {
       field: allMeeting.relatedTo === "Lead" ? "lead_id" : "contact_id",
       headerName: "Related To",
       cellClassName: "name-column--cell name-column--cell--capitalize",
-      flex: 1,
+      width: 215,
       renderCell: (params) => {
         const handleFirstNameClick = () => {
           navigate(params?.row?.relatedTo === "Lead" ? `/dashboard/lead/view/${params?.row?.lead_id?._id}` : `/dashboard/contact/view/${params?.row?.contact_id?._id}`)
@@ -124,7 +126,7 @@ const Meeting = () => {
       field: "createdBy",
       headerName: "Assigned User",
       cellClassName: "name-column--cell name-column--cell--capitalize",
-      flex: 1,
+      width: 215,
       renderCell: (params) => {
         const handleFirstNameClick = () => {
           navigate(`/dashboard/user/view/${params?.row?.createdBy?._id}`)
@@ -138,17 +140,9 @@ const Meeting = () => {
     }
   ];
 
-  const fetchdata = async () => {
-    const result = await apiget(userRole === "admin" ? `meeting/list` : `meeting/list/?createdBy=${userid}`)
 
-    console.log(result)
-
-    if (result && result.status === 200) {
-      setAllMeeting(result?.data?.result)
-    }
-  }
   useEffect(() => {
-    fetchdata();
+    dispatch(fetchMeetingData());
   }, [userAction])
 
   return (
@@ -167,17 +161,23 @@ const Meeting = () => {
             </Button>
           </Stack>
           <Box width="100%">
-            <Card style={{ height: "600px", paddingTop: "15px" }}>
-              <DataGrid
-                rows={allMeeting}
-                columns={columns}
-                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
-                checkboxSelection
-                onRowSelectionModelChange={handleSelectionChange}
-                rowSelectionModel={selectedRowIds}
-                getRowId={row => row._id}
-              />
-            </Card>
+            {isLoading ? (
+              <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                <span className="loader" />
+              </Card>
+            ) : (
+              <Card style={{ height: "600px", paddingTop: "15px" }}>
+                <DataGrid
+                  rows={data}
+                  columns={columns}
+                  components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchMeetingData }) }}
+                  checkboxSelection
+                  onRowSelectionModelChange={handleSelectionChange}
+                  rowSelectionModel={selectedRowIds}
+                  getRowId={row => row._id}
+                />
+              </Card>
+            )}
           </Box>
         </TableStyle>
       </Container>

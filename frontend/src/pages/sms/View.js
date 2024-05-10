@@ -7,6 +7,7 @@ import Other from './Other';
 import { apiget } from '../../service/api';
 import Header from '../../components/Header';
 import { CustomTabPanel, a11yProps } from '../../components/CustomTabPanel';
+import Actionbutton from '../../components/Actionbutton';
 
 const View = () => {
     const [smsData, setSmsData] = useState({});
@@ -37,19 +38,19 @@ const View = () => {
 
     return (
         <div>
-            <Container>
+            <Container maxWidth>
                 <Grid container display="flex" alignItems="center">
                     <Stack direction="row" alignItems="center" mb={3} justifyContent={"space-between"} width={"100%"}>
                         <Header
                             title="SMS Details"
                         />
-                        {/* <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
+                        <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
                             <Actionbutton
-                                handleOpenEdit={handleOpenEdit}
-                                handleOpenDelete={handleOpenDelete}
+                                // handleOpenEdit={handleOpenEdit}
+                                // handleOpenDelete={handleOpenDelete}
                                 back={back}
                             />
-                        </Stack> */}
+                        </Stack>
                     </Stack>
                 </Grid>
 
