@@ -28,6 +28,7 @@ import ViewEmailTemplate from './pages/emailTemplate/View'
 import ImportView from './components/Import/ImportView';
 import Sms from './pages/sms/Sms';
 import SmsView from './pages/sms/View';
+import Payment from './pages/Payment/Payment';
 
 // ----------------------------------------------------------------------
 
@@ -63,6 +64,7 @@ export default function Router() {
         { path: 'emailtemplate/add', element: <AddEmailTemplate /> },
         { path: 'emailtemplate/view/:id', element: <ViewEmailTemplate /> },
         { path: ':view/import', element: <ImportView /> },
+        { path: 'payment', element: <Payment /> },
         { path: '*', element: <Navigate to="/dashboard/app" />, index: true },
         { path: '404', element: <Page404 /> },
       ],
