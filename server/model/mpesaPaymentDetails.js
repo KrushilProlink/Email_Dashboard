@@ -1,16 +1,22 @@
 import mongoose from "mongoose"
 
 const Payment = new mongoose.Schema({
-    Order_ID: { type: String, required: true },
-    resultCode: { type: Number, required: true },
-    merchantRequestId: { type: String, required: true },
-    checkoutRequestId: { type: String, required: true },
-    resultCode: { type: Number, required: true },
-    resultDesc: { type: String, required: true },
-    phoneNumber: { type: Number, required: true },
+    orderId: { type: String, required: true },
+    merchantRequestId: { type: String },
+    checkoutRequestId: { type: String },
+    responseCode: { type: Number },
+    responseDescription: { type: String },
+    customerMessage: { type: String },
+    senderPhoneNumber: { type: String, required: true },
+    status: { type: String, required: true },
     amount: { type: Number, required: true },
-    mpesaReceiptNumber: { type: String, required: true },
-    transactopDate: { type: Date, required: true },
+    mpesaReceiptNumber: { type: String },
+    transactionDate: { type: Date },
+    emailAddress: { type: String },
+    firstName: { type: String },
+    lastName: { type: String },
+    errorCode: { type: String },
+    errorMessage: { type: String }
 })
 
 export default mongoose.model('Payment_details', Payment);

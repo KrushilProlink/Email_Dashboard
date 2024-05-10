@@ -17,8 +17,6 @@ const generateAccessToken = async (req, res, next) => {
             }
         ).then((response) => {
             req.safaricom_access_token = response.data.access_token;
-
-            console.log("--- Access_token --- ", response.data.access_token);
             next();
         }).catch((error) => {
             console.log("--- Access Token generation error1 --- ", error);
