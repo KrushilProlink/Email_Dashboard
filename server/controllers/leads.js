@@ -23,7 +23,8 @@ const index = async (req, res) => {
     match: { deleted: false } // Populate only if createBy.deleted is false
   }).exec()
 
-  const result = allData.filter(item => item.createdBy !== null);
+  let result = allData.filter(item => item.createdBy !== null);
+  result = result.sort((a, b) => b.createdOn - a.createdOn);
 
   let totalRecords = result.length
 
@@ -52,7 +53,7 @@ const SMS = async (req, res) => {
 
 const add = async (req, res) => {
   try {
-    const lead = new Lead(req.body);
+    const lead = new Lead({ ...req.body, assigned_agent: req.body?.assigned_agent || null });
     await lead.save();
     res.status(201).json({ lead, message: 'Lead saved successfully' });
   } catch (err) {

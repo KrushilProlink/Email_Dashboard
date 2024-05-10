@@ -14,6 +14,7 @@ const index = async (req, res) => {
     // ).exec()
 
     // const result = allData.filter(item => console.log(item));
+    allData = allData.sort((a, b) => b.createdOn - a.createdOn);
 
     let totalRecords = allData.length
     res.send({ result: allData, total_recodes: totalRecords })

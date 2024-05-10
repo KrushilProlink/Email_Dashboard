@@ -108,6 +108,7 @@ const index = async (req, res) => {
         }
     ]);
 
+    allData = allData.sort((a, b) => b.createdOn - a.createdOn);
 
     let totalRecords = allData.length
     res.send({ result: allData, total_recodes: totalRecords })

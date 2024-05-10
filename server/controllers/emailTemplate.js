@@ -8,7 +8,8 @@ const index = async (req, res) => {
         match: { deleted: false } // Populate only if createBy.deleted is false
     }).exec()
 
-    const result = allData.filter(item => item.createdBy !== null);
+    let result = allData.filter(item => item.createdBy !== null);
+    result = result.sort((a, b) => b.createdOn - a.createdOn);
 
     let totalRecords = result.length
 

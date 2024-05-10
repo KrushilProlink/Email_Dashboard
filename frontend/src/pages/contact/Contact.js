@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
+import moment from "moment";
 // @mui
 import {
     Box,
@@ -154,6 +155,18 @@ const Contact = () => {
             field: "emailAddress",
             headerName: "Email Address",
             flex: 1,
+        },
+        {
+            field: "createdOn",
+            headerName: "Create Date",
+            flex: 1,
+            renderCell: (params) => {
+                return (
+                    <>
+                        {moment(params?.row?.createdOn).format('lll')}
+                    </>
+                );
+            }
         },
         {
             field: "action",
