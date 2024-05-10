@@ -6,6 +6,13 @@ import leadSlice from '../slice/leadSlice';
 import contactSlice from '../slice/contactSlice';
 import emailTemplateSlice from '../slice/emailTemplateSlice';
 import policySlice from '../slice/policySlice';
+import taskSlice from '../slice/taskSlice';
+import smsSlice from '../slice/smsSlice';
+import meetingSlice from '../slice/meetingSlice';
+import callSlice from '../slice/callSlice';
+import emailSlice from '../slice/emailSlice';
+import documentSlice from '../slice/documentSlice';
+import calendarSlice from '../slice/calendarSlice';
 
 const middleware = (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -38,6 +45,13 @@ export const store = configureStore({
         contactDetails: persistReducer(contactPersistConfig, contactSlice),
         tempDetails: persistReducer(emailTemPersistConfig, emailTemplateSlice),
         policyDetails: policySlice,
+        taskDetails: taskSlice,
+        smsDetails: smsSlice,
+        meetingDetails: meetingSlice,
+        callDetails: callSlice,
+        emailDetails: emailSlice,
+        documentDetails: documentSlice,
+        calendarDetails: calendarSlice,
     },
     middleware,
 });

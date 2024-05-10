@@ -10,13 +10,12 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import * as yup from "yup";
 import { apipost } from "../../service/api";
 
 const Add = (props) => {
   // eslint-disable-next-line react/prop-types
-  const { handleClose, open } = props
+  const { handleClose, open, setUserAction } = props
   const [isLoading, setIsLoading] = useState(false);
 
   // -----------  validationSchema
@@ -42,7 +41,7 @@ const Add = (props) => {
     try {
       let data = values;
       const result = await apipost('user/register', data)
-
+      setUserAction(result)
       if (result && result.status === 201) {
         formik.resetForm();
         handleClose();

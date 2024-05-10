@@ -43,17 +43,20 @@ import { apiget, deleteManyApi } from '../../service/api';
 import DeleteModel from '../../components/Deletemodle'
 import TableStyle from '../../components/TableStyle';
 import AddTask from '../../components/task/AddTask'
-// ----------------------------------------------------------------------
-function CustomToolbar({ selectedRowIds, fetchdata }) {
-  const [opendelete, setOpendelete] = useState(false);
+import { fetchTaskData } from '../../redux/slice/taskSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
+// ----------------------------------------------------------------------
+function CustomToolbar({ selectedRowIds, fetchTaskData }) {
+  const [opendelete, setOpendelete] = useState(false);
+  const dispatch = useDispatch()
   const handleCloseDelete = () => setOpendelete(false)
 
   const handleOpenDelete = () => setOpendelete(true)
 
   const deleteManyTasks = async (data) => {
     const result = await deleteManyApi('task/deletemany', data)
-    fetchdata();
+    dispatch(fetchTaskData());
     handleCloseDelete();
   }
 
@@ -72,9 +75,10 @@ const Task = () => {
   const [openTask, setOpenTask] = useState(false);
   const [userAction, setUserAction] = useState(null)
   const navigate = useNavigate()
-
+  const dispatch = useDispatch();
   const userid = localStorage.getItem('user_id');
   const userRole = localStorage.getItem("userRole")
+  const { data, isLoading } = useSelector((state) => state?.taskDetails)
 
   const handleSelectionChange = (selectionModel) => {
     setSelectedRowIds(selectionModel);
@@ -88,7 +92,7 @@ const Task = () => {
     {
       field: "subject",
       headerName: "Subject",
-      flex: 1,
+      width: 200,
       cellClassName: "name-column--cell name-column--cell--capitalize",
       renderCell: (params) => {
         const handleFirstNameClick = () => {
@@ -105,12 +109,12 @@ const Task = () => {
     {
       field: "status",
       headerName: "Status",
-      flex: 1,
+      width: 200,
     },
     {
       field: "startDate",
       headerName: "Start Date",
-      flex: 1,
+      width: 200,
       valueFormatter: (params) => {
         const date = new Date(params.value);
         return date.toLocaleString();
@@ -119,7 +123,7 @@ const Task = () => {
     {
       field: "endDate",
       headerName: "End Date",
-      flex: 1,
+      width: 200,
       valueFormatter: (params) => {
         const date = new Date(params.value);
         return date.toLocaleString();
@@ -128,13 +132,13 @@ const Task = () => {
     {
       field: "priority",
       headerName: "Priority",
-      flex: 1,
+      width: 200,
     },
     {
       field: allTask.relatedTo === "Lead" ? "lead_id" : "contact_id",
       headerName: "Related To",
       cellClassName: "name-column--cell name-column--cell--capitalize",
-      flex: 1,
+      width: 200,
       renderCell: (params) => {
         const handleFirstNameClick = () => {
           navigate(params?.row?.relatedTo === "Lead" ? `/dashboard/lead/view/${params?.row?.lead_id?._id}` : `/dashboard/contact/view/${params?.row?.contact_id?._id}`)
@@ -151,7 +155,7 @@ const Task = () => {
       field: "createdBy",
       headerName: "Assigned User",
       cellClassName: "name-column--cell name-column--cell--capitalize",
-      flex: 1,
+      width: 200,
       renderCell: (params) => {
         const handleFirstNameClick = () => {
           navigate(`/dashboard/user/view/${params?.row?.createdBy?._id}`)
@@ -167,14 +171,8 @@ const Task = () => {
 
   ];
 
-  const fetchdata = async () => {
-    const result = await apiget(userRole === "admin" ? `task/list` : `task/list/?createdBy=${userid}`)
-    if (result && result.status === 200) {
-      setAllTask(result?.data?.result)
-    }
-  }
   useEffect(() => {
-    fetchdata();
+    dispatch(fetchTaskData())
   }, [userAction])
 
   return (
@@ -194,17 +192,24 @@ const Task = () => {
             </Button>
           </Stack>
           <Box width="100%" >
-            <Card style={{ height: "600px", paddingTop: "15px" }}>
-              <DataGrid
-                rows={allTask}
-                columns={columns}
-                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
-                checkboxSelection
-                onRowSelectionModelChange={handleSelectionChange}
-                rowSelectionModel={selectedRowIds}
-                getRowId={row => row._id}
-              />
-            </Card>
+            {isLoading ? (
+              <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                <span className="loader" />
+              </Card>
+            ) : (
+              <Card style={{ height: "600px", paddingTop: "15px" }}>
+                <DataGrid
+                  rows={data}
+                  columns={columns}
+                  components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchTaskData }) }}
+                  checkboxSelection
+                  onRowSelectionModelChange={handleSelectionChange}
+                  rowSelectionModel={selectedRowIds}
+                  getRowId={row => row._id}
+                />
+              </Card>
+            )}
+
           </Box>
         </TableStyle>
       </Container>

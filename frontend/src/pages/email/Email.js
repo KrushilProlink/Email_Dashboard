@@ -17,18 +17,21 @@ import AddEmail from './Add';
 import { apiget, deleteManyApi } from '../../service/api';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify/Iconify';
+import { fetchEmailData } from '../../redux/slice/emailSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
 // ----------------------------------------------------------------------
 
-function CustomToolbar({ selectedRowIds, fetchdata }) {
+function CustomToolbar({ selectedRowIds, fetchEmailData }) {
     const [opendelete, setOpendelete] = useState(false);
-
+    const dispatch = useDispatch()
     // open DeleteModel
     const handleCloseDelete = () => setOpendelete(false);
     const handleOpenDelete = () => setOpendelete(true);
 
     const deleteManyCalls = async (data) => {
         await deleteManyApi('email/deletemany', data)
-        fetchdata();
+        dispatch(fetchEmailData());
         handleCloseDelete();
     }
 
@@ -47,8 +50,10 @@ const Email = () => {
     const [emailList, setEmailList] = useState([]);
     const [selectedRowIds, setSelectedRowIds] = useState([]);
     const [openAdd, setOpenAdd] = useState(false);
-
+    const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const { data, isLoading } = useSelector((state) => state?.emailDetails)
 
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole")
@@ -65,7 +70,7 @@ const Email = () => {
         {
             field: "subject",
             headerName: "Subject",
-            flex: 1,
+            width: 400,
             cellClassName: "name-column--cell",
             renderCell: (params) => {
                 const handleFirstNameClick = () => {
@@ -82,7 +87,7 @@ const Email = () => {
         {
             field: "sender",
             headerName: "Sender",
-            flex: 1,
+            width: 400,
             renderCell: (params) => {
                 return (
                     <Box >
@@ -94,12 +99,12 @@ const Email = () => {
         {
             field: "receiver",
             headerName: "Receiver",
-            flex: 1,
+            width: 400,
         },
         {
             field: "createdBy",
             headerName: "Created By",
-            flex: 1,
+            width: 300,
             cellClassName: "name-column--cell",
             renderCell: (params) => {
                 const handleFirstNameClick = () => {
@@ -114,15 +119,8 @@ const Email = () => {
         }
     ];
 
-    const fetchdata = async () => {
-        const result = await apiget(userRole === "admin" ? `email/list` : `email/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setEmailList(result?.data?.result)
-        }
-    };
-
     useEffect(() => {
-        fetchdata();
+        dispatch(fetchEmailData());
     }, [userAction])
 
     return (
@@ -140,17 +138,23 @@ const Email = () => {
                         </Button>
                     </Stack>
                     <Box width="100%">
-                        <Card style={{ height: "600px", paddingTop: "15px" }}>
-                            <DataGrid
-                                rows={emailList}
-                                columns={columns}
-                                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
-                                checkboxSelection
-                                onRowSelectionModelChange={handleSelectionChange}
-                                rowSelectionModel={selectedRowIds}
-                                getRowId={row => row._id}
-                            />
-                        </Card>
+                        {isLoading ? (
+                            <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                                <span className="loader" />
+                            </Card>
+                        ) : (
+                            <Card style={{ height: "600px", paddingTop: "15px" }}>
+                                <DataGrid
+                                    rows={data}
+                                    columns={columns}
+                                    components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchEmailData }) }}
+                                    checkboxSelection
+                                    onRowSelectionModelChange={handleSelectionChange}
+                                    rowSelectionModel={selectedRowIds}
+                                    getRowId={row => row._id}
+                                />
+                            </Card>
+                        )}
                     </Box>
                 </TableStyle>
             </Container>

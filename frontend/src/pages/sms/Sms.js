@@ -33,17 +33,20 @@ import { apiget, deleteManyApi } from '../../service/api';
 import DeleteModel from '../../components/Deletemodle'
 import TableStyle from '../../components/TableStyle';
 import AddTask from '../../components/task/AddTask'
-// ----------------------------------------------------------------------
-function CustomToolbar({ selectedRowIds, fetchdata }) {
-  const [opendelete, setOpendelete] = useState(false);
+import { fetchSmsData } from '../../redux/slice/smsSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
+// ----------------------------------------------------------------------
+function CustomToolbar({ selectedRowIds, fetchSmsData }) {
+  const [opendelete, setOpendelete] = useState(false);
+  const dispatch = useDispatch()
   const handleCloseDelete = () => setOpendelete(false)
 
   const handleOpenDelete = () => setOpendelete(true)
 
   const deleteManyTasks = async (data) => {
     const result = await deleteManyApi('task/deletemany', data)
-    fetchdata();
+    dispatch(fetchSmsData());
     handleCloseDelete();
   }
 
@@ -62,9 +65,11 @@ const Sms = () => {
   const [openTask, setOpenTask] = useState(false);
   const [userAction, setUserAction] = useState(null)
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
   const userid = localStorage.getItem('user_id');
   const userRole = localStorage.getItem("userRole")
+
+  const { data, isLoading } = useSelector((state) => state?.smsDetails)
 
   const handleSelectionChange = (selectionModel) => {
     setSelectedRowIds(selectionModel);
@@ -79,7 +84,7 @@ const Sms = () => {
       field: "senderName",
       headerName: "Sender Name",
       cellClassName: "name-column--cell name-column--cell--capitalize",
-      flex: 1,
+      width: 250,
       renderCell: (params) => {
         const handleFirstNameClick = () => {
           navigate(`/dashboard/sms/view/${params.row._id}`)
@@ -94,7 +99,7 @@ const Sms = () => {
     {
       field: "reciverName",
       headerName: "Reciver Name",
-      flex: 1,
+      width: 250,
       // cellClassName: "name-column--cell name-column--cell--capitalize",
     },
 
@@ -102,7 +107,7 @@ const Sms = () => {
       field: allSms.relatedTo === "Lead" ? "lead_id" : "contact_id",
       headerName: "Related To",
       cellClassName: "name-column--cell name-column--cell--capitalize",
-      flex: 1,
+      width: 250,
       renderCell: (params) => {
         const handleFirstNameClick = () => {
           navigate(params?.row?.relatedTo === "Lead" ? `/dashboard/lead/view/${params?.row?.lead_id}` : params?.row?.relatedTo === "Contact" ? `/dashboard/contact/view/${params?.row?.contact_id}` : params?.row?.relatedTo === "Task" ? `/dashboard/task/view/${params?.row?.task_id}` : "")
@@ -117,17 +122,17 @@ const Sms = () => {
     {
       field: "reciverNumber",
       headerName: "Receiver Number",
-      flex: 1,
+      width: 250,
     },
     {
       field: "status",
       headerName: "Status",
-      flex: 1,
+      width: 250,
     },
     {
       field: "startTime",
       headerName: "Start Time",
-      flex: 1,
+      width: 250,
       valueFormatter: (params) => {
         const date = new Date(params.value);
         return date.toLocaleString();
@@ -136,15 +141,8 @@ const Sms = () => {
 
   ];
 
-  const fetchdata = async () => {
-    const result = await apiget(`sms/list`)
-    if (result && result.status === 200) {
-      setAllSms(result?.data?.result)
-    }
-  }
-
   useEffect(() => {
-    fetchdata();
+    dispatch(fetchSmsData());
   }, [userAction])
 
   return (
@@ -165,17 +163,24 @@ const Sms = () => {
 
           </Stack>
           <Box width="100%" >
-            <Card style={{ height: "600px", paddingTop: "15px" }}>
-              <DataGrid
-                rows={allSms}
-                columns={columns}
-                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
-                checkboxSelection={false}
-                onRowSelectionModelChange={handleSelectionChange}
-                rowSelectionModel={selectedRowIds}
-                getRowId={row => row._id}
-              />
-            </Card>
+            {isLoading ? (
+              <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                <span className="loader" />
+              </Card>
+            ) : (
+              <Card style={{ height: "600px", paddingTop: "15px" }}>
+                <DataGrid
+                  rows={data}
+                  columns={columns}
+                  components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchSmsData }) }}
+                  checkboxSelection={false}
+                  onRowSelectionModelChange={handleSelectionChange}
+                  rowSelectionModel={selectedRowIds}
+                  getRowId={row => row._id}
+                />
+              </Card>
+            )}
+
           </Box>
         </TableStyle>
       </Container>

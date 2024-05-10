@@ -16,12 +16,13 @@ import TableStyle from '../../components/TableStyle';
 import DeleteModel from '../../components/Deletemodle';
 import AssignToUserModel from './AssignTo';
 import { constant } from '../../constant';
-
+import { fetchDocumentData } from '../../redux/slice/documentSlice';
+import { useDispatch, useSelector } from 'react-redux';
 // ----------------------------------------------------------------------
 
-function CustomToolbar({ selectedRowIds, fetchdata }) {
+function CustomToolbar({ selectedRowIds, fetchDocumentData }) {
     const [opendelete, setOpendelete] = useState(false);
-
+    const dispatch = useDispatch()
     const handleCloseDelete = () => {
         setOpendelete(false)
     }
@@ -33,7 +34,7 @@ function CustomToolbar({ selectedRowIds, fetchdata }) {
     // delete many api
     const deleteManyContact = async (data) => {
         await deleteManyApi('document/deletemany', data)
-        fetchdata()
+        dispatch(fetchDocumentData());
         handleCloseDelete();
     }
 
@@ -54,9 +55,11 @@ const Documents = () => {
     const [selectedRowIds, setSelectedRowIds] = useState([]);
     const [openAssignTo, setOpenAssignTo] = useState(false);
     const [documentId, setDocumentId] = useState('');
-
+    const dispatch = useDispatch()
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole");
+
+    const { data, isLoading } = useSelector((state) => state?.documentDetails)
 
     const handleOpenAdd = () => {
         setOpenAdd(true)
@@ -94,18 +97,18 @@ const Documents = () => {
         {
             field: "file",
             headerName: "File",
-            width: 400,
+            width: 370,
         },
 
         {
             field: "fileName",
             headerName: "File Name",
-            width: 400,
+            width: 370,
         },
         {
             field: "createdOn",
             headerName: "CreateOn",
-            width: 250,
+            width: 370,
             valueFormatter: (params) => {
                 const date = new Date(params.value);
                 return date.toDateString();
@@ -114,7 +117,7 @@ const Documents = () => {
         {
             field: "action",
             headerName: "Action",
-            width: 400,
+            width: 370,
             renderCell: (params) => {
                 const handleFirstNameClick = async () => { downloadFile(params.row._id) };
                 const downloadUrl = `${constant.baseUrl}document/file/${params.row._id}`;
@@ -134,15 +137,8 @@ const Documents = () => {
     ];
 
     // fetch documents list
-    const fetchdata = async () => {
-        const result = await apiget(userRole === "admin" ? `document/list` : `document/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setDocumentList(result?.data?.result)
-        }
-    }
-
     useEffect(() => {
-        fetchdata();
+        dispatch(fetchDocumentData());
     }, [userAction])
     return (
         <>
@@ -162,17 +158,23 @@ const Documents = () => {
                 </Stack>
                 <TableStyle>
                     <Box width="100%">
-                        <Card style={{ height: "600px", paddingTop: "15px" }}>
-                            <DataGrid
-                                rows={documentList}
-                                columns={columns}
-                                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
-                                checkboxSelection
-                                onRowSelectionModelChange={handleSelectionChange}
-                                rowSelectionModel={selectedRowIds}
-                                getRowId={row => row._id}
-                            />
-                        </Card>
+                        {isLoading ? (
+                            <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                                <span className="loader" />
+                            </Card>
+                        ) : (
+                            <Card style={{ height: "600px", paddingTop: "15px" }}>
+                                <DataGrid
+                                    rows={data}
+                                    columns={columns}
+                                    components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchDocumentData }) }}
+                                    checkboxSelection
+                                    onRowSelectionModelChange={handleSelectionChange}
+                                    rowSelectionModel={selectedRowIds}
+                                    getRowId={row => row._id}
+                                />
+                            </Card>
+                        )}
                     </Box>
                 </TableStyle>
             </Container>

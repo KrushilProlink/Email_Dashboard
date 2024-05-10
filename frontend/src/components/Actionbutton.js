@@ -64,19 +64,21 @@ const Actionbutton = (props) => {
     return (
         <div>
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-                <Button
-                    id="action"
-                    aria-controls={openaction ? "action" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={openaction ? "true" : undefined}
-                    variant="contained"
-                    color="secondary"
-                    disableElevation
-                    onClick={handleClickaction}
-                    endIcon={<KeyboardArrowDownIcon />}
-                >
-                    Actions
-                </Button>
+                {(props.handleOpen || props.handleOpenEdit || props.handleOpenDelete || props.handleOpenDelete || props.handleExport) &&
+                    <Button
+                        id="action"
+                        aria-controls={openaction ? "action" : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={openaction ? "true" : undefined}
+                        variant="contained"
+                        color="secondary"
+                        disableElevation
+                        onClick={handleClickaction}
+                        endIcon={<KeyboardArrowDownIcon />}
+                    >
+                        Actions
+                    </Button>
+                }
                 <StyledMenu
                     id="demo-customized-menu"
                     MenuListProps={{
