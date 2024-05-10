@@ -14,6 +14,7 @@ import PolicyRoute from "./policyRoutes.js"
 import DocumentRoute from './documentRoutes.js'
 import PolicyDocumentRoute from './policyDocumentRoutes.js'
 import emailTemmplateRoute from './emailTemplateRoutes.js'
+import mpesaRoute from './mpesaRoutes.js';
 import smsRoute from './smsRoutes.js'
 // import lipanampesaRoute from './lipanampesaRoutes.js';
 
@@ -30,6 +31,7 @@ router.use('/policy', PolicyRoute)
 router.use('/document', DocumentRoute)
 router.use('/policydocument', PolicyDocumentRoute)
 router.use('/emailtemplate', emailTemmplateRoute)
+router.use('/lipanampesa', mpesaRoute);
 router.use('/sms', smsRoute)
 // router.use('/lipanampesa', lipanampesaRoute);
 
