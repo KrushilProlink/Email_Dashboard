@@ -11,10 +11,10 @@ const connectDB = async (DATABASE_URL, DB_NAME) => {
 		await mongoose.connect(DATABASE_URL, DB_OPTIONS);
 		let adminExisting = await User.find({ role: 'admin' });
 		if (adminExisting.length <= 0) {
-			const firstName = 'anziano'
-			const lastName = 'insurance'
-			const emailAddress = 'anzianoinsuranceagency@gmail.com'
-			const password = 'April24@2024'
+			const firstName = 'krushil'
+			const lastName = 'shiroya'
+			const emailAddress = 'krushil@gmail.com'
+			const password = 'krushil@321'
 			// Hash the password
 			const hashedPassword = await bcrypt.hash(password, 10);
 			// Create a new user

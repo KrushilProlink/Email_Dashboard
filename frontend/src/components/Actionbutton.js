@@ -64,19 +64,21 @@ const Actionbutton = (props) => {
     return (
         <div>
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-                <Button
-                    id="action"
-                    aria-controls={openaction ? "action" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={openaction ? "true" : undefined}
-                    variant="contained"
-                    color="secondary"
-                    disableElevation
-                    onClick={handleClickaction}
-                    endIcon={<KeyboardArrowDownIcon />}
-                >
-                    Actions
-                </Button>
+                {(props.handleOpen || props.handleOpenEdit || props.handleOpenDelete || props.handleOpenDelete || props.handleExport) &&
+                    <Button
+                        id="action"
+                        aria-controls={openaction ? "action" : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={openaction ? "true" : undefined}
+                        variant="contained"
+                        color="secondary"
+                        disableElevation
+                        onClick={handleClickaction}
+                        endIcon={<KeyboardArrowDownIcon />}
+                    >
+                        Actions
+                    </Button>
+                }
                 <StyledMenu
                     id="demo-customized-menu"
                     MenuListProps={{
@@ -89,14 +91,14 @@ const Actionbutton = (props) => {
 
                     {
                         props.handleOpen &&
-                        <MenuItem onClick={props.handleOpen} disableRipple>
+                        <MenuItem onClick={() => { props.handleOpen(); handleCloseaction() }} disableRipple>
                             <AddIcon />
                             Add
                         </MenuItem>
                     }
                     {
                         props.handleOpenEdit &&
-                        <MenuItem onClick={props.handleOpenEdit} disableRipple>
+                        <MenuItem onClick={() => { props.handleOpenEdit(); handleCloseaction() }} disableRipple>
                             <EditIcon />
                             Edit
                         </MenuItem>
@@ -106,14 +108,14 @@ const Actionbutton = (props) => {
 
                     {
                         props.handleOpenDelete &&
-                        <MenuItem onClick={props.handleOpenDelete} disableRipple >
+                        <MenuItem onClick={() => { props.handleOpenDelete(); handleCloseaction() }} disableRipple >
                             <DeleteIcon />
                             Delete
                         </MenuItem>
                     }
 
                     {
-                        props.handleExport && <MenuItem disableRipple onClick={props.handleExport}>
+                        props.handleExport && <MenuItem disableRipple onClick={() => { props.handleExport(); handleCloseaction() }}>
                             <SaveAltIcon />
                             Export CSV
                         </MenuItem>
@@ -123,7 +125,7 @@ const Actionbutton = (props) => {
                     Back
                 </Button>
             </Stack>
-        </div>
+        </div >
     )
 }
 

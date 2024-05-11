@@ -1,10 +1,9 @@
 /* eslint-disable no-undef */
-import React, {  } from 'react';
+import React, { } from 'react';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 // routes
 import { ToastContainer } from 'react-toastify';
 import Routers from './routes';
-import UserRoutes from './UserRouters'
 
 // theme
 // components
@@ -13,6 +12,7 @@ import ScrollToTop from './components/scroll-to-top';
 import LoginPage from './pages/LoginPage';
 import 'react-toastify/dist/ReactToastify.css';
 import ThemeProvider from './theme';
+import './assets/style.css'
 
 // ----------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ export default function App() {
   const token = localStorage.getItem('token');
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, prefer-const
- const user = JSON.parse(localStorage.getItem('user'))
+  const user = JSON.parse(localStorage.getItem('user'))
   useNavigate()
 
   return (
@@ -30,7 +30,7 @@ export default function App() {
       <StyledChart />
       <ToastContainer />
       {token && user?.role ? (
-        user?.role === 'admin' ? <Routers /> : user?.role === 'user' ? <UserRoutes /> : undefined
+         <Routers /> 
       ) : (
         <Routes>
           <Route path="/login" element={<LoginPage />} />

@@ -1,17 +1,20 @@
 /* eslint-disable arrow-body-style */
-import { Box, Button, Container, FormLabel, Grid, Stack, TextField } from '@mui/material'
-import React, { useRef, useState } from 'react'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { useNavigate } from 'react-router-dom';
+import { LoadingButton } from '@mui/lab';
+import { Box, Button, CircularProgress, Container, FormLabel, Grid, Stack, TextField } from '@mui/material';
+import React, { useRef, useState } from 'react';
 import { EmailEditor } from 'react-email-editor';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Header from '../../components/Header';
 import { apipost } from '../../service/api';
-import Header from '../../components/Header'
 
 const Add = () => {
     const emailEditorRef = useRef(null);
     const [preview, setPreview] = useState(false);
     const [name, setName] = useState('');
+    const [isLoading, setIsLoading] = React.useState(false);
+
     const navigate = useNavigate()
     const userid = localStorage.getItem('user_id');
 
@@ -26,28 +29,33 @@ const Add = () => {
     };
 
     const saveDesign = () => {
-        if (name !== "" && emailEditorRef.current && emailEditorRef.current.editor.exportHtml) {
-            emailEditorRef.current.editor?.exportHtml(async (allData) => {
+        setIsLoading(true)
+        try {
+            if (name !== "" && emailEditorRef.current && emailEditorRef.current.editor.exportHtml) {
+                emailEditorRef.current.editor?.exportHtml(async (allData) => {
 
-                const { html, design } = allData
+                    const { html, design } = allData
 
-                const data = {
-                    html,
-                    design,
-                    name,
-                    createdBy: userid
-                }
+                    const data = {
+                        html,
+                        design,
+                        name,
+                        createdBy: userid
+                    }
 
-                const result = await apipost('emailtemplate/add', data)
-                if (result && result.status === 201) {
-                    toast.success(result.data.message)
-                    setName('')
-                }
-                navigate('/dashboard/emailtemplate')
-            });
-        } else {
-            toast.error("Template Name is required")
+                    const result = await apipost('emailtemplate/add', data)
+                    if (result && result.status === 200 || result.status === 201) {
+                        setName('')
+                        navigate('/dashboard/emailtemplate')
+                    }
+                });
+            } else {
+                toast.error("Template Name is required")
+            }
+        } catch (error) {
+            console.log(error);
         }
+        setIsLoading(false)
 
     };
 
@@ -66,7 +74,9 @@ const Add = () => {
                             />
                             <Stack direction="row" alignItems="center" justifyContent={"flex-end"} spacing={2}>
                                 <Button variant="contained" color="secondary" onClick={togglePreview}>{preview ? "Hide Preview" : "Show Preview"}</Button>
-                                <Button variant="contained" color="secondary" onClick={saveDesign}>Save</Button>
+                                <LoadingButton onClick={saveDesign} variant='contained' color='secondary' disabled={!!isLoading}>
+                                    {isLoading ? <CircularProgress size={27} /> : 'Save'}
+                                </LoadingButton>
                                 <Button variant="contained" color="secondary" startIcon={<ArrowBackIosIcon />} onClick={back}>Back</Button>
                             </Stack>
                         </Stack>

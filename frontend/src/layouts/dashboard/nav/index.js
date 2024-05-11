@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import useResponsive from '../../../hooks/useResponsive';
 
 import navConfig from './config';
-import UserConfig from './userconfig';
 
 
 // components
@@ -77,10 +76,7 @@ export default function Nav({ openNav, onCloseNav }) {
       {/* </Link> */}
       {/* </Box> */}
 
-      {
-        user.role === "user" ? <NavSection data={UserConfig} /> : <NavSection data={navConfig} />
-      }
-
+      <NavSection data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />
 

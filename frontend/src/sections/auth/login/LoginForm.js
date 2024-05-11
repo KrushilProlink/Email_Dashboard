@@ -38,7 +38,7 @@ export default function LoginForm() {
       localStorage.setItem('user', JSON?.stringify(result?.data?.user))
       localStorage.setItem('user_id', result?.data?.user?._id)
       localStorage.setItem('userRole', result?.data?.user?.role)
-      navigate('/dashboard/app')
+      navigate('/dashboard/email')
     } else {
       navigate('/login')
     }

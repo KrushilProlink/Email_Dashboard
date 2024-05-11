@@ -4,8 +4,6 @@ import sendMail from '../middlewares/sendMail.js'
 const index = async (req, res) => {
     const query = req.query
     query.deleted = false;
-    // let result = await Emails.find(query).populate("createdBy", ["firstName", "lastName"])
-    // let totalRecords = await Emails.find(query).countDocuments()
 
 
     let allData = await Emails.find(query)
@@ -35,8 +33,8 @@ const add = async (req, res) => {
             return res.status(400).json({ success: false, message: "sender or receiver is missing." });
         }
 
-        const { receiver, subject, message, html, contact_id, lead_id, sender, createdBy } = req.body;
-        const emails = new Emails({ receiver, sender, subject, message, html, createdBy, contact_id: contact_id || null, lead_id: lead_id || null });
+        const { receiver, subject, message, html, sender, createdBy } = req.body;
+        const emails = new Emails({ receiver, sender, subject, message, html, createdBy });
         await emails.save();
 
         await sendMail(receiver, subject, message || html);
@@ -51,8 +49,6 @@ const add = async (req, res) => {
 const view = async (req, res) => {
     let emails = await Emails.findOne({ _id: req.params.id })
         .populate("createdBy", ["firstName", "lastName"])
-        .populate("lead_id", ["firstName", "lastName"])
-        .populate("contact_id", ["firstName", "lastName"])
         .populate("sender", ["emailAddress"])
 
     if (!emails) return res.status(404).json({ message: "no Data Found." })

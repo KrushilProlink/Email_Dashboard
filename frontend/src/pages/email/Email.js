@@ -6,30 +6,33 @@
 import moment from "moment";
 import { useEffect, useState } from 'react';
 // @mui
-import { Card, Stack, Container, Typography, Box, Button } from '@mui/material';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
 // components
-import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
 // sections
 // mock
 import { DeleteOutline } from '@mui/icons-material';
-import DeleteModel from '../../components/Deletemodle'
-import AddEmail from './Add';
-import { apiget, deleteManyApi } from '../../service/api';
+import { useDispatch, useSelector } from 'react-redux';
+import DeleteModel from '../../components/Deletemodle';
 import TableStyle from '../../components/TableStyle';
 import Iconify from '../../components/iconify/Iconify';
+import { fetchEmailData } from '../../redux/slice/emailSlice';
+import { deleteManyApi } from '../../service/api';
+import AddEmail from './Add';
+
 // ----------------------------------------------------------------------
 
-function CustomToolbar({ selectedRowIds, fetchdata }) {
+function CustomToolbar({ selectedRowIds, fetchEmailData }) {
     const [opendelete, setOpendelete] = useState(false);
-
+    const dispatch = useDispatch()
     // open DeleteModel
     const handleCloseDelete = () => setOpendelete(false);
     const handleOpenDelete = () => setOpendelete(true);
 
     const deleteManyCalls = async (data) => {
         await deleteManyApi('email/deletemany', data)
-        fetchdata();
+        dispatch(fetchEmailData());
         handleCloseDelete();
     }
 
@@ -48,8 +51,10 @@ const Email = () => {
     const [emailList, setEmailList] = useState([]);
     const [selectedRowIds, setSelectedRowIds] = useState([]);
     const [openAdd, setOpenAdd] = useState(false);
-
+    const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const { data, isLoading } = useSelector((state) => state?.emailDetails)
 
     const userid = localStorage.getItem('user_id');
     const userRole = localStorage.getItem("userRole")
@@ -66,7 +71,7 @@ const Email = () => {
         {
             field: "subject",
             headerName: "Subject",
-            flex: 1,
+            width: 300,
             cellClassName: "name-column--cell",
             renderCell: (params) => {
                 const handleFirstNameClick = () => {
@@ -83,7 +88,7 @@ const Email = () => {
         {
             field: "sender",
             headerName: "Sender",
-            flex: 1,
+            width: 300,
             renderCell: (params) => {
                 return (
                     <Box >
@@ -95,28 +100,29 @@ const Email = () => {
         {
             field: "receiver",
             headerName: "Receiver",
-            flex: 1,
+            width: 300,
         },
         {
             field: "createdBy",
             headerName: "Created By",
-            flex: 1,
-            cellClassName: "name-column--cell",
+            width: 300,
             renderCell: (params) => {
-                const handleFirstNameClick = () => {
-                    navigate(`/dashboard/user/view/${params?.row?.createdBy?._id}`)
-                };
                 return (
-                    <Box onClick={handleFirstNameClick}>
+                    <Box>
                         {`${params.row.createdBy.firstName} ${params.row.createdBy.lastName}`}
                     </Box>
                 );
             }
         },
         {
+            field: "status",
+            headerName: "Status",
+            width: 300,
+        },
+        {
             field: "createdOn",
             headerName: "Create Date",
-            flex: 1,
+            width: 300,
             renderCell: (params) => {
                 return (
                     <>
@@ -127,15 +133,8 @@ const Email = () => {
         }
     ];
 
-    const fetchdata = async () => {
-        const result = await apiget(userRole === "admin" ? `email/list` : `email/list/?createdBy=${userid}`)
-        if (result && result.status === 200) {
-            setEmailList(result?.data?.result)
-        }
-    };
-
     useEffect(() => {
-        fetchdata();
+        dispatch(fetchEmailData());
     }, [userAction])
 
     return (
@@ -146,24 +145,30 @@ const Email = () => {
                 <TableStyle>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                         <Typography variant="h4">
-                            Emails List
+                            Emails
                         </Typography>
                         <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenAdd} >
-                            New Email
+                            Add New
                         </Button>
                     </Stack>
                     <Box width="100%">
-                        <Card style={{ height: "600px", paddingTop: "15px" }}>
-                            <DataGrid
-                                rows={emailList}
-                                columns={columns}
-                                components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchdata }) }}
-                                checkboxSelection
-                                onRowSelectionModelChange={handleSelectionChange}
-                                rowSelectionModel={selectedRowIds}
-                                getRowId={row => row._id}
-                            />
-                        </Card>
+                        {isLoading ? (
+                            <Card style={{ display: 'flex', justifyContent: 'center', height: "600px" }}>
+                                <span className="loader" />
+                            </Card>
+                        ) : (
+                            <Card style={{ height: "600px", paddingTop: "15px" }}>
+                                <DataGrid
+                                    rows={data}
+                                    columns={columns}
+                                    components={{ Toolbar: () => CustomToolbar({ selectedRowIds, fetchEmailData }) }}
+                                    checkboxSelection
+                                    onRowSelectionModelChange={handleSelectionChange}
+                                    rowSelectionModel={selectedRowIds}
+                                    getRowId={row => row._id}
+                                />
+                            </Card>
+                        )}
                     </Box>
                 </TableStyle>
             </Container>

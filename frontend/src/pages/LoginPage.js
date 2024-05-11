@@ -67,9 +67,9 @@ export default function LoginPage() {
 
         <Container maxWidth="sm">
           <StyledContent>
-            <img src="/assets/AIA.png" width={200} style={{ marginLeft: "-7px" }} />
+            {/* <img src="/assets/AIA.png" width={200} style={{ marginLeft: "-7px" }} /> */}
             <Typography variant="h4" gutterBottom mb={4}>
-              Sign in to SureCRM
+              Sign In
             </Typography>
 
 

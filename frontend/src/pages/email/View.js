@@ -25,6 +25,7 @@ const View = () => {
     const [opendelete, setOpendelete] = useState(false);
     const navigate = useNavigate()
     const params = useParams()
+    const [isLoading, setIsLoading] = useState(false);
 
 
     // open delete model
@@ -39,11 +40,17 @@ const View = () => {
 
     // fetch api
     const fetchdata = async () => {
-        const result = await apiget(`email/view/${params.id}`)
-        if (result && result.status === 200) {
-            setEmailData(result?.data?.emails)
+        setIsLoading(true)
+        try {
+            const result = await apiget(`email/view/${params.id}`);
+            if (result && result.status === 200) {
+                setEmailData(result?.data?.emails);
+            }
+        } catch (error) {
+            console.error("Error fetching call data:", error);
         }
-    }
+        setIsLoading(false)
+    };
 
     // delete api
     const deletedata = async () => {
@@ -59,7 +66,6 @@ const View = () => {
 
     return (
         <div>
-
 
             {/* open Delete Model */}
             <DeleteModel opendelete={opendelete} handleClosedelete={handleCloseDelete} id={params.id} deletedata={deletedata} />
@@ -89,7 +95,7 @@ const View = () => {
                             <Typography variant="h5">OVERVIEW</Typography>
                         </Stack>
                     </Box>
-                    <Overview data={emailData} />
+                    <Overview data={emailData} isLoading={isLoading} />
                 </Card>
 
             </Container>
